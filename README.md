@@ -152,6 +152,17 @@ class ArduinoI2CBus : public PACL95555::i2cBus {
 
 ---
 
+## 📁 Examples
+
+See the [examples](./examples) directory for minimal projects showing how to use
+the driver on different platforms:
+
+- **arduino/** – Arduino sketch using the Wire library.
+- **esp32/** – ESP-IDF application.
+- **stm32/** – STM32 HAL example.
+
+---
+
 ## 🧪 Unit Testing
 
 To run the built-in unit tests on a desktop:
