@@ -92,6 +92,13 @@ bool isHigh = gpio.readPin(1);
 | `getInterruptStatus()`             | Read and clear interrupt source         |
 | `setInterruptCallback(cb)`         | Set callback for interrupt handling     |
 | `handleInterrupt()`                | Handle INT signal & invoke callback     |
+| `getErrorFlags()`                  | Retrieve latched driver errors          |
+| `clearErrorFlags(mask)`            | Clear selected error flags              |
+
+### ❗ Error Handling
+
+Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed). The flags persist until the call succeeds or `clearErrorFlags()` is used to reset them.
+
 
 ---
 

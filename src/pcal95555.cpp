@@ -13,17 +13,23 @@ void PACL95555::setRetries(int r) {
 // Low-level write with retries
 bool PACL95555::writeRegister(uint8_t reg, uint8_t value) {
     for(int attempt = 0; attempt <= retries_; ++attempt) {
-        if (i2c_->write(devAddr_, reg, &value, 1))
+        if (i2c_->write(devAddr_, reg, &value, 1)) {
+            clearError(Error::I2CWriteFail);
             return true;
+        }
     }
+    setError(Error::I2CWriteFail);
     return false;
 }
 // Low-level read with retries
 bool PACL95555::readRegister(uint8_t reg, uint8_t &value) {
     for(int attempt = 0; attempt <= retries_; ++attempt) {
-        if (i2c_->read(devAddr_, reg, &value, 1))
+        if (i2c_->read(devAddr_, reg, &value, 1)) {
+            clearError(Error::I2CReadFail);
             return true;
+        }
     }
+    setError(Error::I2CReadFail);
     return false;
 }
 
@@ -63,6 +69,11 @@ static uint8_t updateBit(uint8_t regVal, uint8_t bit, bool set) {
 
 // Direction configuration
 bool PACL95555::setPinDirection(uint16_t pin, GPIODir dir) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::CONFIG_PORT_0 : PACL95555_REG::CONFIG_PORT_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
@@ -71,6 +82,7 @@ bool PACL95555::setPinDirection(uint16_t pin, GPIODir dir) {
     return writeRegister(reg, val);
 }
 bool PACL95555::setMultipleDirections(uint16_t mask, GPIODir dir) {
+    clearError(Error::InvalidMask);
     uint8_t val0 = 0;
     if (!readRegister(PACL95555_REG::CONFIG_PORT_0, val0)) return false;
     for (int bit=0; bit<8; ++bit) {
@@ -88,34 +100,54 @@ bool PACL95555::setMultipleDirections(uint16_t mask, GPIODir dir) {
 
 // Read input port registers and return bit
 bool PACL95555::readPin(uint16_t pin) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::INPUT_PORT_0 : PACL95555_REG::INPUT_PORT_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
-    readRegister(reg, val);
+    if (!readRegister(reg, val)) return false;
     return (val & (1 << bit)) != 0;
 }
 
 // Write output port registers
 bool PACL95555::writePin(uint16_t pin, bool value) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::OUTPUT_PORT_0 : PACL95555_REG::OUTPUT_PORT_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
-    readRegister(reg, val);
+    if (!readRegister(reg, val)) return false;
     val = updateBit(val, bit, value);
     return writeRegister(reg, val);
 }
 
 bool PACL95555::togglePin(uint16_t pin) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::OUTPUT_PORT_0 : PACL95555_REG::OUTPUT_PORT_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
-    readRegister(reg, val);
+    if (!readRegister(reg, val)) return false;
     val ^= (1 << bit);
     return writeRegister(reg, val);
 }
 
 // Pull-up/down control
 bool PACL95555::setPullEnable(uint16_t pin, bool enable) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::PULL_ENABLE_0 : PACL95555_REG::PULL_ENABLE_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
@@ -124,6 +156,11 @@ bool PACL95555::setPullEnable(uint16_t pin, bool enable) {
     return writeRegister(reg, val);
 }
 bool PACL95555::setPullDirection(uint16_t pin, bool pullUp) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::PULL_SELECT_0 : PACL95555_REG::PULL_SELECT_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
@@ -134,6 +171,11 @@ bool PACL95555::setPullDirection(uint16_t pin, bool pullUp) {
 
 // Drive strength (2 bits per pin)
 bool PACL95555::setDriveStrength(uint16_t pin, DriveStrength level) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t base = (pin < 8) ? PACL95555_REG::DRIVE_STRENGTH_0 : PACL95555_REG::DRIVE_STRENGTH_2;
     uint8_t index = pin % 8;
     uint8_t reg = base + ((index >= 4) ? 1 : 0);
@@ -180,6 +222,11 @@ void PACL95555::handleInterrupt() {
 }
 
 bool PACL95555::setPinPolarity(uint16_t pin, Polarity polarity) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::POLARITY_INV_0 : PACL95555_REG::POLARITY_INV_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
@@ -203,6 +250,11 @@ bool PACL95555::setMultiplePolarities(uint16_t mask, Polarity polarity) {
 }
 
 bool PACL95555::enableInputLatch(uint16_t pin, bool enable) {
+    if (pin >= 16) {
+        setError(Error::InvalidPin);
+        return false;
+    }
+    clearError(Error::InvalidPin);
     uint8_t reg = (pin < 8) ? PACL95555_REG::INPUT_LATCH_0 : PACL95555_REG::INPUT_LATCH_1;
     uint8_t bit = pin % 8;
     uint8_t val = 0;
@@ -211,6 +263,7 @@ bool PACL95555::enableInputLatch(uint16_t pin, bool enable) {
     return writeRegister(reg, val);
 }
 bool PACL95555::enableMultipleInputLatches(uint16_t mask, bool enable) {
+    clearError(Error::InvalidMask);
     uint8_t val0=0;
     if (!readRegister(PACL95555_REG::INPUT_LATCH_0, val0)) return false;
     for (int bit=0; bit<8; ++bit) {
@@ -223,4 +276,20 @@ bool PACL95555::enableMultipleInputLatches(uint16_t mask, bool enable) {
         if (mask & (1u<<(bit+8))) val1 = updateBit(val1, bit, enable);
     }
     return writeRegister(PACL95555_REG::INPUT_LATCH_1, val1);
+}
+
+uint16_t PACL95555::getErrorFlags() const {
+    return errorFlags_;
+}
+
+void PACL95555::clearErrorFlags(uint16_t mask) {
+    errorFlags_ &= ~mask;
+}
+
+void PACL95555::setError(Error e) {
+    errorFlags_ |= static_cast<uint16_t>(e);
+}
+
+void PACL95555::clearError(Error e) {
+    errorFlags_ &= ~static_cast<uint16_t>(e);
 }
