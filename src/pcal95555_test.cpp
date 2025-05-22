@@ -102,13 +102,28 @@ int main() {
     PACL95555 dev(&mock, 0x20);
 
     // Test resetToDefault()
-    mock.write(0x20, PACL95555_REG::CONFIG_PORT_0, (uint8_t[]){0x00}, 1);
+    uint8_t tmp = 0x00;
+    mock.write(0x20, PACL95555_REG::CONFIG_PORT_0, &tmp, 1);
     dev.resetToDefault();
     assert(mock.getReg(PACL95555_REG::CONFIG_PORT_0) == 0xFF);
 
     // Test pin direction
     assert(dev.setPinDirection(3, GPIODir::Output));
     assert((mock.getReg(PACL95555_REG::CONFIG_PORT_0) & (1 << 3)) == 0);
+
+    // Simulate I2C write failure
+    mock.setNextWriteNack(2); // fail both attempts
+    assert(!dev.setPinDirection(1, GPIODir::Input));
+    assert(dev.getErrorFlags() & static_cast<uint16_t>(Error::I2CWriteFail));
+    // Successful call should clear the error
+    assert(dev.setPinDirection(1, GPIODir::Input));
+    assert((dev.getErrorFlags() & static_cast<uint16_t>(Error::I2CWriteFail)) == 0);
+
+    // Invalid pin test
+    assert(!dev.writePin(20, true));
+    assert(dev.getErrorFlags() & static_cast<uint16_t>(Error::InvalidPin));
+    dev.clearErrorFlags();
+    assert(dev.getErrorFlags() == 0);
 
     // ...additional tests as detailed earlier...
 

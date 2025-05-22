@@ -23,6 +23,7 @@
  */
 #pragma once
 #include <cstdint>
+#include <cstddef>
 #include <functional>
 
 /** PACL95555 register map (all control registers). */
@@ -83,6 +84,24 @@ enum class DriveStrength : uint8_t { Level0 = 0, Level1 = 1, Level2 = 2, Level3 
 /** Output mode (push-pull vs open-drain). */
 enum class OutputMode : uint8_t { PushPull = 0, OpenDrain = 1 };
 
+/** Error conditions reported by the driver. */
+enum class Error : uint16_t {
+    None          = 0,
+    InvalidPin    = 1 << 0,  ///< Provided pin index out of range
+    InvalidMask   = 1 << 1,  ///< Mask contained bits outside 0-15
+    I2CReadFail   = 1 << 2,  ///< An I2C read operation failed
+    I2CWriteFail  = 1 << 3   ///< An I2C write operation failed
+};
+
+inline Error operator|(Error a, Error b) {
+    return static_cast<Error>(static_cast<uint16_t>(a) |
+                              static_cast<uint16_t>(b));
+}
+inline Error operator&(Error a, Error b) {
+    return static_cast<Error>(static_cast<uint16_t>(a) &
+                              static_cast<uint16_t>(b));
+}
+
 /**
  * @class PACL95555
  * @brief Driver for the PACL95555AHF / PCAL9555A I²C GPIO expander.
@@ -136,6 +155,20 @@ public:
      *                Note: setting N will result in N+1 total attempts per transfer.
      */
     void setRetries(int retries);
+
+    /**
+     * @brief Retrieve currently latched error flags.
+     *
+     * @return Bitmask composed of @ref Error values.
+     */
+    uint16_t getErrorFlags() const;
+
+    /**
+     * @brief Clear specific error flags.
+     *
+     * @param mask Bitmask of errors to clear (default: all).
+     */
+    void clearErrorFlags(uint16_t mask = 0xFFFF);
 
     /**
      * @brief Reset all registers to their power-on default state.
@@ -309,5 +342,9 @@ protected:
     i2cBus *i2c_;
     uint8_t devAddr_;
     int retries_{1};
+    uint16_t errorFlags_{0};
     std::function<void(uint16_t)> irqCallback_;
+
+    void setError(Error e);
+    void clearError(Error e);
 };
