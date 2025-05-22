@@ -1,2 +1,216 @@
 # HF-PCAL95555
 Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller
+
+# PACL95555 – C++ Driver for NXP PCAL9555A GPIO Expander
+
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+
+## 📦 Overview
+
+**PACL95555** is a fully-featured, platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced "Agile I/O" capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
+
+This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
+
+---
+
+## 🚀 Features
+
+- ✅ 16-bit I²C-controlled GPIO expander (2 x 8-bit ports)
+- 🔁 Per-pin direction (input/output)
+- 🔌 Digital read/write and toggle support
+- 🔄 Input polarity inversion
+- 📉 Internal pull-up/down resistors (100kΩ typ.)
+- 🔩 Adjustable output drive strength (4 levels)
+- 🔀 Open-drain or push-pull output mode per port
+- 🧲 Input latching with interrupt capture
+- 📡 INT interrupt output with per-pin interrupt masks
+- 🧪 Built-in mock-based unit test suite
+- 🔌 Hardware-agnostic `i2cBus` interface
+
+---
+
+## 📂 Project Structure
+
+```text
+├── datasheet/             # PCAL9555A datasheet PDF
+├── examples/              # Sample usage and wiring examples
+├── src/                   # Source files
+│   ├── pacl95555.hpp      # Driver header
+│   ├── pacl95555.cpp      # Driver implementation
+│   └── pacl95555_test.cpp # Mock-based unit tests
+├── LICENSE                # GNU GPLv3 license
+└── README.md              # Project documentation
+```
+
+---
+
+## 🔧 Installation
+
+1. **Clone or copy** the `pacl95555.hpp` and `pcal95555.cpp` files into your project.
+2. **Implement the `i2cBus` interface** for your platform (examples below).
+3. Include the header in your code:
+
+   ```cpp
+   #include "pacl95555.hpp"
+   ```
+4. Compile with any **C++11 or newer** compiler.
+
+---
+
+## 🧠 Quick Start
+
+```cpp
+#include "pacl95555.hpp"
+MyPlatformI2CBus i2c;               // Custom i2cBus implementation
+PACL95555 gpio(&i2c, 0x20);        // 0x20 is default I2C address
+
+gpio.resetToDefault();             // Safe known state (inputs w/ pull-ups)
+
+gpio.setPinDirection(0, GPIODir::Output);
+gpio.writePin(0, true);
+bool isHigh = gpio.readPin(1);
+```
+
+---
+
+## 📟 API Summary
+
+| Method                             | Description                             |
+| ---------------------------------- | --------------------------------------- |
+| `setPinDirection(pin, dir)`        | Configure a single pin's direction      |
+| `setMultipleDirections(mask, dir)` | Batch pin direction setting             |
+| `readPin(pin)`                     | Read logic level of a pin               |
+| `writePin(pin, value)`             | Set logic level of an output pin        |
+| `togglePin(pin)`                   | Toggle output pin                       |
+| `setPullEnable(pin, bool)`         | Enable/disable internal pull resistor   |
+| `setPullDirection(pin, bool)`      | Choose pull-up (true) or pull-down      |
+| `setDriveStrength(pin, level)`     | Adjust output drive (Level0–Level3)     |
+| `setOutputMode(od0, od1)`          | Set port 0/1 to open-drain or push-pull |
+| `setPinPolarity(pin, polarity)`    | Invert input polarity                   |
+| `enableInputLatch(pin, bool)`      | Enable latching for input capture       |
+| `configureInterruptMask(mask)`     | Configure per-pin interrupt masks       |
+| `getInterruptStatus()`             | Read and clear interrupt source         |
+| `setInterruptCallback(cb)`         | Set callback for interrupt handling     |
+| `handleInterrupt()`                | Handle INT signal & invoke callback     |
+
+---
+
+## 🔌 Platform Integration
+
+### ✅ ESP32 (ESP-IDF)
+
+```cpp
+class ESP32I2CBus : public PACL95555::i2cBus {
+    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
+        uint8_t buf[1 + len];
+        buf[0] = reg;
+        memcpy(&buf[1], data, len);
+        return i2c_master_write_to_device(I2C_NUM_0, addr, buf, len+1, 100 / portTICK_PERIOD_MS) == ESP_OK;
+    }
+
+    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
+        return i2c_master_write_read_device(I2C_NUM_0, addr, &reg, 1, data, len, 100 / portTICK_PERIOD_MS) == ESP_OK;
+    }
+};
+```
+
+### ✅ STM32 (HAL)
+
+```cpp
+class STM32I2CBus : public PACL95555::i2cBus {
+    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
+        return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, 1, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK;
+    }
+
+    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
+        return HAL_I2C_Mem_Read(&hi2c1, addr<<1, reg, 1, data, len, HAL_MAX_DELAY) == HAL_OK;
+    }
+};
+```
+
+### ✅ Arduino (Wire)
+
+```cpp
+class ArduinoI2CBus : public PACL95555::i2cBus {
+    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
+        Wire.beginTransmission(addr);
+        Wire.write(reg);
+        Wire.write(data, len);
+        return Wire.endTransmission() == 0;
+    }
+
+    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
+        Wire.beginTransmission(addr);
+        Wire.write(reg);
+        if (Wire.endTransmission(false) != 0) return false;
+        Wire.requestFrom(addr, len);
+        for (size_t i = 0; i < len; ++i) data[i] = Wire.read();
+        return true;
+    }
+};
+```
+
+---
+
+## 🧪 Unit Testing
+
+To run the built-in unit tests on a desktop:
+
+```bash
+# Windows PowerShell
+g++ -std=c++11 pacl95555.cpp pcal95555_test.cpp -o test.exe
+./test.exe
+```
+
+These tests use a mock I2C class to validate:
+
+- Register correctness
+- Retry logic
+- Polarity inversion
+- Interrupt latching
+- Pull resistor settings
+- Output state reflection
+
+Expected output:
+
+```bash
+All tests passed.
+```
+
+---
+
+## 🧾 License
+
+This project is licensed under the **GNU General Public License v3.0**.
+
+You may freely copy, modify, and distribute this software, provided that:
+
+- You include this license and copyright
+- Any derivative work is also licensed under GPLv3
+
+📄 Full license available in [LICENSE](./LICENSE) or visit [gnu.org/licenses](https://www.gnu.org/licenses/gpl-3.0).
+
+---
+
+## 🤝 Contributing
+
+Pull requests, issues, and feature suggestions are welcome!
+
+1. Fork the repo
+2. Create your feature branch
+3. Commit your changes
+4. Push and open a PR
+
+---
+
+## 🙌 Acknowledgments
+
+- Developed by **Nebiyu Tadesse**, 2025.
+- Based on the official [PCAL9555A Datasheet](https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf) by NXP.
+- Inspired by embedded needs for a reliable, testable GPIO expander library.
+
+---
+
+## 💬 Support
+
+For questions, bug reports, or feature requests, please open an [issue](https://github.com/yourusername/pacl95555/issues) or contact the maintainer directly.
