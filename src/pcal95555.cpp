@@ -61,6 +61,35 @@ void PACL95555::resetToDefault() {
     writeRegister(PACL95555_REG::OUTPUT_CONF, 0x00);
 }
 
+// Initialize using compile-time configuration
+void PACL95555::initFromConfig() {
+#if CONFIG_PCAL95555_INIT_FROM_KCONFIG
+    writeRegister(PACL95555_REG::OUTPUT_PORT_0,
+                  uint8_t(CONFIG_PCAL95555_INIT_OUTPUT & 0xFF));
+    writeRegister(PACL95555_REG::OUTPUT_PORT_1,
+                  uint8_t((CONFIG_PCAL95555_INIT_OUTPUT >> 8) & 0xFF));
+
+    writeRegister(PACL95555_REG::CONFIG_PORT_0,
+                  uint8_t(CONFIG_PCAL95555_INIT_DIRECTION & 0xFF));
+    writeRegister(PACL95555_REG::CONFIG_PORT_1,
+                  uint8_t((CONFIG_PCAL95555_INIT_DIRECTION >> 8) & 0xFF));
+
+    writeRegister(PACL95555_REG::PULL_ENABLE_0,
+                  uint8_t(CONFIG_PCAL95555_INIT_PULL_ENABLE & 0xFF));
+    writeRegister(PACL95555_REG::PULL_ENABLE_1,
+                  uint8_t((CONFIG_PCAL95555_INIT_PULL_ENABLE >> 8) & 0xFF));
+
+    writeRegister(PACL95555_REG::PULL_SELECT_0,
+                  uint8_t(CONFIG_PCAL95555_INIT_PULL_UP & 0xFF));
+    writeRegister(PACL95555_REG::PULL_SELECT_1,
+                  uint8_t((CONFIG_PCAL95555_INIT_PULL_UP >> 8) & 0xFF));
+
+    uint8_t od = (CONFIG_PCAL95555_INIT_OD_PORT1 ? 1 : 0) << 1 |
+                 (CONFIG_PCAL95555_INIT_OD_PORT0 ? 1 : 0);
+    writeRegister(PACL95555_REG::OUTPUT_CONF, od);
+#endif
+}
+
 // Set or clear a bit in a register byte
 static uint8_t updateBit(uint8_t regVal, uint8_t bit, bool set) {
     if(set) return regVal | (1 << bit);

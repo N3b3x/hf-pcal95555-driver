@@ -65,6 +65,8 @@ MyPlatformI2CBus i2c;               // Custom i2cBus implementation
 PACL95555 gpio(&i2c, 0x20);        // 0x20 is default I2C address
 
 gpio.resetToDefault();             // Safe known state (inputs w/ pull-ups)
+// Optionally configure using values from Kconfig
+gpio.initFromConfig();
 
 gpio.setPinDirection(0, GPIODir::Output);
 gpio.writePin(0, true);
@@ -196,6 +198,26 @@ All tests passed.
 ```
 
 ---
+
+## 🛠 Makefile & Kconfig
+
+A `Makefile` is included for building the library and unit tests.
+
+```bash
+make        # build build/libpcal95555.a
+make test   # build and run the unit tests
+make clean  # remove build directory
+```
+
+
+Configuration options for Kconfig-based projects are provided in the
+`Kconfig` file. Enable the driver with `PCAL95555` and override the
+default address using `PCAL95555_DEFAULT_ADDRESS`.
+Each port contains a submenu for every pin so you can individually
+configure direction, pull resistor settings and the initial output level.
+Open-drain mode is still set per port. Call `initFromConfig()` at runtime
+to apply the selected values. Set `PCAL95555_INIT_FROM_KCONFIG` to `n`
+if you want `initFromConfig()` to do nothing at runtime.
 
 ## 🧾 License
 
