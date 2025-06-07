@@ -7,7 +7,7 @@ This section explains how to acquire the source, build the library and verify th
 - **C++11** compatible compiler (e.g. `g++`, `clang++`)
 - `make` build tool
 
-For embedded targets, ensure your toolchain is configured to compile standard C++ code and provides access to an I²C implementation.
+For embedded targets, ensure your toolchain is configured to compile standard C++ code and provides access to an I²C implementation. Any modern GCC or Clang toolchain should suffice.
 
 ## Cloning the Repository
 
@@ -25,6 +25,17 @@ make          # builds build/libpcal95555.a
 ```
 
 The output `libpcal95555.a` can be linked into your application.
+
+## Using CMake
+
+Projects that rely on CMake can add the library directly using `add_subdirectory`:
+
+```cmake
+add_subdirectory(pacl95555)
+target_link_libraries(my_app PRIVATE pcal95555)
+```
+
+This makes the headers available and links the static library to your target.
 
 ## Running Unit Tests
 

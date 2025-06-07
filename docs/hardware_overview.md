@@ -2,6 +2,10 @@
 
 The PCAL9555A is a 16-bit I/O expander with an I²C interface. It offers two 8-bit ports that can be individually configured as inputs or outputs and supports a variety of features often required in embedded designs.
 
+Pins 0‒7 belong to **PORT0** while pins 8‒15 belong to **PORT1**. Each port has
+its own set of configuration registers but the API treats all pins with a single
+numbering scheme to simplify usage.
+
 ## Key Features
 
 - Two 8-bit I/O ports for a total of 16 pins
@@ -30,5 +34,5 @@ Understanding the registers is helpful when troubleshooting or extending the dri
 
 ---
 
-**Navigation**  
-⬅️ [Examples](./examples.md) • ➡️ [Documentation Guidelines](./guidelines.md)
+**Navigation**
+⬅️ [Examples](./examples.md) • [Back to Index](./index.md) • ➡️ [Documentation Guidelines](./guidelines.md)

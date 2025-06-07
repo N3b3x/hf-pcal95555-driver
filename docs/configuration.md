@@ -29,9 +29,23 @@ PACL95555 gpio(&i2c, CONFIG_PCAL95555_DEFAULT_ADDRESS);
 gpio.initFromConfig();
 ```
 
+A minimal `Kconfig` snippet might look like:
+
+```
+config PCAL95555_DEFAULT_ADDRESS
+    hex "Expander address"
+    default 0x20
+
+config PCAL95555_INIT_FROM_KCONFIG
+    bool "Initialize expander at startup"
+    default y
+```
+
+Use menuconfig or your build system's configuration tool to adjust these values.
+
 Adjust `Kconfig` to match your hardware setup. Refer to the [Hardware Overview](./hardware_overview.md) for pin capabilities.
 
 ---
 
-**Navigation**  
-⬅️ [Quick Start](./quickstart.md) • ➡️ [API Reference](./api_reference.md)
+**Navigation**
+⬅️ [Quick Start](./quickstart.md) • [Back to Index](./index.md) • ➡️ [API Reference](./api_reference.md)

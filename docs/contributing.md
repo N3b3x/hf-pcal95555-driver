@@ -7,6 +7,7 @@ We welcome contributions in the form of bug reports, feature requests and pull r
 3. **Update or add documentation** in the `docs/` folder when your changes modify the API or behavior.
 4. **Run `make test`** and ensure that all tests pass before opening a pull request.
 5. **Describe your changes** in the PR template so reviewers understand the motivation and implementation.
+6. **Follow our documentation style** as outlined in [Documentation Guidelines](./guidelines.md).
 
 For major changes, open an issue first to discuss your proposal.
 

@@ -2,6 +2,10 @@
 
 `PACL95555` abstracts the I²C operations behind the `i2cBus` interface. To use the library on a new platform you must implement this interface.
 
+Each platform shown below demonstrates the minimum required methods. You can
+adapt the approach to any framework as long as your implementation performs the
+read and write transactions expected by the driver.
+
 ## ESP32 (ESP-IDF)
 
 ```cpp
@@ -54,5 +58,5 @@ Use the interface that matches your platform or adapt one of these examples.
 
 ---
 
-**Navigation**  
-⬅️ [API Reference](./api_reference.md) • ➡️ [Examples](./examples.md)
+**Navigation**
+⬅️ [API Reference](./api_reference.md) • [Back to Index](./index.md) • ➡️ [Examples](./examples.md)
