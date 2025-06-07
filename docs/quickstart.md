@@ -43,9 +43,13 @@ auto callback = [](uint16_t status) {
 gpio.setInterruptCallback(callback);
 ```
 
+These minimal steps bring the expander online. The library exposes many more
+functions for configuring pull resistors, drive strength and polarity. Refer to
+the [API Reference](./api_reference.md) once you are comfortable with the basics.
+
 For more advanced configuration, see the [Configuration guide](./configuration.md).
 
 ---
 
-**Navigation**  
-⬅️ [Installation](./installation.md) • ➡️ [Configuration](./configuration.md)
+**Navigation**
+⬅️ [Installation](./installation.md) • [Back to Index](./index.md) • ➡️ [Configuration](./configuration.md)

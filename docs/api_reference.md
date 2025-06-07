@@ -1,6 +1,9 @@
 # API Reference 📑
 
-This section lists the most important methods provided by `PACL95555`. For a full definition see [`pacl95555.hpp`](../src/pacl95555.hpp).
+This section lists the most important methods provided by `PACL95555`. For a
+full definition see [`pacl95555.hpp`](../src/pacl95555.hpp). The examples below
+assume an instance named `gpio` constructed with a platform specific `i2cBus`
+implementation.
 
 ## Construction
 
@@ -27,6 +30,9 @@ gpio.setPinDirection(3, PACL95555::GPIODir::Output);
 gpio.writePin(3, true);
 ```
 
+`setPinDirection` takes a pin index `0-15` and a `GPIODir` enumerator. Pins start
+as inputs after reset. Writing a value only affects pins configured as outputs.
+
 ## Advanced Features
 
 - **Pull Resistors**
@@ -38,9 +44,24 @@ gpio.writePin(3, true);
   - `setInterruptCallback(cb)` registers a handler
   - `getInterruptStatus()` returns pending interrupt flags
 
+Example interrupt setup:
+
+```cpp
+auto handler = [](uint16_t mask) {
+    if (mask & (1 << 4)) {
+        // pin 4 changed state
+    }
+};
+gpio.setInterruptCallback(handler);
+gpio.enableInputLatch(4, true);
+```
+
+`enableInputLatch` latches a pin's logic level when an interrupt occurs so the
+callback can safely read the latched value later via `getInterruptStatus()`.
+
 For further detail consult the inline comments in [`pacl95555.hpp`](../src/pacl95555.hpp).
 
 ---
 
-**Navigation**  
-⬅️ [Configuration](./configuration.md) • ➡️ [Platform Integration](./platform_integration.md)
+**Navigation**
+⬅️ [Configuration](./configuration.md) • [Back to Index](./index.md) • ➡️ [Platform Integration](./platform_integration.md)
