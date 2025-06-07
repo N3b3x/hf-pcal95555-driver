@@ -1,4 +1,4 @@
-# Quick Start
+# Quick Start ⚡
 
 This tutorial demonstrates how to bring up a PCAL9555A expander using the library on any platform.
 
@@ -44,3 +44,8 @@ gpio.setInterruptCallback(callback);
 ```
 
 For more advanced configuration, see the [Configuration guide](./configuration.md).
+
+---
+
+**Navigation**  
+⬅️ [Installation](./installation.md) • ➡️ [Configuration](./configuration.md)

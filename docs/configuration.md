@@ -1,4 +1,4 @@
-# Configuration
+# Configuration ⚙️
 
 The driver can be configured programmatically or through `Kconfig` options. This section covers both approaches.
 
@@ -30,3 +30,8 @@ gpio.initFromConfig();
 ```
 
 Adjust `Kconfig` to match your hardware setup. Refer to the [Hardware Overview](./hardware_overview.md) for pin capabilities.
+
+---
+
+**Navigation**  
+⬅️ [Quick Start](./quickstart.md) • ➡️ [API Reference](./api_reference.md)

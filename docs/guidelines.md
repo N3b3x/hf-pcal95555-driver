@@ -1,4 +1,4 @@
-# Documentation Guidelines
+# Documentation Guidelines ✍️
 
 To keep the documentation clear and consistent, follow these rules when contributing updates:
 
@@ -9,3 +9,8 @@ To keep the documentation clear and consistent, follow these rules when contribu
 5. **Provide context** for example code so users know where to place it in their applications.
 
 When in doubt, mirror the style used in the existing documents. PRs that add new features should also update the relevant docs to maintain synchronization.
+
+---
+
+**Navigation**  
+⬅️ [Hardware Overview](./hardware_overview.md) • ➡️ [Contributing](./contributing.md)

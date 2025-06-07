@@ -1,4 +1,4 @@
-# Platform Integration
+# Platform Integration 🧩
 
 `PACL95555` abstracts the I²C operations behind the `i2cBus` interface. To use the library on a new platform you must implement this interface.
 
@@ -51,3 +51,8 @@ class STM32I2CBus : public PACL95555::i2cBus {
 ```
 
 Use the interface that matches your platform or adapt one of these examples.
+
+---
+
+**Navigation**  
+⬅️ [API Reference](./api_reference.md) • ➡️ [Examples](./examples.md)

@@ -1,4 +1,4 @@
-# Examples
+# Examples 💡
 
 A set of minimal projects is provided in the [examples](../examples) directory. Each subfolder demonstrates the driver on a different platform.
 
@@ -7,3 +7,8 @@ A set of minimal projects is provided in the [examples](../examples) directory. 
 - **stm32/** – STM32 HAL example.
 
 To build an example, copy the code into your own project and adjust the I²C pins and device address for your hardware. The examples mirror the instructions in [Platform Integration](./platform_integration.md).
+
+---
+
+**Navigation**  
+⬅️ [Platform Integration](./platform_integration.md) • ➡️ [Hardware Overview](./hardware_overview.md)
