@@ -1,4 +1,4 @@
-# Installation
+# Installation 🛠️
 
 This section explains how to acquire the source, build the library and verify that everything works.
 
@@ -38,3 +38,8 @@ build/test    # executes the test binary
 You should see `All tests passed.`
 
 Continue with the [Quick Start](./quickstart.md) once the build succeeds.
+
+---
+
+**Navigation**  
+⬅️ [Index](./index.md) • ➡️ [Quick Start](./quickstart.md)

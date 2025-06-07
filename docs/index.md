@@ -1,6 +1,6 @@
-# HF-PCAL95555 Documentation
+# HF-PCAL95555 Documentation 📖
 
-Welcome to the official documentation for **HF-PCAL95555**, a hardware-agnostic C++ driver for the PCAL9555A I/O expander by NXP. This documentation guides you from installation through advanced configuration so you can successfully integrate the library into a variety of platforms.
+Welcome to the official documentation for **HF-PCAL95555**, a hardware-agnostic C++ driver for the PCAL9555A I/O expander by NXP. This driver is designed with embedded applications in mind and this guide walks you from installation through advanced configuration so you can successfully integrate it on a variety of platforms.
 
 ## Contents
 
@@ -15,3 +15,8 @@ Welcome to the official documentation for **HF-PCAL95555**, a hardware-agnostic 
 9. [Contributing](./contributing.md)
 
 Start with [Installation](./installation.md) to set up your environment, then follow the sections in order or jump directly to the topic you need.
+
+---
+
+**Navigation**  
+➡️ [Installation](./installation.md)

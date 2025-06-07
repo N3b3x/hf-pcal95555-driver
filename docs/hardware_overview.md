@@ -1,4 +1,4 @@
-# Hardware Overview
+# Hardware Overview 🔍
 
 The PCAL9555A is a 16-bit I/O expander with an I²C interface. It offers two 8-bit ports that can be individually configured as inputs or outputs and supports a variety of features often required in embedded designs.
 
@@ -27,3 +27,8 @@ Each feature is controlled through registers accessible over I²C. Some of the m
 | `INT_STATUS_0/1` | Latched interrupt source |
 
 Understanding the registers is helpful when troubleshooting or extending the driver. See the datasheet for a full list.
+
+---
+
+**Navigation**  
+⬅️ [Examples](./examples.md) • ➡️ [Documentation Guidelines](./guidelines.md)

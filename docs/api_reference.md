@@ -1,4 +1,4 @@
-# API Reference
+# API Reference 📑
 
 This section lists the most important methods provided by `PACL95555`. For a full definition see [`pacl95555.hpp`](../src/pacl95555.hpp).
 
@@ -39,3 +39,8 @@ gpio.writePin(3, true);
   - `getInterruptStatus()` returns pending interrupt flags
 
 For further detail consult the inline comments in [`pacl95555.hpp`](../src/pacl95555.hpp).
+
+---
+
+**Navigation**  
+⬅️ [Configuration](./configuration.md) • ➡️ [Platform Integration](./platform_integration.md)
