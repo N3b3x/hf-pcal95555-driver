@@ -4,6 +4,8 @@ Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller
 # PACL95555 – C++ Driver for NXP PCAL9555A GPIO Expander
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
+[![CI Build](https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml/badge.svg?branch=main)](https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml)
+
 
 ## 📦 Overview
 
