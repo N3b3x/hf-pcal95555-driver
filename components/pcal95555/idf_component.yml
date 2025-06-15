@@ -1,0 +1,9 @@
+version: "1.0.0"
+description: Hardware-agnostic PCAL95555 driver component
+maintainers:
+  - "HardFOC"
+targets:
+  - esp32
+  - esp32c6
+include_dirs:
+  - ../../src

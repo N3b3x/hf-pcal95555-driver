@@ -173,7 +173,8 @@ See the [examples](./examples) directory for minimal projects showing how to use
 the driver on different platforms:
 
 - **arduino/** – Arduino sketch using the Wire library.
-- **esp32/** – ESP-IDF application.
+- **esp32/** – ESP-IDF application. The project includes `CMakeLists.txt` files
+  and a dummy `i2cBus` implementation so the driver builds as an IDF component.
 - **stm32/** – STM32 HAL example.
 
 ---
