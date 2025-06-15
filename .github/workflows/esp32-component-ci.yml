@@ -39,7 +39,7 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y clang-format
 
       - name: Format check
-        run: clang-format --dry-run --Werror "src/*.cpp" "src/*.hpp" "examples/**/*.cpp"
+        run: shopt -s globstar && clang-format --dry-run --Werror src/*.cpp src/*.hpp examples/**/*.cpp
 
       - name: ESP-IDF build
         uses: espressif/esp-idf-ci-action@v1
