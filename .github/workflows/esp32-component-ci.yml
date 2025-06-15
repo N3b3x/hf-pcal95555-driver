@@ -1,0 +1,121 @@
+name: CI Build and Analysis
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  IDF_TARGET: esp32
+  BUILD_PATH: ci_project
+
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  build:
+    name: Build ➜ ${{ matrix.idf_version }} · ${{ matrix.build_type }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        idf_version: [ release-v5.5 ]
+        build_type: [ Release, Debug ]
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format
+
+      - name: Format check
+        run: clang-format --dry-run --Werror "src/*.cpp" "src/*.hpp" "examples/**/*.cpp"
+
+      - name: Build and Validate
+        uses: espressif/esp-idf-ci-action@v1
+        with:
+          esp_idf_version: ${{ matrix.idf_version }}
+          target: ${{ env.IDF_TARGET }}
+          path: .
+          command: |
+            set -e
+            rm -rf "$BUILD_PATH"
+            idf.py create-project "$BUILD_PATH"
+            mkdir -p "$BUILD_PATH/components/pcal95555"
+            cp src/pcal95555.cpp src/pacl95555.hpp "$BUILD_PATH/components/pcal95555/"
+            if [ -f Kconfig ]; then cp Kconfig "$BUILD_PATH/components/pcal95555/"; fi
+            cat <<'EOF' > "$BUILD_PATH/components/pcal95555/CMakeLists.txt"
+            idf_component_register(SRCS "pcal95555.cpp" INCLUDE_DIRS ".")
+            EOF
+            cat <<'EOF' > "$BUILD_PATH/components/pcal95555/idf_component.yml"
+            version: "0.1.0"
+            description: PCAL95555 driver component
+            EOF
+            cat <<'EOF' > "$BUILD_PATH/CMakeLists.txt"
+            cmake_minimum_required(VERSION 3.16)
+            set(EXTRA_COMPONENT_DIRS ${CMAKE_CURRENT_LIST_DIR}/components)
+            include($ENV{IDF_PATH}/tools/cmake/project.cmake)
+            project(pcal95555_example)
+            EOF
+            mkdir -p "$BUILD_PATH/main"
+            cp examples/esp32/main.cpp "$BUILD_PATH/main/main.cpp"
+            cat <<'EOF' > "$BUILD_PATH/main/CMakeLists.txt"
+            idf_component_register(SRCS "main.cpp" REQUIRES pcal95555)
+            EOF
+            idf.py -C "$BUILD_PATH" -DIDF_TARGET=${IDF_TARGET} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }} build
+            idf.py -C "$BUILD_PATH" size-components
+            idf.py -C "$BUILD_PATH" size --format json
+
+      - name: Upload artifacts
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ matrix.idf_version }}-${{ matrix.build_type }}
+          retention-days: 7
+          path: |
+            ${{ env.BUILD_PATH }}/build/*.bin
+            ${{ env.BUILD_PATH }}/build/*.elf
+            ${{ env.BUILD_PATH }}/build/*.map
+            ${{ env.BUILD_PATH }}/build/size*
+
+  static-analysis:
+    name: Static Analysis
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Run cppcheck
+        uses: deep5050/cppcheck-action@v3.0
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          enable: all
+          inconclusive: true
+          std: c++11
+          include: src
+
+      - name: Run clang-tidy
+        uses: ZedThree/clang-tidy-review@v0.21.0
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config_file: .clang-tidy
+
+  workflow-lint:
+    name: Lint Workflow
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: rhysd/actionlint@v1.6.25
