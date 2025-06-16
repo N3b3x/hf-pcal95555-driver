@@ -1,4 +1,4 @@
-#include "../..//src/pacl95555.hpp"
+#include "../../src/pacl95555.hpp"
 
 class DummyBus : public PACL95555::i2cBus {
 public:
