@@ -1,4 +1,4 @@
-name: CI Build and Analysis
+name: CI • Build · Size · Static Analyse
 
 on:
   push:
