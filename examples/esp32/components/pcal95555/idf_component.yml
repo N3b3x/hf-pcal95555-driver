@@ -6,4 +6,4 @@ targets:
   - esp32
   - esp32c6
 include_dirs:
-  - ../../src
+  - ../../../../src
