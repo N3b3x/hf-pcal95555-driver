@@ -1,9 +1,9 @@
 /**
- * @file pacl95555.hpp
+ * @file PCAL95555.hpp
  * @brief Driver for the PCAL9555 16-bit I/O expander with I²C interface
  *
  * This header provides a comprehensive C++ interface for controlling the
- * PCAL9555/PACL95555AHF 16-bit I/O expander. The driver handles all
+ * PCAL9555/PCAL95555AHF 16-bit I/O expander. The driver handles all
  * register-level operations required to configure and operate the device
  * including:
  *   - Setting I/O directions (input/output)
@@ -19,7 +19,7 @@
  * @date 2025-05-21
  * @version 1.0
  *
- * @note This driver supports the PCAL9555/PACL95555AHF device with 16 GPIO pins
+ * @note This driver supports the PCAL9555/PCAL95555AHF device with 16 GPIO pins
  *       divided into two 8-bit ports (PORT_0 and PORT_1).
  */
 #pragma once
@@ -315,9 +315,9 @@
 #define CONFIG_PCAL95555_INIT_OD_PORT1 CONFIG_PCAL95555_PORT1_OD
 #endif
 
-/** PACL95555 register map (all control registers). */
+/** PCAL95555 register map (all control registers). */
 /**
- * @namespace PACL95555_REG
+ * @namespace PCAL95555_REG
  * @brief Contains register addresses for the PCAL9555 I/O expander chip
  *
  * The PCAL9555 is a 16-bit I/O expander with I²C interface. This namespace
@@ -336,7 +336,7 @@
  * Each register controls 8 pins, with PORT_0 typically handling pins 0-7 and
  * PORT_1 handling pins 8-15.
  */
-namespace PACL95555_REG {
+namespace PCAL95555_REG {
 enum : uint8_t {
   INPUT_PORT_0 = 0x00,
   INPUT_PORT_1 = 0x01,
@@ -393,16 +393,16 @@ inline Error operator&(Error a, Error b) {
 }
 
 /**
- * @class PACL95555
- * @brief Driver for the PACL95555AHF / PCAL9555A I²C GPIO expander.
+ * @class PCAL95555
+ * @brief Driver for the PCAL95555AHF / PCAL9555A I²C GPIO expander.
  */
-class PACL95555 {
+class PCAL95555 {
 public:
   /**
    * @brief Abstract interface for I2C bus operations.
    *
    * @details Users must implement this interface to provide low-level I2C
-   * communication for the PACL95555 driver. Provides basic read and write
+   * communication for the PCAL95555 driver. Provides basic read and write
    * methods with ACK/NACK feedback.
    */
   class i2cBus {
@@ -432,12 +432,12 @@ public:
   };
 
   /**
-   * @brief Construct a new PACL95555 driver instance.
+   * @brief Construct a new PCAL95555 driver instance.
    *
    * @param bus Pointer to a user-implemented I2C bus interface.
-   * @param address 7-bit I2C address of the PACL95555 device (0x00 to 0x7F).
+   * @param address 7-bit I2C address of the PCAL95555 device (0x00 to 0x7F).
    */
-  PACL95555(PACL95555::i2cBus *bus, uint8_t address);
+  PCAL95555(PCAL95555::i2cBus *bus, uint8_t address);
 
   /**
    * @brief Configure retry mechanism for I2C transactions.

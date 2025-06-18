@@ -1,36 +1,36 @@
-#include "pacl95555.hpp"
+#include "PCAL95555.hpp"
 #include <cassert>
 #include <iostream>
 #include <unordered_map>
 
 // Mock I2C bus that simulates the PCAL9555A device registers and behavior
-class MockI2C : public PACL95555::i2cBus {
+class MockI2C : public PCAL95555::i2cBus {
 public:
   MockI2C() {
     // Initialize all registers to power-on default values:
-    registers[PACL95555_REG::INPUT_PORT_0] = 0xFF;
-    registers[PACL95555_REG::INPUT_PORT_1] = 0xFF;
-    registers[PACL95555_REG::OUTPUT_PORT_0] = 0xFF;
-    registers[PACL95555_REG::OUTPUT_PORT_1] = 0xFF;
-    registers[PACL95555_REG::POLARITY_INV_0] = 0x00;
-    registers[PACL95555_REG::POLARITY_INV_1] = 0x00;
-    registers[PACL95555_REG::CONFIG_PORT_0] = 0xFF;
-    registers[PACL95555_REG::CONFIG_PORT_1] = 0xFF;
-    registers[PACL95555_REG::DRIVE_STRENGTH_0] = 0xFF;
-    registers[PACL95555_REG::DRIVE_STRENGTH_1] = 0xFF;
-    registers[PACL95555_REG::DRIVE_STRENGTH_2] = 0xFF;
-    registers[PACL95555_REG::DRIVE_STRENGTH_3] = 0xFF;
-    registers[PACL95555_REG::INPUT_LATCH_0] = 0x00;
-    registers[PACL95555_REG::INPUT_LATCH_1] = 0x00;
-    registers[PACL95555_REG::PULL_ENABLE_0] = 0xFF;
-    registers[PACL95555_REG::PULL_ENABLE_1] = 0xFF;
-    registers[PACL95555_REG::PULL_SELECT_0] = 0xFF;
-    registers[PACL95555_REG::PULL_SELECT_1] = 0xFF;
-    registers[PACL95555_REG::INT_MASK_0] = 0xFF;
-    registers[PACL95555_REG::INT_MASK_1] = 0xFF;
-    registers[PACL95555_REG::INT_STATUS_0] = 0x00;
-    registers[PACL95555_REG::INT_STATUS_1] = 0x00;
-    registers[PACL95555_REG::OUTPUT_CONF] = 0x00;
+    registers[PCAL95555_REG::INPUT_PORT_0] = 0xFF;
+    registers[PCAL95555_REG::INPUT_PORT_1] = 0xFF;
+    registers[PCAL95555_REG::OUTPUT_PORT_0] = 0xFF;
+    registers[PCAL95555_REG::OUTPUT_PORT_1] = 0xFF;
+    registers[PCAL95555_REG::POLARITY_INV_0] = 0x00;
+    registers[PCAL95555_REG::POLARITY_INV_1] = 0x00;
+    registers[PCAL95555_REG::CONFIG_PORT_0] = 0xFF;
+    registers[PCAL95555_REG::CONFIG_PORT_1] = 0xFF;
+    registers[PCAL95555_REG::DRIVE_STRENGTH_0] = 0xFF;
+    registers[PCAL95555_REG::DRIVE_STRENGTH_1] = 0xFF;
+    registers[PCAL95555_REG::DRIVE_STRENGTH_2] = 0xFF;
+    registers[PCAL95555_REG::DRIVE_STRENGTH_3] = 0xFF;
+    registers[PCAL95555_REG::INPUT_LATCH_0] = 0x00;
+    registers[PCAL95555_REG::INPUT_LATCH_1] = 0x00;
+    registers[PCAL95555_REG::PULL_ENABLE_0] = 0xFF;
+    registers[PCAL95555_REG::PULL_ENABLE_1] = 0xFF;
+    registers[PCAL95555_REG::PULL_SELECT_0] = 0xFF;
+    registers[PCAL95555_REG::PULL_SELECT_1] = 0xFF;
+    registers[PCAL95555_REG::INT_MASK_0] = 0xFF;
+    registers[PCAL95555_REG::INT_MASK_1] = 0xFF;
+    registers[PCAL95555_REG::INT_STATUS_0] = 0x00;
+    registers[PCAL95555_REG::INT_STATUS_1] = 0x00;
+    registers[PCAL95555_REG::OUTPUT_CONF] = 0x00;
   }
 
   bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
@@ -42,15 +42,15 @@ public:
       uint8_t regAddr = reg + i;
       registers[regAddr] = data[i];
       // Simulate output->input reflection for push-pull/open-drain
-      if (regAddr == PACL95555_REG::OUTPUT_PORT_0 || regAddr == PACL95555_REG::OUTPUT_PORT_1) {
-        bool isPort0 = (regAddr == PACL95555_REG::OUTPUT_PORT_0);
+      if (regAddr == PCAL95555_REG::OUTPUT_PORT_0 || regAddr == PCAL95555_REG::OUTPUT_PORT_1) {
+        bool isPort0 = (regAddr == PCAL95555_REG::OUTPUT_PORT_0);
         uint8_t portBit = isPort0 ? 0 : 1;
         uint8_t confVal =
-            registers[isPort0 ? PACL95555_REG::CONFIG_PORT_0 : PACL95555_REG::CONFIG_PORT_1];
+            registers[isPort0 ? PCAL95555_REG::CONFIG_PORT_0 : PCAL95555_REG::CONFIG_PORT_1];
         uint8_t outVal = registers[regAddr];
-        uint8_t modeVal = registers[PACL95555_REG::OUTPUT_CONF];
+        uint8_t modeVal = registers[PCAL95555_REG::OUTPUT_CONF];
         bool openDrain = (modeVal >> portBit) & 0x1;
-        uint8_t inputReg = isPort0 ? PACL95555_REG::INPUT_PORT_0 : PACL95555_REG::INPUT_PORT_1;
+        uint8_t inputReg = isPort0 ? PCAL95555_REG::INPUT_PORT_0 : PCAL95555_REG::INPUT_PORT_1;
         uint8_t newInputVal = registers[inputReg];
         for (int bit = 0; bit < 8; ++bit) {
           bool isOutputPin = ((confVal >> bit) & 0x1) == 0;
@@ -83,7 +83,7 @@ public:
     for (size_t i = 0; i < len; ++i) {
       uint8_t regAddr = reg + i;
       data[i] = registers.count(regAddr) ? registers[regAddr] : 0;
-      if (regAddr == PACL95555_REG::INT_STATUS_0 || regAddr == PACL95555_REG::INT_STATUS_1)
+      if (regAddr == PCAL95555_REG::INT_STATUS_0 || regAddr == PCAL95555_REG::INT_STATUS_1)
         registers[regAddr] = 0x00;
     }
     return true;
@@ -108,17 +108,17 @@ private:
 
 int main() {
   MockI2C mock;
-  PACL95555 dev(&mock, 0x20);
+  PCAL95555 dev(&mock, 0x20);
 
   // Test resetToDefault()
   uint8_t tmp = 0x00;
-  mock.write(0x20, PACL95555_REG::CONFIG_PORT_0, &tmp, 1);
+  mock.write(0x20, PCAL95555_REG::CONFIG_PORT_0, &tmp, 1);
   dev.resetToDefault();
-  assert(mock.getReg(PACL95555_REG::CONFIG_PORT_0) == 0xFF);
+  assert(mock.getReg(PCAL95555_REG::CONFIG_PORT_0) == 0xFF);
 
   // Test pin direction
   assert(dev.setPinDirection(3, GPIODir::Output));
-  assert((mock.getReg(PACL95555_REG::CONFIG_PORT_0) & (1 << 3)) == 0);
+  assert((mock.getReg(PCAL95555_REG::CONFIG_PORT_0) & (1 << 3)) == 0);
 
   // Simulate I2C write failure
   mock.setNextWriteNack(2); // fail both attempts
