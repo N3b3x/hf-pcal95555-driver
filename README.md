@@ -1,21 +1,33 @@
-# HF-PCAL95555
-Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller
+---
+layout: default
+title: "HardFOC PCAL95555 Driver"
+description: "Hardware-agnostic C++ driver for the NXP PCAL9555A GPIO expander"
+nav_order: 1
+permalink: /
+---
 
-# PACL95555 – C++ Driver for NXP PCAL9555A GPIO Expander
+# HF-PCAL95555 Driver
+**Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CI Build](https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml/badge.svg?branch=main)](https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml)
 
+## 📚 Table of Contents
+1. [Overview](#-overview)
+2. [Features](#-features)
+3. [Quick Start](#-quick-start)
+4. [Installation](#-installation)
+5. [API Reference](#-api-reference)
+6. [Examples](#-examples)
+7. [Documentation](#-documentation)
+8. [Contributing](#-contributing)
+9. [License](#-license)
 
 ## 📦 Overview
 
 **PACL95555** is a fully-featured, platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced "Agile I/O" capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
 
 This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
-## 📚 Documentation
-
-For a full guide including installation steps, API usage, and platform-specific notes, see the [docs directory](./docs/index.md).
-
 
 ---
 
@@ -63,7 +75,7 @@ For a full guide including installation steps, API usage, and platform-specific 
 
 ---
 
-## 🧠 Quick Start
+## 🚀 Quick Start
 
 ```cpp
 #include "pacl95555.hpp"
@@ -81,7 +93,7 @@ bool isHigh = gpio.readPin(1);
 
 ---
 
-## 📟 API Summary
+## 📖 API Reference
 
 | Method                             | Description                             |
 | ---------------------------------- | --------------------------------------- |
@@ -167,15 +179,9 @@ class ArduinoI2CBus : public PACL95555::i2cBus {
 
 ---
 
-## 📁 Examples
+## 📊 Examples
 
-See the [examples](./examples) directory for minimal projects showing how to use
-the driver on different platforms:
-
-- **arduino/** – Arduino sketch using the Wire library.
-- **esp32/** – ESP-IDF application. The project includes `CMakeLists.txt` files
-  and a dummy `i2cBus` implementation so the driver builds as an IDF component.
-- **stm32/** – STM32 HAL example.
+For ESP32 examples, see the [examples/esp32](examples/esp32/) directory. Additional examples for other platforms are available in the [examples](examples/) directory.
 
 ---
 
@@ -226,38 +232,18 @@ Open-drain mode is still set per port. Call `initFromConfig()` at runtime
 to apply the selected values. Set `PCAL95555_INIT_FROM_KCONFIG` to `n`
 if you want `initFromConfig()` to do nothing at runtime.
 
-## 🧾 License
+## 📚 Documentation
 
-This project is licensed under the **GNU General Public License v3.0**.
-
-You may freely copy, modify, and distribute this software, provided that:
-
-- You include this license and copyright
-- Any derivative work is also licensed under GPLv3
-
-📄 Full license available in [LICENSE](./LICENSE) or visit [gnu.org/licenses](https://www.gnu.org/licenses/gpl-3.0).
-
----
+For a full guide including installation steps, API usage, and platform-specific notes, see the [docs directory](docs/index.md). Generate Doxygen documentation with:
+```bash
+doxygen _config/Doxyfile
+```
 
 ## 🤝 Contributing
 
-Pull requests, issues, and feature suggestions are welcome!
+Pull requests and suggestions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
 
-1. Fork the repo
-2. Create your feature branch
-3. Commit your changes
-4. Push and open a PR
+## 📄 License
 
----
-
-## 🙌 Acknowledgments
-
-- Developed by **Nebiyu Tadesse**, 2025.
-- Based on the official [PCAL9555A Datasheet](https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf) by NXP.
-- Inspired by embedded needs for a reliable, testable GPIO expander library.
-
----
-
-## 💬 Support
-
-For questions, bug reports, or feature requests, please open an [issue](https://github.com/yourusername/pacl95555/issues) or contact the maintainer directly.
+This project is licensed under the **GNU General Public License v3.0**.  
+See the [LICENSE](LICENSE) file for details.

@@ -1,4 +1,4 @@
-name: hf-pcal95555
+name: hf-pcal95555-driver
 version: "1.0.0"
 description: Hardware-agnostic PCAL95555 driver component
 maintainers:

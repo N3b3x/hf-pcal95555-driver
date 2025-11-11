@@ -1,4 +1,4 @@
-#include "PCAL95555.hpp"
+#include "pcal95555.hpp"
 #include <cstring>
 
 // Constructor: store I2C bus and device address (7-bit)
