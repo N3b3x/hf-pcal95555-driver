@@ -40,7 +40,7 @@ endforeach()
 # =============================================================================
 # Define include directories for the driver component
 set(DRIVER_INCLUDE_DIRS
-    "${INC_ROOT}/src"                       # Main driver headers
+    "${INC_ROOT}/inc"                       # Main driver headers
 )
 
 # =============================================================================
