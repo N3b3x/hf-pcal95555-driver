@@ -25,6 +25,9 @@ permalink: /
 
 ## 📦 Overview
 
+> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** - 
+> Interactive guides, examples, and step-by-step tutorials
+
 **PACL95555** is a fully-featured, platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced "Agile I/O" capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
 
 This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.

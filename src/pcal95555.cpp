@@ -2,7 +2,7 @@
 #include <cstring>
 
 // Constructor: store I2C bus and device address (7-bit)
-PCAL95555::PCAL95555(PCAL95555::i2cBus *bus, uint8_t address) : i2c_(bus), devAddr_(address) {}
+PCAL95555::PCAL95555(PCAL95555::i2cBus* bus, uint8_t address) : i2c_(bus), devAddr_(address) {}
 
 // Configure retry count
 void PCAL95555::setRetries(int r) {
@@ -21,7 +21,7 @@ bool PCAL95555::writeRegister(uint8_t reg, uint8_t value) {
   return false;
 }
 // Low-level read with retries
-bool PCAL95555::readRegister(uint8_t reg, uint8_t &value) {
+bool PCAL95555::readRegister(uint8_t reg, uint8_t& value) {
   for (int attempt = 0; attempt <= retries_; ++attempt) {
     if (i2c_->read(devAddr_, reg, &value, 1)) {
       clearError(Error::I2CReadFail);

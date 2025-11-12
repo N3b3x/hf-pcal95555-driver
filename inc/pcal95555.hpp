@@ -418,7 +418,7 @@ public:
      * @return true if the device acknowledges the transfer; false on NACK or
      * error.
      */
-    virtual bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) = 0;
+    virtual bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) = 0;
     /**
      * @brief Read bytes from a device register.
      *
@@ -428,7 +428,7 @@ public:
      * @param len Number of bytes to read into the buffer.
      * @return true if the read succeeds; false on NACK or error.
      */
-    virtual bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) = 0;
+    virtual bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) = 0;
   };
 
   /**
@@ -437,7 +437,7 @@ public:
    * @param bus Pointer to a user-implemented I2C bus interface.
    * @param address 7-bit I2C address of the PCAL95555 device (0x00 to 0x7F).
    */
-  PCAL95555(PCAL95555::i2cBus *bus, uint8_t address);
+  PCAL95555(PCAL95555::i2cBus* bus, uint8_t address);
 
   /**
    * @brief Configure retry mechanism for I2C transactions.
@@ -629,7 +629,7 @@ protected:
    * @param value Reference to store the read byte.
    * @return true if read succeeds; false on failure.
    */
-  bool readRegister(uint8_t reg, uint8_t &value);
+  bool readRegister(uint8_t reg, uint8_t& value);
   /**
    * @brief Write a single byte to a device register with retry logic.
    *
@@ -639,7 +639,7 @@ protected:
    */
   bool writeRegister(uint8_t reg, uint8_t value);
 
-  i2cBus *i2c_;
+  i2cBus* i2c_;
   uint8_t devAddr_;
   int retries_{1};
   uint16_t errorFlags_{0};

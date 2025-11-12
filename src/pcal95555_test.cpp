@@ -33,7 +33,7 @@ public:
     registers[PCAL95555_REG::OUTPUT_CONF] = 0x00;
   }
 
-  bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
+  bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) override {
     if (failNextWriteCount > 0) {
       failNextWriteCount--;
       return false;
@@ -75,7 +75,7 @@ public:
     return true;
   }
 
-  bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
+  bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) override {
     if (failNextReadCount > 0) {
       failNextReadCount--;
       return false;
