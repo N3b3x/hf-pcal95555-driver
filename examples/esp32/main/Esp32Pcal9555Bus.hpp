@@ -12,7 +12,7 @@
 
 #pragma once
 
-#include "../../../src/pcal95555.hpp"
+#include "pcal95555.hpp"
 #include <memory>
 #include <cstring>
 

@@ -21,7 +21,7 @@
  * @copyright HardFOC
  */
 
-#include "../../../src/pcal95555.hpp"
+#include "pcal95555.hpp"
 #include "Esp32Pcal9555Bus.hpp"
 #include "TestFramework.h"
 #include <memory>
@@ -677,14 +677,15 @@ static bool test_rapid_operations() noexcept {
 //=============================================================================
 
 extern "C" void app_main(void) {
-    ESP_LOGI(TAG, "\n");
     ESP_LOGI(TAG, "╔══════════════════════════════════════════════════════════════════════════════╗");
-    ESP_LOGI(TAG, "║              PCAL9555 COMPREHENSIVE TEST SUITE                              ║");
+    ESP_LOGI(TAG, "║                  ESP32-C6 PCAL9555 COMPREHENSIVE TEST SUITE                   ║");
+    ESP_LOGI(TAG, "║                      HardFOC PCAL9555 Driver Tests                            ║");
     ESP_LOGI(TAG, "╚══════════════════════════════════════════════════════════════════════════════╝");
-    ESP_LOGI(TAG, "");
 
-    // Initialize test progress indicator
-    init_test_progress_indicator();
+    vTaskDelay(pdMS_TO_TICKS(1000));
+
+    // Report test section configuration
+    print_test_section_status(TAG, "PCAL9555");
 
     // Run initialization tests
     RUN_TEST_SECTION_IF_ENABLED(ENABLE_INITIALIZATION_TESTS, "INITIALIZATION TESTS",
@@ -769,12 +770,18 @@ extern "C" void app_main(void) {
     // Print test summary
     print_test_summary(g_test_results, "PCAL9555", TAG);
 
+    // Blink GPIO14 to indicate completion
+    output_section_indicator(5);
+
     // Cleanup
     cleanup_test_progress_indicator();
     g_driver.reset();
     g_i2c_bus.reset();
 
     ESP_LOGI(TAG, "\nTest suite completed.");
-    vTaskDelay(pdMS_TO_TICKS(1000));
+
+    while (true) {
+        vTaskDelay(pdMS_TO_TICKS(10000));
+    }
 }
 
