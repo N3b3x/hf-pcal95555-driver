@@ -1,58 +1,70 @@
-# Installation 🛠️
+---
+layout: default
+title: "🛠️ Installation"
+description: "Installation and integration instructions for the PCAL95555 driver"
+nav_order: 1
+parent: "📚 Documentation"
+permalink: /docs/installation/
+---
 
-This section explains how to acquire the source, build the library and verify that everything works.
+# Installation
+
+This guide covers how to integrate the PCAL95555 driver into your project.
 
 ## Prerequisites
 
-- **C++11** compatible compiler (e.g. `g++`, `clang++`)
-- `make` build tool
+Before installing the driver, ensure you have:
 
-For embedded targets,
-ensure your toolchain is configured to compile standard C++ code and provides access to an I²C implementation.
-Any modern GCC or Clang toolchain should suffice.
+- **C++11 Compiler**: GCC 4.8+, Clang 3.3+, or MSVC 2013+
+- **I2C Interface**: Your platform's I2C driver (ESP-IDF, STM32 HAL, Arduino Wire, etc.)
 
-## Cloning the Repository
+## Integration
 
-```bash
-git clone https://github.com/N3b3x/hf-pcal95555-driver.git
-cd hf-pcal95555-driver
+This driver is a **header-only template library** designed to be integrated directly into your project. There's no separate build step required.
+
+### Option 1: Copy Files
+
+Copy the following files into your project:
+
+```
+inc/
+  └── pcal95555.hpp
+src/
+  └── pcal95555.cpp
 ```
 
-## Building the Static Library
+**Note**: The driver uses a header-only template design where `pcal95555.cpp` is included by `pcal95555.hpp`. You typically only need to include the header file in your project.
 
-A simple `Makefile` is included:
+### Option 2: Git Submodule
 
 ```bash
-make          # builds build/libpcal95555.a
+cd your-project
+git submodule add https://github.com/N3b3x/hf-pcal95555-driver.git drivers/pcal95555
 ```
 
-The output `libpcal95555.a` can be linked into your application.
-
-## Using CMake
-
-Projects that rely on CMake can add the library directly using `add_subdirectory`:
-
+Then add to your include path:
 ```cmake
-add_subdirectory(pcal95555)
-target_link_libraries(my_app PRIVATE pcal95555)
+target_include_directories(your_target PRIVATE drivers/pcal95555/inc)
 ```
 
-This makes the headers available and links the static library to your target.
+## Including the Header
 
-## Running Unit Tests
+Simply include the header in your code:
 
-The library ships with a mock-based unit test suite. Run:
-
-```bash
-make test
-build/test    # executes the test binary
+```cpp
+#include "pcal95555.hpp"
 ```
 
-You should see `All tests passed.`
+The implementation is included automatically via the header file.
 
-Continue with the [Quick Start](./quickstart.md) once the build succeeds.
+## Next Steps
+
+- Follow the [Quick Start](quickstart.md) guide to create your first application
+- Review [Hardware Setup](hardware_setup.md) for wiring instructions
+- Check [Platform Integration](platform_integration.md) to implement the I2C interface
 
 ---
 
 **Navigation**
-⬅️ [Index](./index.md) • ➡️ [Quick Start](./quickstart.md)
+⬅️ [Back to Index](index.md) | [Next: Quick Start ➡️](quickstart.md)
+

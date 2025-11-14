@@ -1,13 +1,13 @@
 ---
 layout: default
 title: "HardFOC PCAL95555 Driver"
-description: "Hardware-agnostic C++ driver for the NXP PCAL9555A GPIO expander"
+description: "Hardware-agnostic C++ driver for the NXP PCAL9555A 16-bit I/O expander"
 nav_order: 1
 permalink: /
 ---
 
 # HF-PCAL95555 Driver
-**Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller**
+**Hardware-agnostic C++ driver for the NXP PCAL9555A 16-bit I/O expander**
 
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
 [![CI Build](https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml/badge.svg?branch=main)](https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml)
@@ -25,231 +25,88 @@ permalink: /
 
 ## 📦 Overview
 
-> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** -
+> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** - 
 > Interactive guides, examples, and step-by-step tutorials
 
-**PACL95555** is a fully-featured,
-platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors.
-The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C
-and supports advanced "Agile I/O" capabilities including
-interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
+The **PCAL9555A** is a 16-bit I/O expander from NXP Semiconductors that communicates via I²C. It provides 16 GPIO pins organized into two 8-bit ports (PORT_0: pins 0-7, PORT_1: pins 8-15), allowing you to expand your microcontroller's I/O capabilities. The chip features per-pin interrupt capability, configurable pull-up/pull-down resistors, adjustable drive strength, and support for both push-pull and open-drain output modes.
 
-This library abstracts all of that into a clear and extensible C++ API,
-ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
+This driver provides a hardware-agnostic C++ interface that abstracts all register-level operations, requiring only an implementation of the `I2cInterface` for your platform. The driver uses the CRTP (Curiously Recurring Template Pattern) for zero-overhead hardware abstraction, making it suitable for resource-constrained embedded systems.
 
----
+## ✨ Features
 
-## 🚀 Features
-
-- ✅ 16-bit I²C-controlled GPIO expander (2 x 8-bit ports)
-- 🔁 Per-pin direction (input/output)
-- 🔌 Digital read/write and toggle support
-- 🔄 Input polarity inversion
-- 📉 Internal pull-up/down resistors (100kΩ typ.)
-- 🔩 Adjustable output drive strength (4 levels)
-- 🔀 Open-drain or push-pull output mode per port
-- 🧲 Input latching with interrupt capture
-- 📡 INT interrupt output with per-pin interrupt masks
-- 🧪 Built-in mock-based unit test suite
-- 🔌 Hardware-agnostic `I2cInterface` interface
-
----
-
-## 📂 Project Structure
-
-```text
-├── datasheet/             # PCAL9555A datasheet PDF
-├── examples/              # Sample usage and wiring examples
-├── inc/                   # Header files
-│   └── pcal95555.hpp      # Driver header
-├── src/                   # Source files
-│   ├── pcal95555.cpp      # Driver implementation
-│   └── pcal95555_test.cpp # Mock-based unit tests
-├── LICENSE                # GNU GPLv3 license
-└── README.md              # Project documentation
-```
-
----
-
-## 🔧 Installation
-
-1. **Clone or copy** the `pcal95555.hpp` and `pcal95555.cpp` files into your project.
-2. **Implement the `I2cInterface` interface** for your platform (examples below).
-3. Include the header in your code:
-
-   ```cpp
-   #include "pcal95555.hpp"
-   ```
-4. Compile with any **C++11 or newer** compiler.
-
----
+- ✅ **16 GPIO Pins**: Two 8-bit ports (PORT_0: 0-7, PORT_1: 8-15)
+- ✅ **Per-Pin Configuration**: Direction, pull-up/pull-down, drive strength, polarity
+- ✅ **Interrupt Support**: Per-pin interrupt capability with input latching
+- ✅ **Hardware Agnostic**: CRTP-based I2C interface for platform independence
+- ✅ **Modern C++**: C++11 compatible with template-based design
+- ✅ **Zero Overhead**: CRTP design for compile-time polymorphism
+- ✅ **Kconfig Integration**: Optional compile-time configuration via Kconfig
+- ✅ **Error Handling**: Comprehensive error reporting with retry support
 
 ## 🚀 Quick Start
 
 ```cpp
 #include "pcal95555.hpp"
-MyPlatformI2CBus i2c;               // Custom i2cBus implementation
-PACL95555 gpio(&i2c, 0x20);        // 0x20 is default I2C address
 
-gpio.ResetToDefault();             // Safe known state (inputs w/ pull-ups)
-// Optionally configure using values from Kconfig
-gpio.InitFromConfig();
+// 1. Implement the I2C interface (see platform_integration.md)
+class MyI2c : public pcal95555::I2cInterface<MyI2c> {
+public:
+    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len);
+    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len);
+};
 
-gpio.SetPinDirection(0, GPIODir::Output);
+// 2. Create driver instance
+MyI2c i2c;
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // 0x20 is default I2C address
+
+// 3. Initialize and use
+gpio.ResetToDefault(); // all pins become inputs with pull-ups
+gpio.SetPinDirection(0, pcal95555::PCAL95555<MyI2c>::GPIODir::Output);
 gpio.WritePin(0, true);
-bool isHigh = gpio.ReadPin(1);
+bool input = gpio.ReadPin(1);
 ```
 
----
+For detailed setup, see [Installation](docs/installation.md) and [Quick Start Guide](docs/quickstart.md).
+
+## 🔧 Installation
+
+This driver is designed to be integrated into your project. It's a header-only template library with implementation included.
+
+1. **Add to your project**: Copy or clone the driver files into your project
+2. **Implement the I2C interface** for your platform (see [Platform Integration](docs/platform_integration.md))
+3. **Include the header** in your code:
+   ```cpp
+   #include "pcal95555.hpp"
+   ```
+4. Compile with a **C++11** or newer compiler
+
+For detailed installation instructions, see [docs/installation.md](docs/installation.md).
 
 ## 📖 API Reference
 
-| Method                             | Description                             |
-| ---------------------------------- | --------------------------------------- |
-| `SetPinDirection(pin, dir)`        | Configure a single pin's direction      |
-| `SetMultipleDirections(mask, dir)` | Batch pin direction setting             |
-| `ReadPin(pin)`                     | Read logic level of a pin               |
-| `WritePin(pin, value)`             | Set logic level of an output pin        |
-| `TogglePin(pin)`                   | Toggle output pin                       |
-| `SetPullEnable(pin, bool)`         | Enable/disable internal pull resistor   |
-| `SetPullDirection(pin, bool)`      | Choose pull-up (true) or pull-down      |
-| `SetDriveStrength(pin, level)`     | Adjust output drive (Level0–Level3)     |
-| `SetOutputMode(port_0_open_drain, port_1_open_drain)` | Set port 0/1 to open-drain or push-pull |
-| `SetPinPolarity(pin, polarity)`    | Invert input polarity                   |
-| `EnableInputLatch(pin, bool)`      | Enable latching for input capture       |
-| `ConfigureInterruptMask(mask)`     | Configure per-pin interrupt masks       |
-| `GetInterruptStatus()`             | Read and clear interrupt source         |
-| `SetInterruptCallback(cb)`         | Set callback for interrupt handling     |
-| `HandleInterrupt()`                | Handle INT signal & invoke callback     |
-| `GetErrorFlags()`                  | Retrieve latched driver errors          |
-| `ClearErrorFlags(mask)`            | Clear selected error flags              |
+| Method | Description |
+|--------|-------------|
+| `ResetToDefault()` | Reset device to power-on default state |
+| `SetPinDirection(pin, dir)` | Set pin direction (input/output) |
+| `ReadPin(pin)` | Read pin state |
+| `WritePin(pin, value)` | Write pin state |
+| `SetPullEnable(pin, enable)` | Enable/disable pull resistor |
+| `SetPullDirection(pin, pull_up)` | Set pull-up or pull-down |
+| `SetDriveStrength(pin, level)` | Set output drive strength |
+| `GetInterruptStatus()` | Get interrupt status register |
 
-### ❗ Error Handling
-
-Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed).
-The flags persist until the call succeeds or `ClearErrorFlags()` is used to reset them.
-
-
----
-
-## 🔌 Platform Integration
-
-### ✅ ESP32 (ESP-IDF)
-
-```cpp
-class ESP32I2CBus : public pcal95555::I2cInterface<ESP32I2CBus> {
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
-        uint8_t buf[1 + len];
-        buf[0] = reg;
-        memcpy(&buf[1], data, len);
-        return i2c_master_write_to_device(I2C_NUM_0, addr, buf, len+1, 100 / portTICK_PERIOD_MS) == ESP_OK;
-    }
-
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
-        return i2c_master_write_read_device(I2C_NUM_0, addr, &reg, 1, data, len, 100 / portTICK_PERIOD_MS) == ESP_OK;
-    }
-};
-```
-
-### ✅ STM32 (HAL)
-
-```cpp
-class STM32I2CBus : public pcal95555::I2cInterface<STM32I2CBus> {
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
-        return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, 1, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK;
-    }
-
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
-        return HAL_I2C_Mem_Read(&hi2c1, addr<<1, reg, 1, data, len, HAL_MAX_DELAY) == HAL_OK;
-    }
-};
-```
-
-### ✅ Arduino (Wire)
-
-```cpp
-class ArduinoI2CBus : public pcal95555::I2cInterface<ArduinoI2CBus> {
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
-        Wire.beginTransmission(addr);
-        Wire.write(reg);
-        Wire.write(data, len);
-        return Wire.endTransmission() == 0;
-    }
-
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
-        Wire.beginTransmission(addr);
-        Wire.write(reg);
-        if (Wire.endTransmission(false) != 0) return false;
-        Wire.requestFrom(addr, len);
-        for (size_t i = 0; i < len; ++i) data[i] = Wire.read();
-        return true;
-    }
-};
-```
-
----
+For complete API documentation with source code links, see [docs/api_reference.md](docs/api_reference.md).
 
 ## 📊 Examples
 
 For ESP32 examples, see the [examples/esp32](examples/esp32/) directory.
 Additional examples for other platforms are available in the [examples](examples/) directory.
 
----
-
-## 🧪 Unit Testing
-
-To run the built-in unit tests on a desktop:
-
-```bash
-# Windows PowerShell
-g++ -std=c++11 pcal95555.cpp pcal95555_test.cpp -o test.exe
-./test.exe
-```
-
-These tests use a mock I2C class to validate:
-
-- Register correctness
-- Retry logic
-- Polarity inversion
-- Interrupt latching
-- Pull resistor settings
-- Output state reflection
-
-Expected output:
-
-```bash
-All tests passed.
-```
-
----
-
-## 🛠 Makefile & Kconfig
-
-A `Makefile` is included for building the library and unit tests.
-
-```bash
-make        # build build/libpcal95555.a
-make test   # build and run the unit tests
-make clean  # remove build directory
-```
-
-
-Configuration options for Kconfig-based projects are provided in the
-`Kconfig` file. Enable the driver with `PCAL95555` and override the
-default address using `PCAL95555_DEFAULT_ADDRESS`.
-Each port contains a submenu for every pin so you can individually
-configure direction, pull resistor settings and the initial output level.
-Open-drain mode is still set per port. Call `InitFromConfig()` at runtime
-to apply the selected values. Set `PCAL95555_INIT_FROM_KCONFIG` to `n`
-if you want `InitFromConfig()` to do nothing at runtime.
+Detailed example walkthroughs are available in [docs/examples.md](docs/examples.md).
 
 ## 📚 Documentation
 
-For a full guide including installation steps, API usage, and platform-specific notes,
-see the [docs directory](docs/index.md). Generate Doxygen documentation with:
-```bash
-doxygen _config/Doxyfile
-```
+For complete documentation, see the [docs directory](docs/index.md).
 
 ## 🤝 Contributing
 
@@ -259,3 +116,4 @@ Pull requests and suggestions are welcome! Please follow the existing code style
 
 This project is licensed under the **GNU General Public License v3.0**.
 See the [LICENSE](LICENSE) file for details.
+

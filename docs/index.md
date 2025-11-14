@@ -1,30 +1,61 @@
-# HF-PCAL95555 Documentation 📖
+---
+layout: default
+title: "📚 Documentation"
+description: "Complete documentation for the HardFOC PCAL95555 Driver"
+nav_order: 2
+parent: "HardFOC PCAL95555 Driver"
+permalink: /docs/
+has_children: true
+---
 
-Welcome to the official documentation for **HF-PCAL95555**,
-a hardware-agnostic C++ driver for the PCAL9555A I/O expander by NXP.
-These pages are organized as concise guides that take you from installation all the way to advanced integration topics.
-Use them whenever you need a refresher or when bringing the driver into a new project.
+# HF-PCAL95555 Documentation
 
-Every document ends with navigation links.
-In addition to previous and next references,
-a **Back to Index** link lets you return here from anywhere in the documentation.
+Welcome! This directory contains step-by-step guides for installing, building, and using the **HF-PCAL95555** library.
 
-## Contents
+## 📚 Documentation Structure
 
-1. [Installation](./installation.md)
-2. [Quick Start](./quickstart.md)
-3. [Configuration](./configuration.md)
-4. [API Reference](./api_reference.md)
-5. [Platform Integration](./platform_integration.md)
-6. [Examples](./examples.md)
-7. [Hardware Overview](./hardware_overview.md)
-8. [Documentation Guidelines](./guidelines.md)
-9. Contributing (see README.md)
+### **Getting Started**
 
-Start with [Installation](./installation.md) to set up your environment,
-then follow the sections in order or jump directly to the topic you need.
+1. **[🛠️ Installation](installation.md)** – How to integrate the driver into your project
+2. **[⚡ Quick Start](quickstart.md)** – Minimal working example to get you running
+3. **[🔌 Hardware Setup](hardware_setup.md)** – Wiring diagrams and pin connections
+
+### **Integration**
+
+4. **[🔧 Platform Integration](platform_integration.md)** – Implement the CRTP I2C interface for your platform
+5. **[⚙️ Configuration](configuration.md)** – Configuration options and Kconfig settings
+
+### **Reference**
+
+6. **[📖 API Reference](api_reference.md)** – Complete API documentation
+7. **[💡 Examples](examples.md)** – Detailed example walkthroughs
+
+### **Troubleshooting**
+
+8. **[🐛 Troubleshooting](troubleshooting.md)** – Common issues and solutions
+
+---
+
+## 🚀 Quick Start Path
+
+**New to PCAL95555?** Follow this recommended path:
+
+1. Start with **[Installation](installation.md)** to integrate the driver
+2. Follow **[Hardware Setup](hardware_setup.md)** to wire your I/O expander
+3. Read **[Quick Start](quickstart.md)** for a minimal working example
+4. Check **[Platform Integration](platform_integration.md)** to implement the I2C interface
+5. Explore **[Examples](examples.md)** for more advanced usage
+
+---
+
+## 💡 Need Help?
+
+- **🐛 Found a bug?** Check the [Troubleshooting](troubleshooting.md) guide
+- **❓ Have questions?** Review the [API Reference](api_reference.md)
+- **📝 Want to contribute?** See the contributing guidelines in the main README
 
 ---
 
 **Navigation**
-➡️ [Installation](./installation.md)
+➡️ [Installation](installation.md)
+
