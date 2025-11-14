@@ -1,0 +1,212 @@
+{"0": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "HF-PCAL95555 Driver",
+    "content": "Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller . ",
+    "url": "/hf-pcal95555-driver/development/#hf-pcal95555-driver",
+    
+    "relUrl": "/#hf-pcal95555-driver"
+  },"1": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📚 Table of Contents",
+    "content": ". | Overview | Features | Quick Start | Installation | API Reference | Examples | Documentation | Contributing | License | . ",
+    "url": "/hf-pcal95555-driver/development/#-table-of-contents",
+    
+    "relUrl": "/#-table-of-contents"
+  },"2": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📦 Overview",
+    "content": "📖 📚🌐 Live Complete Documentation - Interactive guides, examples, and step-by-step tutorials . PACL95555 is a fully-featured, platform-independent C++ driver for the PCAL9555A GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced “Agile I/O” capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors. This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more. ",
+    "url": "/hf-pcal95555-driver/development/#-overview",
+    
+    "relUrl": "/#-overview"
+  },"3": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🚀 Features",
+    "content": ". | ✅ 16-bit I²C-controlled GPIO expander (2 x 8-bit ports) | 🔁 Per-pin direction (input/output) | 🔌 Digital read/write and toggle support | 🔄 Input polarity inversion | 📉 Internal pull-up/down resistors (100kΩ typ.) | 🔩 Adjustable output drive strength (4 levels) | 🔀 Open-drain or push-pull output mode per port | 🧲 Input latching with interrupt capture | 📡 INT interrupt output with per-pin interrupt masks | 🧪 Built-in mock-based unit test suite | 🔌 Hardware-agnostic i2cBus interface | . ",
+    "url": "/hf-pcal95555-driver/development/#-features",
+    
+    "relUrl": "/#-features"
+  },"4": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📂 Project Structure",
+    "content": "| 1 2 3 4 5 6 7 8 9 . | ├── datasheet/ # PCAL9555A datasheet PDF ├── examples/ # Sample usage and wiring examples ├── inc/ # Header files │ └── pcal95555.hpp # Driver header ├── src/ # Source files │ ├── pcal95555.cpp # Driver implementation │ └── pcal95555_test.cpp # Mock-based unit tests ├── LICENSE # GNU GPLv3 license └── README.md # Project documentation . | . ",
+    "url": "/hf-pcal95555-driver/development/#-project-structure",
+    
+    "relUrl": "/#-project-structure"
+  },"5": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🔧 Installation",
+    "content": ". | Clone or copy the pcal95555.hpp and pcal95555.cpp files into your project. | Implement the i2cBus interface for your platform (examples below). | Include the header in your code: . | 1 . | #include \"pcal95555.hpp\" . | . | Compile with any C++11 or newer compiler. | . ",
+    "url": "/hf-pcal95555-driver/development/#-installation",
+    
+    "relUrl": "/#-installation"
+  },"6": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🚀 Quick Start",
+    "content": "| 1 2 3 4 5 6 7 8 9 10 11 . | #include \"pcal95555.hpp\" MyPlatformI2CBus i2c; // Custom i2cBus implementation PACL95555 gpio(&amp;i2c, 0x20); // 0x20 is default I2C address gpio.resetToDefault(); // Safe known state (inputs w/ pull-ups) // Optionally configure using values from Kconfig gpio.initFromConfig(); gpio.setPinDirection(0, GPIODir::Output); gpio.writePin(0, true); bool isHigh = gpio.readPin(1); . | . ",
+    "url": "/hf-pcal95555-driver/development/#-quick-start",
+    
+    "relUrl": "/#-quick-start"
+  },"7": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📖 API Reference",
+    "content": "| Method | Description | . | setPinDirection(pin, dir) | Configure a single pin’s direction | . | setMultipleDirections(mask, dir) | Batch pin direction setting | . | readPin(pin) | Read logic level of a pin | . | writePin(pin, value) | Set logic level of an output pin | . | togglePin(pin) | Toggle output pin | . | setPullEnable(pin, bool) | Enable/disable internal pull resistor | . | setPullDirection(pin, bool) | Choose pull-up (true) or pull-down | . | setDriveStrength(pin, level) | Adjust output drive (Level0–Level3) | . | setOutputMode(od0, od1) | Set port 0/1 to open-drain or push-pull | . | setPinPolarity(pin, polarity) | Invert input polarity | . | enableInputLatch(pin, bool) | Enable latching for input capture | . | configureInterruptMask(mask) | Configure per-pin interrupt masks | . | getInterruptStatus() | Read and clear interrupt source | . | setInterruptCallback(cb) | Set callback for interrupt handling | . | handleInterrupt() | Handle INT signal &amp; invoke callback | . | getErrorFlags() | Retrieve latched driver errors | . | clearErrorFlags(mask) | Clear selected error flags | . ",
+    "url": "/hf-pcal95555-driver/development/#-api-reference",
+    
+    "relUrl": "/#-api-reference"
+  },"8": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "❗ Error Handling",
+    "content": "Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed). The flags persist until the call succeeds or clearErrorFlags() is used to reset them. ",
+    "url": "/hf-pcal95555-driver/development/#-error-handling",
+    
+    "relUrl": "/#-error-handling"
+  },"9": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🔌 Platform Integration",
+    "content": " ",
+    "url": "/hf-pcal95555-driver/development/#-platform-integration",
+    
+    "relUrl": "/#-platform-integration"
+  },"10": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "✅ ESP32 (ESP-IDF)",
+    "content": "| 1 2 3 4 5 6 7 8 9 10 11 12 . | class ESP32I2CBus : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override { uint8_t buf[1 + len]; buf[0] = reg; memcpy(&amp;buf[1], data, len); return i2c_master_write_to_device(I2C_NUM_0, addr, buf, len+1, 100 / portTICK_PERIOD_MS) == ESP_OK; } bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override { return i2c_master_write_read_device(I2C_NUM_0, addr, &amp;reg, 1, data, len, 100 / portTICK_PERIOD_MS) == ESP_OK; } }; . | . ",
+    "url": "/hf-pcal95555-driver/development/#-esp32-esp-idf",
+    
+    "relUrl": "/#-esp32-esp-idf"
+  },"11": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "✅ STM32 (HAL)",
+    "content": "| 1 2 3 4 5 6 7 8 9 . | class STM32I2CBus : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override { return HAL_I2C_Mem_Write(&amp;hi2c1, addr&lt;&lt;1, reg, 1, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK; } bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override { return HAL_I2C_Mem_Read(&amp;hi2c1, addr&lt;&lt;1, reg, 1, data, len, HAL_MAX_DELAY) == HAL_OK; } }; . | . ",
+    "url": "/hf-pcal95555-driver/development/#-stm32-hal",
+    
+    "relUrl": "/#-stm32-hal"
+  },"12": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "✅ Arduino (Wire)",
+    "content": "| 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 . | class ArduinoI2CBus : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override { Wire.beginTransmission(addr); Wire.write(reg); Wire.write(data, len); return Wire.endTransmission() == 0; } bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override { Wire.beginTransmission(addr); Wire.write(reg); if (Wire.endTransmission(false) != 0) return false; Wire.requestFrom(addr, len); for (size_t i = 0; i &lt; len; ++i) data[i] = Wire.read(); return true; } }; . | . ",
+    "url": "/hf-pcal95555-driver/development/#-arduino-wire",
+    
+    "relUrl": "/#-arduino-wire"
+  },"13": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📊 Examples",
+    "content": "For ESP32 examples, see the examples/esp32 directory. Additional examples for other platforms are available in the examples directory. ",
+    "url": "/hf-pcal95555-driver/development/#-examples",
+    
+    "relUrl": "/#-examples"
+  },"14": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🧪 Unit Testing",
+    "content": "To run the built-in unit tests on a desktop: . | 1 2 3 . | # Windows PowerShell g++ -std=c++11 pcal95555.cpp pcal95555_test.cpp -o test.exe ./test.exe . | . These tests use a mock I2C class to validate: . | Register correctness | Retry logic | Polarity inversion | Interrupt latching | Pull resistor settings | Output state reflection | . Expected output: . | 1 . | All tests passed. | . ",
+    "url": "/hf-pcal95555-driver/development/#-unit-testing",
+    
+    "relUrl": "/#-unit-testing"
+  },"15": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🛠 Makefile &amp; Kconfig",
+    "content": "A Makefile is included for building the library and unit tests. | 1 2 3 . | make # build build/libpcal95555.a make test # build and run the unit tests make clean # remove build directory . | . Configuration options for Kconfig-based projects are provided in the Kconfig file. Enable the driver with PCAL95555 and override the default address using PCAL95555_DEFAULT_ADDRESS. Each port contains a submenu for every pin so you can individually configure direction, pull resistor settings and the initial output level. Open-drain mode is still set per port. Call initFromConfig() at runtime to apply the selected values. Set PCAL95555_INIT_FROM_KCONFIG to n if you want initFromConfig() to do nothing at runtime. ",
+    "url": "/hf-pcal95555-driver/development/#-makefile--kconfig",
+    
+    "relUrl": "/#-makefile--kconfig"
+  },"16": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📚 Documentation",
+    "content": "For a full guide including installation steps, API usage, and platform-specific notes, see the docs directory. Generate Doxygen documentation with: . | 1 . | doxygen _config/Doxyfile . | . ",
+    "url": "/hf-pcal95555-driver/development/#-documentation",
+    
+    "relUrl": "/#-documentation"
+  },"17": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "🤝 Contributing",
+    "content": "Pull requests and suggestions are welcome! Please follow the existing code style and include tests for new features. ",
+    "url": "/hf-pcal95555-driver/development/#-contributing",
+    
+    "relUrl": "/#-contributing"
+  },"18": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "📄 License",
+    "content": "This project is licensed under the GNU General Public License v3.0. See the LICENSE file for details. ",
+    "url": "/hf-pcal95555-driver/development/#-license",
+    
+    "relUrl": "/#-license"
+  },"19": {
+    "doc": "HardFOC PCAL95555 Driver",
+    "title": "HardFOC PCAL95555 Driver",
+    "content": " ",
+    "url": "/hf-pcal95555-driver/development/",
+    
+    "relUrl": "/"
+  },"20": {
+    "doc": "API Reference 📑",
+    "title": "API Reference 📑",
+    "content": "# API Reference 📑 This section lists the most important methods provided by `PACL95555`. For a full definition see [`pcal95555.hpp`](../inc/pcal95555.hpp). The examples below assume an instance named `gpio` constructed with a platform specific `i2cBus` implementation. ## Construction ```cpp PACL95555(i2cBus *bus, uint8_t addr); ``` - `bus`: pointer to an object implementing the `i2cBus` interface. - `addr`: I²C address of the PCAL9555A device. ## Basic I/O | Method | Description | ------ | ----------- | `setPinDirection(pin, dir)` | Set pin as input or output | `readPin(pin)` | Read logic level | `writePin(pin, value)` | Drive output pin | `togglePin(pin)` | Toggle output state | Example: ```cpp gpio.setPinDirection(3, PACL95555::GPIODir::Output); gpio.writePin(3, true); ``` `setPinDirection` takes a pin index `0-15` and a `GPIODir` enumerator. Pins start as inputs after reset. Writing a value only affects pins configured as outputs. ## Advanced Features - **Pull Resistors** - `setPullEnable(pin, bool)` to enable/disable - `setPullDirection(pin, bool)` for pull-up or pull-down - **Drive Strength** - `setDriveStrength(pin, Level0..Level3)` adjusts output current - **Interrupts** - `setInterruptCallback(cb)` registers a handler - `getInterruptStatus()` returns pending interrupt flags Example interrupt setup: ```cpp auto handler = [](uint16_t mask) { if (mask & (1 << 4)) { // pin 4 changed state } }; gpio.setInterruptCallback(handler); gpio.enableInputLatch(4, true); ``` `enableInputLatch` latches a pin's logic level when an interrupt occurs so the callback can safely read the latched value later via `getInterruptStatus()`. For further detail consult the inline comments in [`pcal95555.hpp`](../inc/pcal95555.hpp). --- **Navigation** ⬅️ [Configuration](/hf-pcal95555-driver/development/docs/configuration.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) • ➡️ [Platform Integration](/hf-pcal95555-driver/development/docs/platform_integration.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/api_reference.html",
+    
+    "relUrl": "/docs/api_reference.html"
+  },"21": {
+    "doc": "Configuration ⚙️",
+    "title": "Configuration ⚙️",
+    "content": "# Configuration ⚙️ The driver can be configured programmatically or through `Kconfig` options. This section covers both approaches. ## Runtime Configuration The simplest method is to call the appropriate member functions at runtime: ```cpp gpio.setPinDirection(0, PACL95555::GPIODir::Output); gpio.setPullEnable(0, true); gpio.setPullDirection(0, true); // true = pull-up ``` Runtime configuration gives you full flexibility and can be changed any time after initialization. ## Kconfig Integration For projects that use Kconfig (e.g. Zephyr, ESP-IDF) the library provides a set of options under the `PCAL95555` menu. Important entries include: - **PCAL95555_DEFAULT_ADDRESS** – I²C address of the expander - **PCAL95555_INIT_FROM_KCONFIG** – automatically apply configuration at startup - **Pin submenus** – specify direction, pull mode and initial level for each pin Call `initFromConfig()` during startup to apply the selected values. ```cpp PACL95555 gpio(&i2c, CONFIG_PCAL95555_DEFAULT_ADDRESS); gpio.initFromConfig(); ``` A minimal `Kconfig` snippet might look like: ``` config PCAL95555_DEFAULT_ADDRESS hex \"Expander address\" default 0x20 config PCAL95555_INIT_FROM_KCONFIG bool \"Initialize expander at startup\" default y ``` Use menuconfig or your build system's configuration tool to adjust these values. Adjust `Kconfig` to match your hardware setup. Refer to the [Hardware Overview](/hf-pcal95555-driver/development/docs/hardware_overview.html) for pin capabilities. --- **Navigation** ⬅️ [Quick Start](/hf-pcal95555-driver/development/docs/quickstart.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) • ➡️ [API Reference](/hf-pcal95555-driver/development/docs/api_reference.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/configuration.html",
+    
+    "relUrl": "/docs/configuration.html"
+  },"22": {
+    "doc": "Examples 💡",
+    "title": "Examples 💡",
+    "content": "# Examples 💡 A set of minimal projects is provided in the [examples](../examples) directory. Each subfolder demonstrates the driver on a different platform. - **arduino/** – Sketch using the Arduino `Wire` library. - **esp32/** – ESP-IDF application. - **stm32/** – STM32 HAL example. After copying an example into your project directory, build it with the normal toolchain commands for that platform. For example `idf.py build` for the ESP32 or the Arduino IDE for AVR boards. Flash the resulting firmware to quickly test that the expander is working as expected. To build an example, copy the code into your own project and adjust the I²C pins and device address for your hardware. The examples mirror the instructions in [Platform Integration](/hf-pcal95555-driver/development/docs/platform_integration.html). --- **Navigation** ⬅️ [Platform Integration](/hf-pcal95555-driver/development/docs/platform_integration.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) • ➡️ [Hardware Overview](/hf-pcal95555-driver/development/docs/hardware_overview.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/examples.html",
+    
+    "relUrl": "/docs/examples.html"
+  },"23": {
+    "doc": "Documentation Guidelines ✍️",
+    "title": "Documentation Guidelines ✍️",
+    "content": "# Documentation Guidelines ✍️ To keep the documentation clear and consistent, follow these rules when contributing updates: 1. **Use Markdown headings** to create a logical hierarchy. 2. **Prefer short code blocks** that highlight a specific concept. 3. **Link to other documents** for deeper explanations rather than repeating content. 4. **Keep line lengths under 120 characters** to improve readability in text editors. 5. **Provide context** for example code so users know where to place it in their applications. 6. **Add a Back to Index link** at the bottom of any new documentation files so users can easily navigate. When in doubt, mirror the style used in the existing documents. PRs that add new features should also update the relevant docs to maintain synchronization. --- **Navigation** ⬅️ [Hardware Overview](/hf-pcal95555-driver/development/docs/hardware_overview.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) ",
+    "url": "/hf-pcal95555-driver/development/docs/guidelines.html",
+    
+    "relUrl": "/docs/guidelines.html"
+  },"24": {
+    "doc": "Hardware Overview 🔍",
+    "title": "Hardware Overview 🔍",
+    "content": "# Hardware Overview 🔍 The PCAL9555A is a 16-bit I/O expander with an I²C interface. It offers two 8-bit ports that can be individually configured as inputs or outputs and supports a variety of features often required in embedded designs. Pins 0‒7 belong to **PORT0** while pins 8‒15 belong to **PORT1**. Each port has its own set of configuration registers but the API treats all pins with a single numbering scheme to simplify usage. ## Key Features - Two 8-bit I/O ports for a total of 16 pins - Per-pin interrupt capability with input latching - Optional pull-up or pull-down resistors - Adjustable output drive strength - Selectable push-pull or open-drain outputs per port - Polarity inversion on input pins For the detailed register map, electrical characteristics and timing diagrams consult the official [NXP PCAL9555A Datasheet](/hf-pcal95555-driver/development/datasheet/PCAL9555A.pdf). ## Registers Each feature is controlled through registers accessible over I²C. Some of the most commonly used registers are: | Register | Description | -------- | ----------- | `INPUT_PORT_0/1` | Current logic level on each pin | `OUTPUT_PORT_0/1` | Output values driven on pins | `CONFIG_PORT_0/1` | Direction (1=input, 0=output) | `PULL_ENABLE_0/1` | Enable internal pull resistor | `PULL_SELECT_0/1` | Choose pull-up or pull-down | `INT_STATUS_0/1` | Latched interrupt source | Understanding the registers is helpful when troubleshooting or extending the driver. See the datasheet for a full list. --- **Navigation** ⬅️ [Examples](/hf-pcal95555-driver/development/docs/examples.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) • ➡️ [Documentation Guidelines](/hf-pcal95555-driver/development/docs/guidelines.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/hardware_overview.html",
+    
+    "relUrl": "/docs/hardware_overview.html"
+  },"25": {
+    "doc": "HF-PCAL95555 Documentation 📖",
+    "title": "HF-PCAL95555 Documentation 📖",
+    "content": "# HF-PCAL95555 Documentation 📖 Welcome to the official documentation for **HF-PCAL95555**, a hardware-agnostic C++ driver for the PCAL9555A I/O expander by NXP. These pages are organized as concise guides that take you from installation all the way to advanced integration topics. Use them whenever you need a refresher or when bringing the driver into a new project. Every document ends with navigation links. In addition to previous and next references, a **Back to Index** link lets you return here from anywhere in the documentation. ## Contents 1. [Installation](/hf-pcal95555-driver/development/docs/installation.html) 2. [Quick Start](/hf-pcal95555-driver/development/docs/quickstart.html) 3. [Configuration](/hf-pcal95555-driver/development/docs/configuration.html) 4. [API Reference](/hf-pcal95555-driver/development/docs/api_reference.html) 5. [Platform Integration](/hf-pcal95555-driver/development/docs/platform_integration.html) 6. [Examples](/hf-pcal95555-driver/development/docs/examples.html) 7. [Hardware Overview](/hf-pcal95555-driver/development/docs/hardware_overview.html) 8. [Documentation Guidelines](/hf-pcal95555-driver/development/docs/guidelines.html) 9. Contributing (see README.md) Start with [Installation](/hf-pcal95555-driver/development/docs/installation.html) to set up your environment, then follow the sections in order or jump directly to the topic you need. --- **Navigation** ➡️ [Installation](/hf-pcal95555-driver/development/docs/installation.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/",
+    
+    "relUrl": "/docs/"
+  },"26": {
+    "doc": "Installation 🛠️",
+    "title": "Installation 🛠️",
+    "content": "# Installation 🛠️ This section explains how to acquire the source, build the library and verify that everything works. ## Prerequisites - **C++11** compatible compiler (e.g. `g++`, `clang++`) - `make` build tool For embedded targets, ensure your toolchain is configured to compile standard C++ code and provides access to an I²C implementation. Any modern GCC or Clang toolchain should suffice. ## Cloning the Repository ```bash git clone https://github.com/N3b3x/hf-pcal95555-driver.git cd hf-pcal95555-driver ``` ## Building the Static Library A simple `Makefile` is included: ```bash make # builds build/libpcal95555.a ``` The output `libpcal95555.a` can be linked into your application. ## Using CMake Projects that rely on CMake can add the library directly using `add_subdirectory`: ```cmake add_subdirectory(pcal95555) target_link_libraries(my_app PRIVATE pcal95555) ``` This makes the headers available and links the static library to your target. ## Running Unit Tests The library ships with a mock-based unit test suite. Run: ```bash make test build/test # executes the test binary ``` You should see `All tests passed.` Continue with the [Quick Start](/hf-pcal95555-driver/development/docs/quickstart.html) once the build succeeds. --- **Navigation** ⬅️ [Index](/hf-pcal95555-driver/development/docs/) • ➡️ [Quick Start](/hf-pcal95555-driver/development/docs/quickstart.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/installation.html",
+    
+    "relUrl": "/docs/installation.html"
+  },"27": {
+    "doc": "Platform Integration 🧩",
+    "title": "Platform Integration 🧩",
+    "content": "# Platform Integration 🧩 `PACL95555` abstracts the I²C operations behind the `i2cBus` interface. To use the library on a new platform you must implement this interface. Each platform shown below demonstrates the minimum required methods. You can adapt the approach to any framework as long as your implementation performs the read and write transactions expected by the driver. ## ESP32 (ESP-IDF) ```cpp class ESP32I2CBus : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override { return i2c_master_write_to_device(I2C_NUM_0, addr, &reg, 1, 50/portTICK_PERIOD_MS) == ESP_OK && i2c_master_write_to_device(I2C_NUM_0, addr, data, len, 50/portTICK_PERIOD_MS) == ESP_OK; } bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override { return i2c_master_write_read_device(I2C_NUM_0, addr, &reg, 1, data, len, 50/portTICK_PERIOD_MS) == ESP_OK; } }; ``` ## Arduino (Wire) ```cpp class ArduinoI2CBus : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override { Wire.beginTransmission(addr); Wire.write(reg); Wire.write(data, len); return Wire.endTransmission() == 0; } bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override { Wire.beginTransmission(addr); Wire.write(reg); if (Wire.endTransmission(false) != 0) return false; Wire.requestFrom(addr, len); for (size_t i = 0; i < len; ++i) data[i] = Wire.read(); return true; } }; ``` ## STM32 (HAL) ```cpp class STM32I2CBus : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override { return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK; } bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override { return HAL_I2C_Mem_Read(&hi2c1, addr<<1, reg, I2C_MEMADD_SIZE_8BIT, data, len, HAL_MAX_DELAY) == HAL_OK; } }; ``` Use the interface that matches your platform or adapt one of these examples. --- **Navigation** ⬅️ [API Reference](/hf-pcal95555-driver/development/docs/api_reference.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) • ➡️ [Examples](/hf-pcal95555-driver/development/docs/examples.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/platform_integration.html",
+    
+    "relUrl": "/docs/platform_integration.html"
+  },"28": {
+    "doc": "Quick Start ⚡",
+    "title": "Quick Start ⚡",
+    "content": "# Quick Start ⚡ This tutorial demonstrates how to bring up a PCAL9555A expander using the library on any platform. 1. **Include the header and create an I2C implementation** ```cpp #include \"pcal95555.hpp\" class MyI2C : public PACL95555::i2cBus { bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override; bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override; }; ``` 2. **Instantiate the driver** ```cpp MyI2C i2c; PACL95555 gpio(&i2c, 0x20); // default I2C address ``` 3. **Reset the expander to a known state and configure pins** ```cpp gpio.resetToDefault(); // all pins become inputs with pull-ups gpio.setPinDirection(0, PACL95555::GPIODir::Output); ``` 4. **Toggle outputs and read inputs** ```cpp gpio.writePin(0, true); bool input = gpio.readPin(1); ``` 5. **Handle interrupts (optional)** ```cpp auto callback = [](uint16_t status) { // respond to interrupts here }; gpio.setInterruptCallback(callback); ``` These minimal steps bring the expander online. The library exposes many more functions for configuring pull resistors, drive strength and polarity. Refer to the [API Reference](/hf-pcal95555-driver/development/docs/api_reference.html) once you are comfortable with the basics. For more advanced configuration, see the [Configuration guide](/hf-pcal95555-driver/development/docs/configuration.html). --- **Navigation** ⬅️ [Installation](/hf-pcal95555-driver/development/docs/installation.html) • [Back to Index](/hf-pcal95555-driver/development/docs/) • ➡️ [Configuration](/hf-pcal95555-driver/development/docs/configuration.html) ",
+    "url": "/hf-pcal95555-driver/development/docs/quickstart.html",
+    
+    "relUrl": "/docs/quickstart.html"
+  },"29": {
+    "doc": "PCAL9555 ESP32-C6 Comprehensive Test Suite",
+    "title": "PCAL9555 ESP32-C6 Comprehensive Test Suite",
+    "content": "# PCAL9555 ESP32-C6 Comprehensive Test Suite This directory contains comprehensive test suites for the PCAL9555 16-bit I/O expander driver using the ESP32-C6 DevKit-M-1. ## 📋 Table of Contents - [Hardware Overview](#-hardware-overview) - [Pin Connections](#-pin-connections) - [Hardware Setup](#-hardware-setup) - [Building the Tests](#-building-the-tests) - [Running the Tests](#-running-the-tests) - [Test Suites](#-test-suites) - [Troubleshooting](#-troubleshooting) --- ## 🔌 Hardware Overview ### ESP32-C6 DevKit-M-1 The ESP32-C6 DevKit-M-1 serves as the host controller for communicating with the PCAL9555 GPIO expander via I2C. ``` ┌─────────────────────────────────────────────────┐ │ ESP32-C6 DevKit-M-1 │ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ ESP32-C6 Microcontroller │ │ │ │ │ │ │ │ GPIO Pins: │ │ │ │ • I2C: SDA (GPIO4), SCL (GPIO5) │ │ │ │ • Test Indicator: GPIO14 │ │ │ └──────────────────────────────────────────┘ │ │ │ │ USB-C Connector │ │ (Power + Serial Communication) │ └─────────────────────────────────────────────────┘ ``` ### PCAL9555 GPIO Expander The PCAL9555 is a 16-bit I/O expander with I²C interface, providing 16 GPIO pins organized into two 8-bit ports. ``` ┌─────────────────────────────────────────────────┐ │ PCAL9555 GPIO Expander │ │ │ │ ┌──────────────────────────────────────────┐ │ │ │ PCAL9555 IC │ │ │ │ │ │ │ │ Features: │ │ │ │ • 16 GPIO pins (PORT_0: P0.0-P0.7) │ │ │ │ • 16 GPIO pins (PORT_1: P1.0-P1.7) │ │ │ │ • I2C interface (7-bit address) │ │ │ │ • Configurable pull-up/pull-down │ │ │ │ • Programmable drive strength │ │ │ │ • Interrupt support │ │ │ │ • Input latch capability │ │ │ │ • Polarity inversion │ │ │ │ • Open-drain output mode │ │ │ └──────────────────────────────────────────┘ │ │ │ │ I2C Connections: │ │ • SDA (I2C Data) │ │ • SCL (I2C Clock) │ │ • VDD (3.3V Power) │ │ • GND (Ground) │ │ • INT (Interrupt Output, optional) │ └─────────────────────────────────────────────────┘ ``` --- ## 📌 Pin Connections ### I2C Bus Connections | PCAL9555 Pin | ESP32-C6 GPIO | Function | Notes |--------------|---------------|----------|-------| SDA | GPIO4 | I2C Data | With 4.7kΩ pull-up to 3.3V | SCL | GPIO5 | I2C Clock | With 4.7kΩ pull-up to 3.3V | VDD | 3.3V | Power Supply | | GND | GND | Ground | | INT | GPIO15 (optional) | Interrupt Output | Open-drain, requires pull-up | ### Test Indicator | Signal | ESP32-C6 GPIO | Function |--------|---------------|----------| Test Progress | GPIO14 | Visual test progression indicator | ### I2C Address Configuration The PCAL9555 I2C address is determined by the A0, A1, and A2 address pins: | A2 | A1 | A0 | I2C Address (7-bit) | I2C Address (8-bit) |----|----|----|---------------------|---------------------| GND | GND | GND | 0x20 | 0x40 | GND | GND | VDD | 0x21 | 0x42 | GND | VDD | GND | 0x22 | 0x44 | GND | VDD | VDD | 0x23 | 0x46 | VDD | GND | GND | 0x24 | 0x48 | VDD | GND | VDD | 0x25 | 0x4A | VDD | VDD | GND | 0x26 | 0x4C | VDD | VDD | VDD | 0x27 | 0x4E | **Default**: All address pins to GND = **0x20** (used in examples) --- ## 🛠️ Hardware Setup ### Basic Setup 1. **Connect I2C Bus**: - Connect PCAL9555 SDA to ESP32-C6 GPIO4 - Connect PCAL9555 SCL to ESP32-C6 GPIO5 - Add 4.7kΩ pull-up resistors on both SDA and SCL to 3.3V 2. **Power Connections**: - Connect PCAL9555 VDD to ESP32-C6 3.3V - Connect PCAL9555 GND to ESP32-C6 GND 3. **Optional Interrupt**: - Connect PCAL9555 INT to ESP32-C6 GPIO15 (with pull-up resistor) 4. **Address Configuration**: - Connect A0, A1, A2 to GND for default address 0x20 - Or configure for different address if needed ### Test Setup For comprehensive testing, you can connect: - LEDs to output pins (with current-limiting resistors) - Switches/buttons to input pins - External pull-up/pull-down resistors for testing - Logic analyzer on I2C bus for protocol verification --- ## 🚀 Building the Tests ### Prerequisites 1. **Install ESP-IDF** (if not already installed): ```bash # Clone ESP-IDF git clone --recursive https://github.com/espressif/esp-idf.git cd esp-idf # Checkout release version 5.5 git checkout release/v5.5 git submodule update --init --recursive # Install ESP-IDF (Linux/macOS) ./install.sh esp32c6 # Set up environment (add to ~/.bashrc or ~/.zshrc for persistence) ./export.sh ``` 2. **Navigate to ESP32 Examples**: ```bash cd examples/esp32 ``` 3. **Setup Repository** (First time only): ```bash # Make scripts executable and setup the build environment chmod +x scripts/*.sh ./scripts/setup_repo.sh ``` ### Available Test Applications The test suites use a centralized build system with scripts. Available applications: | **Application Name** | **Description** | **Hardware Required** |----------------------|----------------|----------------------| `pcal9555_comprehensive_test` | Comprehensive PCAL9555 GPIO expander testing with all features | PCAL9555 board | ### List Available Applications ```bash # List all available applications ./scripts/build_app.sh list ``` ### Build an Application ```bash # Build comprehensive test (Debug build) ./scripts/build_app.sh pcal9555_comprehensive_test Debug # Build comprehensive test (Release build) ./scripts/build_app.sh pcal9555_comprehensive_test Release ``` --- ## 📤 Running the Tests ### Flash Application ```bash # Flash the application to ESP32-C6 ./scripts/flash_app.sh pcal9555_comprehensive_test Debug # Or manually: idf.py -p /dev/ttyUSB0 flash ``` ### Monitor Output ```bash # Monitor serial output idf.py -p /dev/ttyUSB0 monitor # Or use the flash script which includes monitoring ./scripts/flash_app.sh pcal9555_comprehensive_test Debug ``` ### Auto-detect Port ```bash # The scripts can auto-detect the port ./scripts/detect_ports.sh ``` --- ## 🧪 Test Suites ### Comprehensive Test Suite **Application**: `pcal9555_comprehensive_test` This comprehensive test suite validates all PCAL9555 functionality: #### Test Sections 1. **Initialization Tests** - I2C bus initialization - Driver initialization - Reset to default state 2. **GPIO Direction Tests** - Single pin direction configuration (input/output) - Multiple pin direction configuration - Port-level direction control 3. **GPIO Read/Write Tests** - Pin write operations (HIGH/LOW) - Pin read operations - Pin toggle operations - Port-level read/write 4. **Pull Resistor Tests** - Pull-up resistor configuration - Pull-down resistor configuration - Pull enable/disable - Per-pin pull configuration 5. **Drive Strength Tests** - All drive strength levels (Level0-Level3) - Per-pin drive strength configuration 6. **Output Mode Tests** - Push-pull mode configuration - Open-drain mode configuration - Port-level output mode control 7. **Polarity Tests** - Input polarity inversion (normal/inverted) - Single pin polarity configuration - Multiple pin polarity configuration 8. **Input Latch Tests** - Input latch enable/disable - Single pin latch configuration - Multiple pin latch configuration 9. **Interrupt Tests** - Interrupt mask configuration - Interrupt status reading - Interrupt callback registration 10. **Port Operation Tests** - Port 0 operations (pins 0-7) - Port 1 operations (pins 8-15) - Mixed port operations 11. **Error Handling Tests** - Invalid pin handling - Error flag management - Error recovery 12. **Stress Tests** - Rapid pin operations - Continuous read/write cycles - Multi-pin simultaneous operations #### Test Configuration You can enable/disable specific test sections by editing the test file: ```cpp // In PCAL9555ComprehensiveTest.cpp static constexpr bool ENABLE_INITIALIZATION_TESTS = true; static constexpr bool ENABLE_GPIO_DIRECTION_TESTS = true; // ... etc ``` #### Test Results The test framework provides: - Automatic pass/fail tracking - Execution time measurement - GPIO14 progress indicator (toggles on each test) - Comprehensive test summary - Success percentage calculation --- ## 🔧 Configuration ### I2C Bus Configuration Default I2C configuration (can be modified in test file): ```cpp Esp32Pcal9555Bus::I2CConfig config; config.port = I2C_NUM_0; config.sda_pin = GPIO_NUM_4; // SDA pin config.scl_pin = GPIO_NUM_5; // SCL pin config.frequency = 400000; // 400 kHz config.pullup_enable = true; // Enable internal pullups ``` ### PCAL9555 Address Default I2C address (can be modified in test file): ```cpp static constexpr uint8_t PCAL9555_I2C_ADDRESS = 0x20; // Default address ``` --- ## 🐛 Troubleshooting ### I2C Communication Failures **Symptoms**: Tests fail with I2C errors **Solutions**: 1. **Check I2C connections**: - Verify SDA/SCL connections - Check pull-up resistors (4.7kΩ recommended) - Ensure proper power connections 2. **Verify I2C address**: - Check A0, A1, A2 pin configuration - Use I2C scanner to detect device address - Update `PCAL9555_I2C_ADDRESS` if different 3. **Check I2C bus speed**: - Reduce frequency if using long wires - Try 100 kHz instead of 400 kHz 4. **Verify power supply**: - Ensure 3.3V is stable - Check for voltage drops ### Build Errors **Symptoms**: CMake or compilation errors **Solutions**: 1. **Verify ESP-IDF version**: ```bash idf.py --version # Should show ESP-IDF v5.5 or compatible ``` 2. **Clean and rebuild**: ```bash idf.py fullclean ./scripts/build_app.sh pcal9555_comprehensive_test Debug ``` 3. **Check component paths**: - Verify component CMakeLists.txt paths - Ensure source files are accessible ### Test Failures **Symptoms**: Specific tests fail **Solutions**: 1. **Check hardware connections**: - Verify all pins are properly connected - Check for loose connections 2. **Review test logs**: - Check which specific test failed - Review error messages in serial output 3. **Verify device state**: - Reset PCAL9555 (power cycle) - Run reset test first --- ## 📚 Additional Resources - [PCAL9555 Datasheet](/hf-pcal95555-driver/development/datasheet/PCAL9555A.pdf) - [Driver API Documentation](/hf-pcal95555-driver/development/docs/api_reference.html) - [Platform Integration Guide](/hf-pcal95555-driver/development/docs/platform_integration.html) - [Hardware Overview](/hf-pcal95555-driver/development/docs/hardware_overview.html) --- ## 🎯 Quick Reference ### Build Commands ```bash # List available apps ./scripts/build_app.sh list # Build comprehensive test ./scripts/build_app.sh pcal9555_comprehensive_test Debug # Flash and monitor ./scripts/flash_app.sh pcal9555_comprehensive_test Debug ``` ### Test Execution The comprehensive test suite runs automatically on boot and provides: - Real-time test progress via GPIO14 indicator - Serial output with detailed test results - Automatic test summary at completion ### GPIO14 Test Indicator GPIO14 toggles between HIGH/LOW for each completed test, providing visual feedback: - Use oscilloscope or logic analyzer to monitor - Useful for automated test verification - Blinks 5 times at section start/end --- ## 📝 Notes - **I2C Pull-ups**: External pull-up resistors (4.7kΩ) are recommended even if internal pullups are enabled - **Address Configuration**: Default address is 0x20. Modify if using different A0/A1/A2 configuration - **Test Duration**: Comprehensive test suite takes approximately 2-5 minutes to complete - **Hardware Requirements**: Basic tests work without external hardware; some tests benefit from LEDs/switches --- 🎯 Ready to test the PCAL9555? Start with: ./scripts/build_app.sh pcal9555_comprehensive_test Debug ",
+    "url": "/hf-pcal95555-driver/development/examples/esp32/",
+    
+    "relUrl": "/examples/esp32/"
+  }
+}
