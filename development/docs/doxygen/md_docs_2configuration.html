@@ -80,9 +80,9 @@ $(function() {
 <h1><a class="anchor" id="autotoc_md15"></a>
 Runtime Configuration</h1>
 <p>The simplest method is to call the appropriate member functions at runtime:</p>
-<div class="fragment"><div class="line">gpio.setPinDirection(0, PACL95555::GPIODir::Output);</div>
-<div class="line">gpio.setPullEnable(0, <span class="keyword">true</span>);</div>
-<div class="line">gpio.setPullDirection(0, <span class="keyword">true</span>);  <span class="comment">// true = pull-up</span></div>
+<div class="fragment"><div class="line">gpio.SetPinDirection(0, PACL95555::GPIODir::Output);</div>
+<div class="line">gpio.SetPullEnable(0, <span class="keyword">true</span>);</div>
+<div class="line">gpio.SetPullDirection(0, <span class="keyword">true</span>);  <span class="comment">// true = pull-up</span></div>
 </div><!-- fragment --><p>Runtime configuration gives you full flexibility and can be changed any time after initialization.</p>
 <h1><a class="anchor" id="autotoc_md16"></a>
 Kconfig Integration</h1>
@@ -92,9 +92,9 @@ Kconfig Integration</h1>
 <li><b>PCAL95555_INIT_FROM_KCONFIG</b> – automatically apply configuration at startup</li>
 <li><b>Pin submenus</b> – specify direction, pull mode and initial level for each pin</li>
 </ul>
-<p>Call <code>initFromConfig()</code> during startup to apply the selected values.</p>
+<p>Call <code>InitFromConfig()</code> during startup to apply the selected values.</p>
 <div class="fragment"><div class="line">PACL95555 gpio(&amp;i2c, CONFIG_PCAL95555_DEFAULT_ADDRESS);</div>
-<div class="line">gpio.initFromConfig();</div>
+<div class="line">gpio.InitFromConfig();</div>
 </div><!-- fragment --><p>A minimal <code>Kconfig</code> snippet might look like:</p>
 <div class="fragment"><div class="line">config PCAL95555_DEFAULT_ADDRESS</div>
 <div class="line">    hex &quot;Expander address&quot;</div>

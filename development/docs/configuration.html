@@ -268,9 +268,9 @@
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 3
-</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">setPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">setPullEnable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">setPullDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>  <span class="c1">// true = pull-up</span>
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>  <span class="c1">// true = pull-up</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p>Runtime configuration gives you full flexibility and can be changed any time after initialization.</p>
@@ -292,12 +292,12 @@ Important entries include:</p>
   <li><strong>Pin submenus</strong> – specify direction, pull mode and initial level for each pin</li>
 </ul>
 
-<p>Call <code class="language-plaintext highlighter-rouge">initFromConfig()</code> during startup to apply the selected values.</p>
+<p>Call <code class="language-plaintext highlighter-rouge">InitFromConfig()</code> during startup to apply the selected values.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 </pre></td><td class="rouge-code"><pre><span class="n">PACL95555</span> <span class="nf">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="n">CONFIG_PCAL95555_DEFAULT_ADDRESS</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">initFromConfig</span><span class="p">();</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">InitFromConfig</span><span class="p">();</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p>A minimal <code class="language-plaintext highlighter-rouge">Kconfig</code> snippet might look like:</p>

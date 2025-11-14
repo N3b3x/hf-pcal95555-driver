@@ -19,12 +19,12 @@ config PCAL95555_DEFAULT_ADDRESS
       addresses in the range 0x20-0x27 depending on the A0/A1 pins.
 
 config PCAL95555_INIT_FROM_KCONFIG
-    bool "Enable initFromConfig runtime initialization"
+    bool "Enable InitFromConfig runtime initialization"
     default y
     help
-      When enabled, calling initFromConfig() will apply the
+      When enabled, calling InitFromConfig() will apply the
       configuration values selected here at runtime. Disable to
-      compile the driver with initFromConfig() as a no-op.
+      compile the driver with InitFromConfig() as a no-op.
 
 endmenu
 

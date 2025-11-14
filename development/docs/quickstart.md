@@ -23,15 +23,15 @@ PACL95555 gpio(&i2c, 0x20); // default I2C address
 3. **Reset the expander to a known state and configure pins**
 
 ```cpp
-gpio.resetToDefault(); // all pins become inputs with pull-ups
-gpio.setPinDirection(0, PACL95555::GPIODir::Output);
+gpio.ResetToDefault(); // all pins become inputs with pull-ups
+gpio.SetPinDirection(0, PACL95555::GPIODir::Output);
 ```
 
 4. **Toggle outputs and read inputs**
 
 ```cpp
-gpio.writePin(0, true);
-bool input = gpio.readPin(1);
+gpio.WritePin(0, true);
+bool input = gpio.ReadPin(1);
 ```
 
 5. **Handle interrupts (optional)**
@@ -40,7 +40,7 @@ bool input = gpio.readPin(1);
 auto callback = [](uint16_t status) {
     // respond to interrupts here
 };
-gpio.setInterruptCallback(callback);
+gpio.SetInterruptCallback(callback);
 ```
 
 These minimal steps bring the expander online. The library exposes many more

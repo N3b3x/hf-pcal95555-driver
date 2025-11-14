@@ -289,8 +289,8 @@
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
-</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">resetToDefault</span><span class="p">();</span> <span class="c1">// all pins become inputs with pull-ups</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">setPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span> <span class="c1">// all pins become inputs with pull-ups</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <ol>
@@ -299,8 +299,8 @@
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
-</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">writePin</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<span class="kt">bool</span> <span class="n">input</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">readPin</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">WritePin</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="n">input</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">ReadPin</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <ol>
@@ -314,7 +314,7 @@
 </pre></td><td class="rouge-code"><pre><span class="k">auto</span> <span class="n">callback</span> <span class="o">=</span> <span class="p">[](</span><span class="kt">uint16_t</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
     <span class="c1">// respond to interrupts here</span>
 <span class="p">};</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">setInterruptCallback</span><span class="p">(</span><span class="n">callback</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetInterruptCallback</span><span class="p">(</span><span class="n">callback</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p>These minimal steps bring the expander online. The library exposes many more

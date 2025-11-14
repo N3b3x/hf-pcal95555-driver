@@ -91,7 +91,7 @@ static std::unique_ptr<PCAL95555Driver> create_test_driver() noexcept {
     }
 
     // Reset to default state
-    driver->resetToDefault();
+    driver->ResetToDefault();
     vTaskDelay(pdMS_TO_TICKS(10));
 
     return driver;
@@ -101,7 +101,7 @@ static std::unique_ptr<PCAL95555Driver> create_test_driver() noexcept {
  * @brief Verify pin state matches expected value
  */
 static bool verify_pin_state(PCAL95555Driver& driver, uint16_t pin, bool expected, const char* context) noexcept {
-    bool actual = driver.readPin(pin);
+    bool actual = driver.ReadPin(pin);
     if (actual != expected) {
         ESP_LOGE(TAG, "%s: Pin %d state mismatch - expected %s, got %s",
                  context, pin, expected ? "HIGH" : "LOW", actual ? "HIGH" : "LOW");
@@ -150,14 +150,14 @@ static bool test_driver_initialization() noexcept {
     }
 
     // Test reset to default
-    g_driver->resetToDefault();
+    g_driver->ResetToDefault();
     vTaskDelay(pdMS_TO_TICKS(10));
 
     // Check error flags
-    uint16_t errors = g_driver->getErrorFlags();
+    uint16_t errors = g_driver->GetErrorFlags();
     if (errors != 0) {
         ESP_LOGW(TAG, "Driver has error flags: 0x%04X", errors);
-        g_driver->clearErrorFlags();
+        g_driver->ClearErrorFlags();
     }
 
     ESP_LOGI(TAG, "✅ Driver initialized successfully");
@@ -181,7 +181,7 @@ static bool test_single_pin_direction() noexcept {
 
     // Test setting pin to output
     for (uint16_t pin = 0; pin < 16; ++pin) {
-        if (!g_driver->setPinDirection(pin, GPIODir::Output)) {
+        if (!g_driver->SetPinDirection(pin, GPIODir::Output)) {
             ESP_LOGE(TAG, "Failed to set pin %d to output", pin);
             return false;
         }
@@ -190,7 +190,7 @@ static bool test_single_pin_direction() noexcept {
 
     // Test setting pin to input
     for (uint16_t pin = 0; pin < 16; ++pin) {
-        if (!g_driver->setPinDirection(pin, GPIODir::Input)) {
+        if (!g_driver->SetPinDirection(pin, GPIODir::Input)) {
             ESP_LOGE(TAG, "Failed to set pin %d to input", pin);
             return false;
         }
@@ -214,14 +214,14 @@ static bool test_multiple_pin_direction() noexcept {
 
     // Test setting multiple pins to output
     uint16_t mask = 0x00FF; // Port 0 (pins 0-7)
-    if (!g_driver->setMultipleDirections(mask, GPIODir::Output)) {
+    if (!g_driver->SetMultipleDirections(mask, GPIODir::Output)) {
         ESP_LOGE(TAG, "Failed to set multiple pins to output");
         return false;
     }
 
     // Test setting multiple pins to input
     mask = 0xFF00; // Port 1 (pins 8-15)
-    if (!g_driver->setMultipleDirections(mask, GPIODir::Input)) {
+    if (!g_driver->SetMultipleDirections(mask, GPIODir::Input)) {
         ESP_LOGE(TAG, "Failed to set multiple pins to input");
         return false;
     }
@@ -247,20 +247,20 @@ static bool test_pin_write() noexcept {
 
     // Configure pin as output
     uint16_t test_pin = 0;
-    if (!g_driver->setPinDirection(test_pin, GPIODir::Output)) {
+    if (!g_driver->SetPinDirection(test_pin, GPIODir::Output)) {
         ESP_LOGE(TAG, "Failed to set pin %d to output", test_pin);
         return false;
     }
 
     // Test writing HIGH
-    if (!g_driver->writePin(test_pin, true)) {
+    if (!g_driver->WritePin(test_pin, true)) {
         ESP_LOGE(TAG, "Failed to write HIGH to pin %d", test_pin);
         return false;
     }
     vTaskDelay(pdMS_TO_TICKS(10));
 
     // Test writing LOW
-    if (!g_driver->writePin(test_pin, false)) {
+    if (!g_driver->WritePin(test_pin, false)) {
         ESP_LOGE(TAG, "Failed to write LOW to pin %d", test_pin);
         return false;
     }
@@ -283,19 +283,19 @@ static bool test_pin_read() noexcept {
 
     // Configure pin as input
     uint16_t test_pin = 1;
-    if (!g_driver->setPinDirection(test_pin, GPIODir::Input)) {
+    if (!g_driver->SetPinDirection(test_pin, GPIODir::Input)) {
         ESP_LOGE(TAG, "Failed to set pin %d to input", test_pin);
         return false;
     }
 
     // Read pin state
-    bool state = g_driver->readPin(test_pin);
+    bool state = g_driver->ReadPin(test_pin);
     ESP_LOGI(TAG, "Pin %d read state: %s", test_pin, state ? "HIGH" : "LOW");
 
     // Test reading all pins
     for (uint16_t pin = 0; pin < 16; ++pin) {
-        g_driver->setPinDirection(pin, GPIODir::Input);
-        bool pin_state = g_driver->readPin(pin);
+        g_driver->SetPinDirection(pin, GPIODir::Input);
+        bool pin_state = g_driver->ReadPin(pin);
         ESP_LOGI(TAG, "Pin %d: %s", pin, pin_state ? "HIGH" : "LOW");
         vTaskDelay(pdMS_TO_TICKS(1));
     }
@@ -317,18 +317,18 @@ static bool test_pin_toggle() noexcept {
 
     // Configure pin as output
     uint16_t test_pin = 2;
-    if (!g_driver->setPinDirection(test_pin, GPIODir::Output)) {
+    if (!g_driver->SetPinDirection(test_pin, GPIODir::Output)) {
         ESP_LOGE(TAG, "Failed to set pin %d to output", test_pin);
         return false;
     }
 
     // Set initial state
-    g_driver->writePin(test_pin, false);
+    g_driver->WritePin(test_pin, false);
     vTaskDelay(pdMS_TO_TICKS(10));
 
     // Toggle multiple times
     for (int i = 0; i < 5; ++i) {
-        if (!g_driver->togglePin(test_pin)) {
+        if (!g_driver->TogglePin(test_pin)) {
             ESP_LOGE(TAG, "Failed to toggle pin %d", test_pin);
             return false;
         }
@@ -357,27 +357,27 @@ static bool test_pull_resistor_config() noexcept {
     uint16_t test_pin = 3;
 
     // Configure as input
-    g_driver->setPinDirection(test_pin, GPIODir::Input);
+    g_driver->SetPinDirection(test_pin, GPIODir::Input);
 
     // Test enabling pull-up
-    if (!g_driver->setPullEnable(test_pin, true)) {
+    if (!g_driver->SetPullEnable(test_pin, true)) {
         ESP_LOGE(TAG, "Failed to enable pull on pin %d", test_pin);
         return false;
     }
 
-    if (!g_driver->setPullDirection(test_pin, true)) {
+    if (!g_driver->SetPullDirection(test_pin, true)) {
         ESP_LOGE(TAG, "Failed to set pull-up on pin %d", test_pin);
         return false;
     }
 
     // Test enabling pull-down
-    if (!g_driver->setPullDirection(test_pin, false)) {
+    if (!g_driver->SetPullDirection(test_pin, false)) {
         ESP_LOGE(TAG, "Failed to set pull-down on pin %d", test_pin);
         return false;
     }
 
     // Test disabling pull
-    if (!g_driver->setPullEnable(test_pin, false)) {
+    if (!g_driver->SetPullEnable(test_pin, false)) {
         ESP_LOGE(TAG, "Failed to disable pull on pin %d", test_pin);
         return false;
     }
@@ -402,12 +402,12 @@ static bool test_drive_strength() noexcept {
     }
 
     uint16_t test_pin = 4;
-    g_driver->setPinDirection(test_pin, GPIODir::Output);
+    g_driver->SetPinDirection(test_pin, GPIODir::Output);
 
     // Test all drive strength levels
     for (uint8_t level = 0; level < 4; ++level) {
         DriveStrength ds = static_cast<DriveStrength>(level);
-        if (!g_driver->setDriveStrength(test_pin, ds)) {
+        if (!g_driver->SetDriveStrength(test_pin, ds)) {
             ESP_LOGE(TAG, "Failed to set drive strength level %d on pin %d", level, test_pin);
             return false;
         }
@@ -434,25 +434,25 @@ static bool test_output_mode() noexcept {
     }
 
     // Test push-pull mode (default)
-    if (!g_driver->setOutputMode(false, false)) {
+    if (!g_driver->SetOutputMode(false, false)) {
         ESP_LOGE(TAG, "Failed to set push-pull mode");
         return false;
     }
 
     // Test open-drain mode for port 0
-    if (!g_driver->setOutputMode(true, false)) {
+    if (!g_driver->SetOutputMode(true, false)) {
         ESP_LOGE(TAG, "Failed to set open-drain mode for port 0");
         return false;
     }
 
     // Test open-drain mode for port 1
-    if (!g_driver->setOutputMode(false, true)) {
+    if (!g_driver->SetOutputMode(false, true)) {
         ESP_LOGE(TAG, "Failed to set open-drain mode for port 1");
         return false;
     }
 
     // Test open-drain mode for both ports
-    if (!g_driver->setOutputMode(true, true)) {
+    if (!g_driver->SetOutputMode(true, true)) {
         ESP_LOGE(TAG, "Failed to set open-drain mode for both ports");
         return false;
     }
@@ -477,23 +477,23 @@ static bool test_polarity_inversion() noexcept {
     }
 
     uint16_t test_pin = 5;
-    g_driver->setPinDirection(test_pin, GPIODir::Input);
+    g_driver->SetPinDirection(test_pin, GPIODir::Input);
 
     // Test normal polarity
-    if (!g_driver->setPinPolarity(test_pin, Polarity::Normal)) {
+    if (!g_driver->SetPinPolarity(test_pin, Polarity::Normal)) {
         ESP_LOGE(TAG, "Failed to set normal polarity on pin %d", test_pin);
         return false;
     }
 
     // Test inverted polarity
-    if (!g_driver->setPinPolarity(test_pin, Polarity::Inverted)) {
+    if (!g_driver->SetPinPolarity(test_pin, Polarity::Inverted)) {
         ESP_LOGE(TAG, "Failed to set inverted polarity on pin %d", test_pin);
         return false;
     }
 
     // Test multiple pins
     uint16_t mask = 0x00FF;
-    if (!g_driver->setMultiplePolarities(mask, Polarity::Inverted)) {
+    if (!g_driver->SetMultiplePolarities(mask, Polarity::Inverted)) {
         ESP_LOGE(TAG, "Failed to set inverted polarity on multiple pins");
         return false;
     }
@@ -518,23 +518,23 @@ static bool test_input_latch() noexcept {
     }
 
     uint16_t test_pin = 6;
-    g_driver->setPinDirection(test_pin, GPIODir::Input);
+    g_driver->SetPinDirection(test_pin, GPIODir::Input);
 
     // Test enabling latch
-    if (!g_driver->enableInputLatch(test_pin, true)) {
+    if (!g_driver->EnableInputLatch(test_pin, true)) {
         ESP_LOGE(TAG, "Failed to enable input latch on pin %d", test_pin);
         return false;
     }
 
     // Test disabling latch
-    if (!g_driver->enableInputLatch(test_pin, false)) {
+    if (!g_driver->EnableInputLatch(test_pin, false)) {
         ESP_LOGE(TAG, "Failed to disable input latch on pin %d", test_pin);
         return false;
     }
 
     // Test multiple pins
     uint16_t mask = 0x00FF;
-    if (!g_driver->enableMultipleInputLatches(mask, true)) {
+    if (!g_driver->EnableMultipleInputLatches(mask, true)) {
         ESP_LOGE(TAG, "Failed to enable input latch on multiple pins");
         return false;
     }
@@ -560,17 +560,17 @@ static bool test_interrupt_config() noexcept {
 
     // Configure interrupt mask (0 = enable interrupt, 1 = disable)
     uint16_t mask = 0x0000; // Enable interrupts on all pins
-    if (!g_driver->configureInterruptMask(mask)) {
+    if (!g_driver->ConfigureInterruptMask(mask)) {
         ESP_LOGE(TAG, "Failed to configure interrupt mask");
         return false;
     }
 
     // Read interrupt status
-    uint16_t status = g_driver->getInterruptStatus();
+    uint16_t status = g_driver->GetInterruptStatus();
     ESP_LOGI(TAG, "Interrupt status: 0x%04X", status);
 
     // Set callback
-    g_driver->setInterruptCallback([](uint16_t status) {
+    g_driver->SetInterruptCallback([](uint16_t status) {
         ESP_LOGI(TAG, "Interrupt callback triggered: 0x%04X", status);
     });
 
@@ -594,19 +594,19 @@ static bool test_port_operations() noexcept {
     }
 
     // Configure port 0 as output
-    g_driver->setMultipleDirections(0x00FF, GPIODir::Output);
+    g_driver->SetMultipleDirections(0x00FF, GPIODir::Output);
 
     // Configure port 1 as input
-    g_driver->setMultipleDirections(0xFF00, GPIODir::Input);
+    g_driver->SetMultipleDirections(0xFF00, GPIODir::Input);
 
     // Test writing to port 0
     for (uint16_t pin = 0; pin < 8; ++pin) {
-        g_driver->writePin(pin, (pin % 2 == 0));
+        g_driver->WritePin(pin, (pin % 2 == 0));
     }
 
     // Test reading from port 1
     for (uint16_t pin = 8; pin < 16; ++pin) {
-        bool state = g_driver->readPin(pin);
+        bool state = g_driver->ReadPin(pin);
         ESP_LOGI(TAG, "Port 1 pin %d: %s", pin, state ? "HIGH" : "LOW");
     }
 
@@ -631,17 +631,17 @@ static bool test_error_handling() noexcept {
 
     // Test invalid pin operations
     // Note: Driver should handle invalid pins gracefully
-    bool result = g_driver->setPinDirection(16, GPIODir::Output); // Invalid pin
+    bool result = g_driver->SetPinDirection(16, GPIODir::Output); // Invalid pin
     if (result) {
         ESP_LOGW(TAG, "Unexpected success with invalid pin");
     }
 
     // Check error flags
-    uint16_t errors = g_driver->getErrorFlags();
+    uint16_t errors = g_driver->GetErrorFlags();
     ESP_LOGI(TAG, "Error flags: 0x%04X", errors);
 
     // Clear error flags
-    g_driver->clearErrorFlags();
+    g_driver->ClearErrorFlags();
 
     ESP_LOGI(TAG, "✅ Error handling tests passed");
     return true;
@@ -663,11 +663,11 @@ static bool test_rapid_operations() noexcept {
     }
 
     uint16_t test_pin = 7;
-    g_driver->setPinDirection(test_pin, GPIODir::Output);
+    g_driver->SetPinDirection(test_pin, GPIODir::Output);
 
     // Rapid toggle
     for (int i = 0; i < 100; ++i) {
-        g_driver->writePin(test_pin, (i % 2 == 0));
+        g_driver->WritePin(test_pin, (i % 2 == 0));
         vTaskDelay(pdMS_TO_TICKS(1));
     }
 

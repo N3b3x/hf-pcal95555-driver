@@ -392,13 +392,13 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
 </span><span class="n">MyPlatformI2CBus</span> <span class="n">i2c</span><span class="p">;</span>               <span class="c1">// Custom i2cBus implementation</span>
 <span class="n">PACL95555</span> <span class="nf">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>        <span class="c1">// 0x20 is default I2C address</span>
 
-<span class="n">gpio</span><span class="p">.</span><span class="n">resetToDefault</span><span class="p">();</span>             <span class="c1">// Safe known state (inputs w/ pull-ups)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span>             <span class="c1">// Safe known state (inputs w/ pull-ups)</span>
 <span class="c1">// Optionally configure using values from Kconfig</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">initFromConfig</span><span class="p">();</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">InitFromConfig</span><span class="p">();</span>
 
-<span class="n">gpio</span><span class="p">.</span><span class="n">setPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">writePin</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<span class="kt">bool</span> <span class="n">isHigh</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">readPin</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">WritePin</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<span class="kt">bool</span> <span class="n">isHigh</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">ReadPin</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
 <h2 id="-api-reference">
   
@@ -418,71 +418,71 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
   </thead>
   <tbody>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setPinDirection(pin, dir)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetPinDirection(pin, dir)</code></td>
       <td>Configure a single pin’s direction</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setMultipleDirections(mask, dir)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetMultipleDirections(mask, dir)</code></td>
       <td>Batch pin direction setting</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">readPin(pin)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ReadPin(pin)</code></td>
       <td>Read logic level of a pin</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">writePin(pin, value)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">WritePin(pin, value)</code></td>
       <td>Set logic level of an output pin</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">togglePin(pin)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">TogglePin(pin)</code></td>
       <td>Toggle output pin</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setPullEnable(pin, bool)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetPullEnable(pin, bool)</code></td>
       <td>Enable/disable internal pull resistor</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setPullDirection(pin, bool)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetPullDirection(pin, bool)</code></td>
       <td>Choose pull-up (true) or pull-down</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setDriveStrength(pin, level)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetDriveStrength(pin, level)</code></td>
       <td>Adjust output drive (Level0–Level3)</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setOutputMode(od0, od1)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetOutputMode(port_0_open_drain, port_1_open_drain)</code></td>
       <td>Set port 0/1 to open-drain or push-pull</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setPinPolarity(pin, polarity)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetPinPolarity(pin, polarity)</code></td>
       <td>Invert input polarity</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">enableInputLatch(pin, bool)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">EnableInputLatch(pin, bool)</code></td>
       <td>Enable latching for input capture</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">configureInterruptMask(mask)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ConfigureInterruptMask(mask)</code></td>
       <td>Configure per-pin interrupt masks</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">getInterruptStatus()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code></td>
       <td>Read and clear interrupt source</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setInterruptCallback(cb)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetInterruptCallback(cb)</code></td>
       <td>Set callback for interrupt handling</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">handleInterrupt()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">HandleInterrupt()</code></td>
       <td>Handle INT signal &amp; invoke callback</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">getErrorFlags()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">GetErrorFlags()</code></td>
       <td>Retrieve latched driver errors</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">clearErrorFlags(mask)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ClearErrorFlags(mask)</code></td>
       <td>Clear selected error flags</td>
     </tr>
   </tbody>
@@ -497,7 +497,7 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
     
 
 <p>Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed).
-The flags persist until the call succeeds or <code class="language-plaintext highlighter-rouge">clearErrorFlags()</code> is used to reset them.</p><hr />
+The flags persist until the call succeeds or <code class="language-plaintext highlighter-rouge">ClearErrorFlags()</code> is used to reset them.</p><hr />
 <h2 id="-platform-integration">
   
   
@@ -682,9 +682,9 @@ make clean  <span class="c"># remove build directory</span>
 default address using <code class="language-plaintext highlighter-rouge">PCAL95555_DEFAULT_ADDRESS</code>.
 Each port contains a submenu for every pin so you can individually
 configure direction, pull resistor settings and the initial output level.
-Open-drain mode is still set per port. Call <code class="language-plaintext highlighter-rouge">initFromConfig()</code> at runtime
+Open-drain mode is still set per port. Call <code class="language-plaintext highlighter-rouge">InitFromConfig()</code> at runtime
 to apply the selected values. Set <code class="language-plaintext highlighter-rouge">PCAL95555_INIT_FROM_KCONFIG</code> to <code class="language-plaintext highlighter-rouge">n</code>
-if you want <code class="language-plaintext highlighter-rouge">initFromConfig()</code> to do nothing at runtime.</p>
+if you want <code class="language-plaintext highlighter-rouge">InitFromConfig()</code> to do nothing at runtime.</p>
 <h2 id="-documentation">
   
   

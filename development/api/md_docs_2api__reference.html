@@ -90,33 +90,33 @@ Basic I/O</h1>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Description    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>setPinDirection(pin, dir)</code>   </td><td class="markdownTableBodyNone">Set pin as input or output    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPinDirection(pin, dir)</code>   </td><td class="markdownTableBodyNone">Set pin as input or output    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>readPin(pin)</code>   </td><td class="markdownTableBodyNone">Read logic level    </td></tr>
+<td class="markdownTableBodyNone"><code>ReadPin(pin)</code>   </td><td class="markdownTableBodyNone">Read logic level    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>writePin(pin, value)</code>   </td><td class="markdownTableBodyNone">Drive output pin    </td></tr>
+<td class="markdownTableBodyNone"><code>WritePin(pin, value)</code>   </td><td class="markdownTableBodyNone">Drive output pin    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>togglePin(pin)</code>   </td><td class="markdownTableBodyNone">Toggle output state   </td></tr>
+<td class="markdownTableBodyNone"><code>TogglePin(pin)</code>   </td><td class="markdownTableBodyNone">Toggle output state   </td></tr>
 </table>
 <p>Example:</p>
-<div class="fragment"><div class="line">gpio.setPinDirection(3, PACL95555::GPIODir::Output);</div>
-<div class="line">gpio.writePin(3, <span class="keyword">true</span>);</div>
-</div><!-- fragment --><p><code>setPinDirection</code> takes a pin index <code>0-15</code> and a <code>GPIODir</code> enumerator. Pins start as inputs after reset. Writing a value only affects pins configured as outputs.</p>
+<div class="fragment"><div class="line">gpio.SetPinDirection(3, PACL95555::GPIODir::Output);</div>
+<div class="line">gpio.WritePin(3, <span class="keyword">true</span>);</div>
+</div><!-- fragment --><p><code>SetPinDirection</code> takes a pin index <code>0-15</code> and a <code>GPIODir</code> enumerator. Pins start as inputs after reset. Writing a value only affects pins configured as outputs.</p>
 <h1><a class="anchor" id="autotoc_md13"></a>
 Advanced Features</h1>
 <ul>
 <li><b>Pull Resistors</b><ul>
-<li><code>setPullEnable(pin, bool)</code> to enable/disable</li>
-<li><code>setPullDirection(pin, bool)</code> for pull-up or pull-down</li>
+<li><code>SetPullEnable(pin, bool)</code> to enable/disable</li>
+<li><code>SetPullDirection(pin, bool)</code> for pull-up or pull-down</li>
 </ul>
 </li>
 <li><b>Drive Strength</b><ul>
-<li><code>setDriveStrength(pin, Level0..Level3)</code> adjusts output current</li>
+<li><code>SetDriveStrength(pin, Level0..Level3)</code> adjusts output current</li>
 </ul>
 </li>
 <li><b>Interrupts</b><ul>
-<li><code>setInterruptCallback(cb)</code> registers a handler</li>
-<li><code>getInterruptStatus()</code> returns pending interrupt flags</li>
+<li><code>SetInterruptCallback(cb)</code> registers a handler</li>
+<li><code>GetInterruptStatus()</code> returns pending interrupt flags</li>
 </ul>
 </li>
 </ul>
@@ -126,9 +126,9 @@ Advanced Features</h1>
 <div class="line">        <span class="comment">// pin 4 changed state</span></div>
 <div class="line">    }</div>
 <div class="line">};</div>
-<div class="line">gpio.setInterruptCallback(handler);</div>
-<div class="line">gpio.enableInputLatch(4, <span class="keyword">true</span>);</div>
-</div><!-- fragment --><p><code>enableInputLatch</code> latches a pin's logic level when an interrupt occurs so the callback can safely read the latched value later via <code>getInterruptStatus()</code>.</p>
+<div class="line">gpio.SetInterruptCallback(handler);</div>
+<div class="line">gpio.EnableInputLatch(4, <span class="keyword">true</span>);</div>
+</div><!-- fragment --><p><code>EnableInputLatch</code> latches a pin's logic level when an interrupt occurs so the callback can safely read the latched value later via <code>GetInterruptStatus()</code>.</p>
 <p>For further detail consult the inline comments in <a href="../inc/pcal95555.hpp"><code>pcal95555.hpp</code></a>. </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->

@@ -115,13 +115,13 @@ $(function() {
 <div class="line">MyPlatformI2CBus i2c;               <span class="comment">// Custom i2cBus implementation</span></div>
 <div class="line">PACL95555 gpio(&amp;i2c, 0x20);        <span class="comment">// 0x20 is default I2C address</span></div>
 <div class="line"> </div>
-<div class="line">gpio.resetToDefault();             <span class="comment">// Safe known state (inputs w/ pull-ups)</span></div>
+<div class="line">gpio.ResetToDefault();             <span class="comment">// Safe known state (inputs w/ pull-ups)</span></div>
 <div class="line"><span class="comment">// Optionally configure using values from Kconfig</span></div>
-<div class="line">gpio.initFromConfig();</div>
+<div class="line">gpio.InitFromConfig();</div>
 <div class="line"> </div>
-<div class="line">gpio.setPinDirection(0, GPIODir::Output);</div>
-<div class="line">gpio.writePin(0, <span class="keyword">true</span>);</div>
-<div class="line"><span class="keywordtype">bool</span> isHigh = gpio.readPin(1);</div>
+<div class="line">gpio.SetPinDirection(0, GPIODir::Output);</div>
+<div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
+<div class="line"><span class="keywordtype">bool</span> isHigh = gpio.ReadPin(1);</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
 🔌 Platform Integration</h1>
 <h2><a class="anchor" id="autotoc_md6"></a>

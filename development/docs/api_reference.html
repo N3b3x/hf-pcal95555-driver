@@ -292,19 +292,19 @@ implementation.</p>
   </thead>
   <tbody>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">setPinDirection(pin, dir)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">SetPinDirection(pin, dir)</code></td>
       <td>Set pin as input or output</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">readPin(pin)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">ReadPin(pin)</code></td>
       <td>Read logic level</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">writePin(pin, value)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">WritePin(pin, value)</code></td>
       <td>Drive output pin</td>
     </tr>
     <tr>
-      <td><code class="language-plaintext highlighter-rouge">togglePin(pin)</code></td>
+      <td><code class="language-plaintext highlighter-rouge">TogglePin(pin)</code></td>
       <td>Toggle output state</td>
     </tr>
   </tbody>
@@ -314,11 +314,11 @@ implementation.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
-</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">setPinDirection</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">writePin</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">WritePin</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">setPinDirection</code> takes a pin index <code class="language-plaintext highlighter-rouge">0-15</code> and a <code class="language-plaintext highlighter-rouge">GPIODir</code> enumerator. Pins start
+<p><code class="language-plaintext highlighter-rouge">SetPinDirection</code> takes a pin index <code class="language-plaintext highlighter-rouge">0-15</code> and a <code class="language-plaintext highlighter-rouge">GPIODir</code> enumerator. Pins start
 as inputs after reset. Writing a value only affects pins configured as outputs.</p>
 <h2 id="advanced-features">
   
@@ -332,19 +332,19 @@ as inputs after reset. Writing a value only affects pins configured as outputs.<
 <ul>
   <li><strong>Pull Resistors</strong>
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">setPullEnable(pin, bool)</code> to enable/disable</li>
-      <li><code class="language-plaintext highlighter-rouge">setPullDirection(pin, bool)</code> for pull-up or pull-down</li>
+      <li><code class="language-plaintext highlighter-rouge">SetPullEnable(pin, bool)</code> to enable/disable</li>
+      <li><code class="language-plaintext highlighter-rouge">SetPullDirection(pin, bool)</code> for pull-up or pull-down</li>
     </ul>
   </li>
   <li><strong>Drive Strength</strong>
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">setDriveStrength(pin, Level0..Level3)</code> adjusts output current</li>
+      <li><code class="language-plaintext highlighter-rouge">SetDriveStrength(pin, Level0..Level3)</code> adjusts output current</li>
     </ul>
   </li>
   <li><strong>Interrupts</strong>
     <ul>
-      <li><code class="language-plaintext highlighter-rouge">setInterruptCallback(cb)</code> registers a handler</li>
-      <li><code class="language-plaintext highlighter-rouge">getInterruptStatus()</code> returns pending interrupt flags</li>
+      <li><code class="language-plaintext highlighter-rouge">SetInterruptCallback(cb)</code> registers a handler</li>
+      <li><code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code> returns pending interrupt flags</li>
     </ul>
   </li>
 </ul>
@@ -363,12 +363,12 @@ as inputs after reset. Writing a value only affects pins configured as outputs.<
         <span class="c1">// pin 4 changed state</span>
     <span class="p">}</span>
 <span class="p">};</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">setInterruptCallback</span><span class="p">(</span><span class="n">handler</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">enableInputLatch</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetInterruptCallback</span><span class="p">(</span><span class="n">handler</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">EnableInputLatch</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
-<p><code class="language-plaintext highlighter-rouge">enableInputLatch</code> latches a pin’s logic level when an interrupt occurs so the
-callback can safely read the latched value later via <code class="language-plaintext highlighter-rouge">getInterruptStatus()</code>.</p>
+<p><code class="language-plaintext highlighter-rouge">EnableInputLatch</code> latches a pin’s logic level when an interrupt occurs so the
+callback can safely read the latched value later via <code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code>.</p>
 
 <p>For further detail consult the inline comments in <a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">pcal95555.hpp</code></a>.</p><hr />
 

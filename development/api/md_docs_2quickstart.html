@@ -94,20 +94,20 @@ $(function() {
 </div><!-- fragment --><ol type="1">
 <li><b>Reset the expander to a known state and configure pins</b></li>
 </ol>
-<div class="fragment"><div class="line">gpio.resetToDefault(); <span class="comment">// all pins become inputs with pull-ups</span></div>
-<div class="line">gpio.setPinDirection(0, PACL95555::GPIODir::Output);</div>
+<div class="fragment"><div class="line">gpio.ResetToDefault(); <span class="comment">// all pins become inputs with pull-ups</span></div>
+<div class="line">gpio.SetPinDirection(0, PACL95555::GPIODir::Output);</div>
 </div><!-- fragment --><ol type="1">
 <li><b>Toggle outputs and read inputs</b></li>
 </ol>
-<div class="fragment"><div class="line">gpio.writePin(0, <span class="keyword">true</span>);</div>
-<div class="line"><span class="keywordtype">bool</span> input = gpio.readPin(1);</div>
+<div class="fragment"><div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
+<div class="line"><span class="keywordtype">bool</span> input = gpio.ReadPin(1);</div>
 </div><!-- fragment --><ol type="1">
 <li><b>Handle interrupts (optional)</b></li>
 </ol>
 <div class="fragment"><div class="line"><span class="keyword">auto</span> callback = [](uint16_t status) {</div>
 <div class="line">    <span class="comment">// respond to interrupts here</span></div>
 <div class="line">};</div>
-<div class="line">gpio.setInterruptCallback(callback);</div>
+<div class="line">gpio.SetInterruptCallback(callback);</div>
 </div><!-- fragment --><p>These minimal steps bring the expander online. The library exposes many more functions for configuring pull resistors, drive strength and polarity. Refer to the <a class="el" href="md_docs_2api__reference.html">API Reference</a> once you are comfortable with the basics.</p>
 <p>For more advanced configuration, see the <a class="el" href="md_docs_2configuration.html">Configuration guide</a>. </p>
 </div></div><!-- contents -->
