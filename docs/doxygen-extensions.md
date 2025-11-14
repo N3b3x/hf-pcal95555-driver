@@ -25,8 +25,8 @@ Our Doxygen documentation includes several modern enhancements:
 
 ## 📁 Structure
 
-- **[Configuration](doxygen-extensions/)** - Doxygen configuration and setup files
-- **[Submodule](doxygen-extensions/doxygen-awesome-css/)** - Doxygen-awesome-css theme files
+- **[Configuration](../_config/doxygen-extensions/)** - Doxygen configuration and setup files
+- **[Submodule](../_config/doxygen-extensions/doxygen-awesome-css/)** - Doxygen-awesome-css theme files
 
 ## 🔧 Technical Details
 

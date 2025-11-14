@@ -14,4 +14,4 @@ When in doubt, mirror the style used in the existing documents. PRs that add new
 ---
 
 **Navigation**
-⬅️ [Hardware Overview](./hardware_overview.md) • [Back to Index](./index.md) • ➡️ [Contributing](./contributing.md)
+⬅️ [Hardware Overview](./hardware_overview.md) • [Back to Index](./index.md)

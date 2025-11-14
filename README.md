@@ -55,10 +55,11 @@ This library abstracts all of that into a clear and extensible C++ API, ready to
 ```text
 ├── datasheet/             # PCAL9555A datasheet PDF
 ├── examples/              # Sample usage and wiring examples
+├── inc/                   # Header files
+│   └── pcal95555.hpp      # Driver header
 ├── src/                   # Source files
-│   ├── pacl95555.hpp      # Driver header
-│   ├── pacl95555.cpp      # Driver implementation
-│   └── pacl95555_test.cpp # Mock-based unit tests
+│   ├── pcal95555.cpp      # Driver implementation
+│   └── pcal95555_test.cpp # Mock-based unit tests
 ├── LICENSE                # GNU GPLv3 license
 └── README.md              # Project documentation
 ```
@@ -67,12 +68,12 @@ This library abstracts all of that into a clear and extensible C++ API, ready to
 
 ## 🔧 Installation
 
-1. **Clone or copy** the `pacl95555.hpp` and `pcal95555.cpp` files into your project.
+1. **Clone or copy** the `pcal95555.hpp` and `pcal95555.cpp` files into your project.
 2. **Implement the `i2cBus` interface** for your platform (examples below).
 3. Include the header in your code:
 
    ```cpp
-   #include "pacl95555.hpp"
+   #include "pcal95555.hpp"
    ```
 4. Compile with any **C++11 or newer** compiler.
 
@@ -81,7 +82,7 @@ This library abstracts all of that into a clear and extensible C++ API, ready to
 ## 🚀 Quick Start
 
 ```cpp
-#include "pacl95555.hpp"
+#include "pcal95555.hpp"
 MyPlatformI2CBus i2c;               // Custom i2cBus implementation
 PACL95555 gpio(&i2c, 0x20);        // 0x20 is default I2C address
 
@@ -194,7 +195,7 @@ To run the built-in unit tests on a desktop:
 
 ```bash
 # Windows PowerShell
-g++ -std=c++11 pacl95555.cpp pcal95555_test.cpp -o test.exe
+g++ -std=c++11 pcal95555.cpp pcal95555_test.cpp -o test.exe
 ./test.exe
 ```
 
@@ -244,7 +245,7 @@ doxygen _config/Doxyfile
 
 ## 🤝 Contributing
 
-Pull requests and suggestions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Pull requests and suggestions are welcome! Please follow the existing code style and include tests for new features.
 
 ## 📄 License
 

@@ -14,7 +14,7 @@ Every document ends with navigation links. In addition to previous and next refe
 6. [Examples](./examples.md)
 7. [Hardware Overview](./hardware_overview.md)
 8. [Documentation Guidelines](./guidelines.md)
-9. [Contributing](./contributing.md)
+9. Contributing (see README.md)
 
 Start with [Installation](./installation.md) to set up your environment, then follow the sections in order or jump directly to the topic you need.
 

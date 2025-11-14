@@ -12,8 +12,8 @@ For embedded targets, ensure your toolchain is configured to compile standard C+
 ## Cloning the Repository
 
 ```bash
-git clone https://github.com/yourusername/pacl95555.git
-cd pacl95555
+git clone https://github.com/yourusername/pcal95555.git
+cd pcal95555
 ```
 
 ## Building the Static Library
@@ -31,7 +31,7 @@ The output `libpcal95555.a` can be linked into your application.
 Projects that rely on CMake can add the library directly using `add_subdirectory`:
 
 ```cmake
-add_subdirectory(pacl95555)
+add_subdirectory(pcal95555)
 target_link_libraries(my_app PRIVATE pcal95555)
 ```
 
