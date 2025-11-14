@@ -4,7 +4,7 @@
 #include <unordered_map>
 
 // Mock I2C bus that simulates the PCAL9555A device registers and behavior
-class MockI2C : public PCAL95555::i2cBus {
+class MockI2C : public pcal95555::I2cBus<MockI2C> {
 public:
   MockI2C() {
     // Initialize all registers to power-on default values:

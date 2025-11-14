@@ -26,6 +26,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
+#include <stdio.h>   // For FILE* used by ESP-IDF headers
+#include <string.h>  // For C string functions (must be before namespace)
 
 #ifndef CONFIG_PCAL95555_INIT_FROM_KCONFIG
 #define CONFIG_PCAL95555_INIT_FROM_KCONFIG 1
@@ -392,52 +394,101 @@ inline Error operator&(Error a, Error b) {
   return static_cast<Error>(static_cast<uint16_t>(a) & static_cast<uint16_t>(b));
 }
 
+namespace pcal95555 {
+
+/**
+ * @brief CRTP-based template interface for I2C bus operations
+ *
+ * This template class provides a hardware-agnostic interface for I2C communication
+ * using the CRTP pattern. Platform-specific implementations should inherit from
+ * this template with themselves as the template parameter.
+ *
+ * Benefits of CRTP:
+ * - Compile-time polymorphism (no virtual function overhead)
+ * - Static dispatch instead of dynamic dispatch
+ * - Better optimization opportunities for the compiler
+ *
+ * Example usage:
+ * @code
+ * class MyI2C : public pcal95555::I2cBus<MyI2C> {
+ * public:
+ *   bool write(...) { ... }
+ *   bool read(...) { ... }
+ * };
+ * @endcode
+ *
+ * @tparam Derived The derived class type (CRTP pattern)
+ */
+template <typename Derived>
+class I2cBus {
+public:
+  /**
+   * @brief Write bytes to a device register.
+   *
+   * @param addr 7-bit I2C address of the target device.
+   * @param reg Register address to write to.
+   * @param data Pointer to the data buffer containing bytes to send.
+   * @param len Number of bytes to write from the buffer.
+   * @return true if the device acknowledges the transfer; false on NACK or
+   * error.
+   */
+  bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) {
+    return static_cast<Derived*>(this)->write(addr, reg, data, len);
+  }
+
+  /**
+   * @brief Read bytes from a device register.
+   *
+   * @param addr 7-bit I2C address of the target device.
+   * @param reg Register address to read from.
+   * @param data Pointer to the buffer to store received data.
+   * @param len Number of bytes to read into the buffer.
+   * @return true if the read succeeds; false on NACK or error.
+   */
+  bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) {
+    return static_cast<Derived*>(this)->read(addr, reg, data, len);
+  }
+
+protected:
+  /**
+   * @brief Protected constructor to prevent direct instantiation
+   */
+  I2cBus() = default;
+
+  // Prevent copying
+  I2cBus(const I2cBus&) = delete;
+  I2cBus& operator=(const I2cBus&) = delete;
+
+  // Allow moving
+  I2cBus(I2cBus&&) = default;
+  I2cBus& operator=(I2cBus&&) = default;
+
+  /**
+   * @brief Protected destructor
+   * @note Derived classes can have public destructors
+   */
+  ~I2cBus() = default;
+};
+
 /**
  * @class PCAL95555
  * @brief Driver for the PCAL95555AHF / PCAL9555A I²C GPIO expander.
+ *
+ * @tparam I2cType The I2C interface implementation type that inherits from pcal95555::I2cBus<I2cType>
+ *
+ * @note The driver uses CRTP-based I2C interface for zero virtual call overhead.
  */
+template <typename I2cType>
 class PCAL95555 {
 public:
-  /**
-   * @brief Abstract interface for I2C bus operations.
-   *
-   * @details Users must implement this interface to provide low-level I2C
-   * communication for the PCAL95555 driver. Provides basic read and write
-   * methods with ACK/NACK feedback.
-   */
-  class i2cBus {
-  public:
-    virtual ~i2cBus() = default;
-    /**
-     * @brief Write bytes to a device register.
-     *
-     * @param addr 7-bit I2C address of the target device.
-     * @param reg Register address to write to.
-     * @param data Pointer to the data buffer containing bytes to send.
-     * @param len Number of bytes to write from the buffer.
-     * @return true if the device acknowledges the transfer; false on NACK or
-     * error.
-     */
-    virtual bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) = 0;
-    /**
-     * @brief Read bytes from a device register.
-     *
-     * @param addr 7-bit I2C address of the target device.
-     * @param reg Register address to read from.
-     * @param data Pointer to the buffer to store received data.
-     * @param len Number of bytes to read into the buffer.
-     * @return true if the read succeeds; false on NACK or error.
-     */
-    virtual bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) = 0;
-  };
 
   /**
    * @brief Construct a new PCAL95555 driver instance.
    *
-   * @param bus Pointer to a user-implemented I2C bus interface.
+   * @param bus Pointer to a user-implemented I2C interface (must inherit from pcal95555::I2cBus<I2cType>).
    * @param address 7-bit I2C address of the PCAL95555 device (0x00 to 0x7F).
    */
-  PCAL95555(PCAL95555::i2cBus* bus, uint8_t address);
+  PCAL95555(I2cType* bus, uint8_t address);
 
   /**
    * @brief Configure retry mechanism for I2C transactions.
@@ -639,7 +690,7 @@ protected:
    */
   bool writeRegister(uint8_t reg, uint8_t value);
 
-  i2cBus* i2c_;
+  I2cType* i2c_;
   uint8_t devAddr_;
   int retries_{1};
   uint16_t errorFlags_{0};
@@ -648,3 +699,10 @@ protected:
   void setError(Error e);
   void clearError(Error e);
 };
+
+// Include template implementation
+#define PCAL95555_HEADER_INCLUDED
+#include "../src/pcal95555.cpp"
+#undef PCAL95555_HEADER_INCLUDED
+
+}  // namespace pcal95555

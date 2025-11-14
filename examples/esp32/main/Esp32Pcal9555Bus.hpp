@@ -2,7 +2,7 @@
  * @file Esp32Pcal9555Bus.hpp
  * @brief ESP32 I2C bus implementation for PCAL9555 driver
  * 
- * This file provides the ESP32-specific implementation of the PCAL95555::i2cBus
+ * This file provides the ESP32-specific implementation of the pcal95555::I2cBus
  * interface using ESP-IDF's I2C master driver.
  * 
  * @author Nebiyu Tadesse
@@ -33,12 +33,12 @@ static const char* TAG_I2C = "PCAL9555_I2C";
 
 /**
  * @class Esp32Pcal9555Bus
- * @brief ESP32 implementation of PCAL95555::i2cBus interface
+ * @brief ESP32 implementation of PCAL95555::I2cBus interface
  * 
  * This class provides I2C communication for the PCAL9555 driver using
  * ESP-IDF's I2C master driver API.
  */
-class Esp32Pcal9555Bus : public PCAL95555::i2cBus {
+class Esp32Pcal9555Bus : public pcal95555::I2cBus<Esp32Pcal9555Bus> {
 public:
     /**
      * @brief I2C bus configuration structure
@@ -67,7 +67,7 @@ public:
     /**
      * @brief Destructor - cleans up I2C resources
      */
-    ~Esp32Pcal9555Bus() override {
+    ~Esp32Pcal9555Bus() {
         Deinit();
     }
 
@@ -132,7 +132,7 @@ public:
      * @param len Number of bytes to write from the buffer
      * @return true if the device acknowledges the transfer; false on NACK or error
      */
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
+    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         if (!initialized_ || bus_handle_ == nullptr) {
             ESP_LOGE(TAG_I2C, "I2C bus not initialized");
             return false;
@@ -189,7 +189,7 @@ public:
      * @param len Number of bytes to read into the buffer
      * @return true if the read succeeds; false on NACK or error
      */
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
+    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
         if (!initialized_ || bus_handle_ == nullptr) {
             ESP_LOGE(TAG_I2C, "I2C bus not initialized");
             return false;

@@ -28,6 +28,9 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+// Use fully qualified name for the class
+using PCAL95555Driver = pcal95555::PCAL95555<Esp32Pcal9555Bus>;
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -66,7 +69,7 @@ static constexpr uint8_t PCAL9555_I2C_ADDRESS = 0x20;
 // SHARED TEST RESOURCES
 //=============================================================================
 static std::unique_ptr<Esp32Pcal9555Bus> g_i2c_bus;
-static std::unique_ptr<PCAL95555> g_driver;
+static std::unique_ptr<PCAL95555Driver> g_driver;
 
 //=============================================================================
 // TEST HELPER FUNCTIONS
@@ -75,13 +78,13 @@ static std::unique_ptr<PCAL95555> g_driver;
 /**
  * @brief Create and initialize test driver
  */
-static std::unique_ptr<PCAL95555> create_test_driver() noexcept {
+static std::unique_ptr<PCAL95555Driver> create_test_driver() noexcept {
     if (!g_i2c_bus) {
         ESP_LOGE(TAG, "I2C bus not initialized");
         return nullptr;
     }
 
-    auto driver = std::make_unique<PCAL95555>(g_i2c_bus.get(), PCAL9555_I2C_ADDRESS);
+    auto driver = std::make_unique<PCAL95555Driver>(g_i2c_bus.get(), PCAL9555_I2C_ADDRESS);
     if (!driver) {
         ESP_LOGE(TAG, "Failed to create driver instance");
         return nullptr;
@@ -97,7 +100,7 @@ static std::unique_ptr<PCAL95555> create_test_driver() noexcept {
 /**
  * @brief Verify pin state matches expected value
  */
-static bool verify_pin_state(PCAL95555& driver, uint16_t pin, bool expected, const char* context) noexcept {
+static bool verify_pin_state(PCAL95555Driver& driver, uint16_t pin, bool expected, const char* context) noexcept {
     bool actual = driver.readPin(pin);
     if (actual != expected) {
         ESP_LOGE(TAG, "%s: Pin %d state mismatch - expected %s, got %s",

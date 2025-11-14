@@ -1,16 +1,26 @@
-#include "pcal95555.hpp"
-#include <cstring>
+#ifndef PCAL95555_IMPL
+#define PCAL95555_IMPL
+
+// When included from header, use relative path; when compiled directly, use standard include
+#ifdef PCAL95555_HEADER_INCLUDED
+#include "../inc/pcal95555.hpp"
+#else
+#include "../inc/pcal95555.hpp"
+#endif
 
 // Constructor: store I2C bus and device address (7-bit)
-PCAL95555::PCAL95555(PCAL95555::i2cBus* bus, uint8_t address) : i2c_(bus), devAddr_(address) {}
+template <typename I2cType>
+PCAL95555<I2cType>::PCAL95555(I2cType* bus, uint8_t address) : i2c_(bus), devAddr_(address) {}
 
 // Configure retry count
-void PCAL95555::setRetries(int r) {
+template <typename I2cType>
+void PCAL95555<I2cType>::setRetries(int r) {
   retries_ = r;
 }
 
 // Low-level write with retries
-bool PCAL95555::writeRegister(uint8_t reg, uint8_t value) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::writeRegister(uint8_t reg, uint8_t value) {
   for (int attempt = 0; attempt <= retries_; ++attempt) {
     if (i2c_->write(devAddr_, reg, &value, 1)) {
       clearError(Error::I2CWriteFail);
@@ -21,7 +31,8 @@ bool PCAL95555::writeRegister(uint8_t reg, uint8_t value) {
   return false;
 }
 // Low-level read with retries
-bool PCAL95555::readRegister(uint8_t reg, uint8_t& value) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::readRegister(uint8_t reg, uint8_t& value) {
   for (int attempt = 0; attempt <= retries_; ++attempt) {
     if (i2c_->read(devAddr_, reg, &value, 1)) {
       clearError(Error::I2CReadFail);
@@ -33,7 +44,8 @@ bool PCAL95555::readRegister(uint8_t reg, uint8_t& value) {
 }
 
 // Reset all registers to defaults as per datasheet.
-void PCAL95555::resetToDefault() {
+template <typename I2cType>
+void PCAL95555<I2cType>::resetToDefault() {
   // All defaults taken from datasheet tables.
   writeRegister(PCAL95555_REG::OUTPUT_PORT_0, 0xFF);
   writeRegister(PCAL95555_REG::OUTPUT_PORT_1, 0xFF);
@@ -61,7 +73,8 @@ void PCAL95555::resetToDefault() {
 }
 
 // Initialize using compile-time configuration
-void PCAL95555::initFromConfig() {
+template <typename I2cType>
+void PCAL95555<I2cType>::initFromConfig() {
 #if CONFIG_PCAL95555_INIT_FROM_KCONFIG
   writeRegister(PCAL95555_REG::OUTPUT_PORT_0, uint8_t(CONFIG_PCAL95555_INIT_OUTPUT & 0xFF));
   writeRegister(PCAL95555_REG::OUTPUT_PORT_1, uint8_t((CONFIG_PCAL95555_INIT_OUTPUT >> 8) & 0xFF));
@@ -92,7 +105,8 @@ static uint8_t updateBit(uint8_t regVal, uint8_t bit, bool set) {
 }
 
 // Direction configuration
-bool PCAL95555::setPinDirection(uint16_t pin, GPIODir dir) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setPinDirection(uint16_t pin, GPIODir dir) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -106,7 +120,8 @@ bool PCAL95555::setPinDirection(uint16_t pin, GPIODir dir) {
   val = updateBit(val, bit, (dir == GPIODir::Input));
   return writeRegister(reg, val);
 }
-bool PCAL95555::setMultipleDirections(uint16_t mask, GPIODir dir) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setMultipleDirections(uint16_t mask, GPIODir dir) {
   clearError(Error::InvalidMask);
   uint8_t val0 = 0;
   if (!readRegister(PCAL95555_REG::CONFIG_PORT_0, val0))
@@ -129,7 +144,8 @@ bool PCAL95555::setMultipleDirections(uint16_t mask, GPIODir dir) {
 }
 
 // Read input port registers and return bit
-bool PCAL95555::readPin(uint16_t pin) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::readPin(uint16_t pin) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -144,7 +160,8 @@ bool PCAL95555::readPin(uint16_t pin) {
 }
 
 // Write output port registers
-bool PCAL95555::writePin(uint16_t pin, bool value) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::writePin(uint16_t pin, bool value) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -159,7 +176,8 @@ bool PCAL95555::writePin(uint16_t pin, bool value) {
   return writeRegister(reg, val);
 }
 
-bool PCAL95555::togglePin(uint16_t pin) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::togglePin(uint16_t pin) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -175,7 +193,8 @@ bool PCAL95555::togglePin(uint16_t pin) {
 }
 
 // Pull-up/down control
-bool PCAL95555::setPullEnable(uint16_t pin, bool enable) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setPullEnable(uint16_t pin, bool enable) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -189,7 +208,8 @@ bool PCAL95555::setPullEnable(uint16_t pin, bool enable) {
   val = updateBit(val, bit, enable);
   return writeRegister(reg, val);
 }
-bool PCAL95555::setPullDirection(uint16_t pin, bool pullUp) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setPullDirection(uint16_t pin, bool pullUp) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -205,7 +225,8 @@ bool PCAL95555::setPullDirection(uint16_t pin, bool pullUp) {
 }
 
 // Drive strength (2 bits per pin)
-bool PCAL95555::setDriveStrength(uint16_t pin, DriveStrength level) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setDriveStrength(uint16_t pin, DriveStrength level) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -225,14 +246,16 @@ bool PCAL95555::setDriveStrength(uint16_t pin, DriveStrength level) {
 }
 
 // Interrupt mask
-bool PCAL95555::configureInterruptMask(uint16_t mask) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::configureInterruptMask(uint16_t mask) {
   if (!writeRegister(PCAL95555_REG::INT_MASK_0, uint8_t(mask & 0xFF)))
     return false;
   return writeRegister(PCAL95555_REG::INT_MASK_1, uint8_t((mask >> 8) & 0xFF));
 }
 
 // Read interrupt status (and clear)
-uint16_t PCAL95555::getInterruptStatus() {
+template <typename I2cType>
+uint16_t PCAL95555<I2cType>::getInterruptStatus() {
   uint8_t lo = 0, hi = 0;
   readRegister(PCAL95555_REG::INT_STATUS_0, lo);
   readRegister(PCAL95555_REG::INT_STATUS_1, hi);
@@ -240,25 +263,29 @@ uint16_t PCAL95555::getInterruptStatus() {
 }
 
 // Output mode configuration (ODEN bits)
-bool PCAL95555::setOutputMode(bool od0, bool od1) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setOutputMode(bool od0, bool od1) {
   uint8_t val = (od1 ? 1 : 0) << 1 | (od0 ? 1 : 0);
   return writeRegister(PCAL95555_REG::OUTPUT_CONF, val);
 }
 
 // Interrupt callback
-void PCAL95555::setInterruptCallback(std::function<void(uint16_t)> cb) {
+template <typename I2cType>
+void PCAL95555<I2cType>::setInterruptCallback(std::function<void(uint16_t)> cb) {
   irqCallback_ = cb;
 }
 
 // Call this when an INT occurs; read status and invoke callback.
-void PCAL95555::handleInterrupt() {
+template <typename I2cType>
+void PCAL95555<I2cType>::handleInterrupt() {
   if (irqCallback_) {
     uint16_t status = getInterruptStatus();
     irqCallback_(status);
   }
 }
 
-bool PCAL95555::setPinPolarity(uint16_t pin, Polarity polarity) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setPinPolarity(uint16_t pin, Polarity polarity) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -272,7 +299,8 @@ bool PCAL95555::setPinPolarity(uint16_t pin, Polarity polarity) {
   val = updateBit(val, bit, uint8_t(polarity));
   return writeRegister(reg, val);
 }
-bool PCAL95555::setMultiplePolarities(uint16_t mask, Polarity polarity) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::setMultiplePolarities(uint16_t mask, Polarity polarity) {
   uint8_t val0 = 0;
   if (!readRegister(PCAL95555_REG::POLARITY_INV_0, val0))
     return false;
@@ -292,7 +320,8 @@ bool PCAL95555::setMultiplePolarities(uint16_t mask, Polarity polarity) {
   return writeRegister(PCAL95555_REG::POLARITY_INV_1, val1);
 }
 
-bool PCAL95555::enableInputLatch(uint16_t pin, bool enable) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::enableInputLatch(uint16_t pin, bool enable) {
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -306,7 +335,8 @@ bool PCAL95555::enableInputLatch(uint16_t pin, bool enable) {
   val = updateBit(val, bit, enable);
   return writeRegister(reg, val);
 }
-bool PCAL95555::enableMultipleInputLatches(uint16_t mask, bool enable) {
+template <typename I2cType>
+bool PCAL95555<I2cType>::enableMultipleInputLatches(uint16_t mask, bool enable) {
   clearError(Error::InvalidMask);
   uint8_t val0 = 0;
   if (!readRegister(PCAL95555_REG::INPUT_LATCH_0, val0))
@@ -327,18 +357,24 @@ bool PCAL95555::enableMultipleInputLatches(uint16_t mask, bool enable) {
   return writeRegister(PCAL95555_REG::INPUT_LATCH_1, val1);
 }
 
-uint16_t PCAL95555::getErrorFlags() const {
+template <typename I2cType>
+uint16_t PCAL95555<I2cType>::getErrorFlags() const {
   return errorFlags_;
 }
 
-void PCAL95555::clearErrorFlags(uint16_t mask) {
+template <typename I2cType>
+void PCAL95555<I2cType>::clearErrorFlags(uint16_t mask) {
   errorFlags_ &= ~mask;
 }
 
-void PCAL95555::setError(Error e) {
+template <typename I2cType>
+void PCAL95555<I2cType>::setError(Error e) {
   errorFlags_ |= static_cast<uint16_t>(e);
 }
 
-void PCAL95555::clearError(Error e) {
+template <typename I2cType>
+void PCAL95555<I2cType>::clearError(Error e) {
   errorFlags_ &= ~static_cast<uint16_t>(e);
 }
+
+#endif  // PCAL95555_IMPL
