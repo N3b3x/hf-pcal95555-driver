@@ -91,13 +91,13 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
 MyPlatformI2CBus i2c;               // Custom i2cBus implementation
 PACL95555 gpio(&i2c, 0x20);        // 0x20 is default I2C address
 
-gpio.resetToDefault();             // Safe known state (inputs w/ pull-ups)
+gpio.ResetToDefault();             // Safe known state (inputs w/ pull-ups)
 // Optionally configure using values from Kconfig
-gpio.initFromConfig();
+gpio.InitFromConfig();
 
-gpio.setPinDirection(0, GPIODir::Output);
-gpio.writePin(0, true);
-bool isHigh = gpio.readPin(1);
+gpio.SetPinDirection(0, GPIODir::Output);
+gpio.WritePin(0, true);
+bool isHigh = gpio.ReadPin(1);
 ```
 
 ---
@@ -106,28 +106,28 @@ bool isHigh = gpio.readPin(1);
 
 | Method                             | Description                             |
 | ---------------------------------- | --------------------------------------- |
-| `setPinDirection(pin, dir)`        | Configure a single pin's direction      |
-| `setMultipleDirections(mask, dir)` | Batch pin direction setting             |
-| `readPin(pin)`                     | Read logic level of a pin               |
-| `writePin(pin, value)`             | Set logic level of an output pin        |
-| `togglePin(pin)`                   | Toggle output pin                       |
-| `setPullEnable(pin, bool)`         | Enable/disable internal pull resistor   |
-| `setPullDirection(pin, bool)`      | Choose pull-up (true) or pull-down      |
-| `setDriveStrength(pin, level)`     | Adjust output drive (Level0–Level3)     |
-| `setOutputMode(od0, od1)`          | Set port 0/1 to open-drain or push-pull |
-| `setPinPolarity(pin, polarity)`    | Invert input polarity                   |
-| `enableInputLatch(pin, bool)`      | Enable latching for input capture       |
-| `configureInterruptMask(mask)`     | Configure per-pin interrupt masks       |
-| `getInterruptStatus()`             | Read and clear interrupt source         |
-| `setInterruptCallback(cb)`         | Set callback for interrupt handling     |
-| `handleInterrupt()`                | Handle INT signal & invoke callback     |
-| `getErrorFlags()`                  | Retrieve latched driver errors          |
-| `clearErrorFlags(mask)`            | Clear selected error flags              |
+| `SetPinDirection(pin, dir)`        | Configure a single pin's direction      |
+| `SetMultipleDirections(mask, dir)` | Batch pin direction setting             |
+| `ReadPin(pin)`                     | Read logic level of a pin               |
+| `WritePin(pin, value)`             | Set logic level of an output pin        |
+| `TogglePin(pin)`                   | Toggle output pin                       |
+| `SetPullEnable(pin, bool)`         | Enable/disable internal pull resistor   |
+| `SetPullDirection(pin, bool)`      | Choose pull-up (true) or pull-down      |
+| `SetDriveStrength(pin, level)`     | Adjust output drive (Level0–Level3)     |
+| `SetOutputMode(port_0_open_drain, port_1_open_drain)` | Set port 0/1 to open-drain or push-pull |
+| `SetPinPolarity(pin, polarity)`    | Invert input polarity                   |
+| `EnableInputLatch(pin, bool)`      | Enable latching for input capture       |
+| `ConfigureInterruptMask(mask)`     | Configure per-pin interrupt masks       |
+| `GetInterruptStatus()`             | Read and clear interrupt source         |
+| `SetInterruptCallback(cb)`         | Set callback for interrupt handling     |
+| `HandleInterrupt()`                | Handle INT signal & invoke callback     |
+| `GetErrorFlags()`                  | Retrieve latched driver errors          |
+| `ClearErrorFlags(mask)`            | Clear selected error flags              |
 
 ### ❗ Error Handling
 
 Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed).
-The flags persist until the call succeeds or `clearErrorFlags()` is used to reset them.
+The flags persist until the call succeeds or `ClearErrorFlags()` is used to reset them.
 
 
 ---
@@ -239,9 +239,9 @@ Configuration options for Kconfig-based projects are provided in the
 default address using `PCAL95555_DEFAULT_ADDRESS`.
 Each port contains a submenu for every pin so you can individually
 configure direction, pull resistor settings and the initial output level.
-Open-drain mode is still set per port. Call `initFromConfig()` at runtime
+Open-drain mode is still set per port. Call `InitFromConfig()` at runtime
 to apply the selected values. Set `PCAL95555_INIT_FROM_KCONFIG` to `n`
-if you want `initFromConfig()` to do nothing at runtime.
+if you want `InitFromConfig()` to do nothing at runtime.
 
 ## 📚 Documentation
 

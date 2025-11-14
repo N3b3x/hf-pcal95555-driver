@@ -22,12 +22,13 @@
  * @note This driver supports the PCAL9555/PCAL95555AHF device with 16 GPIO pins
  *       divided into two 8-bit ports (PORT_0 and PORT_1).
  */
-#pragma once
+#ifndef PCAL95555_HPP
+#define PCAL95555_HPP
 #include <cstddef>
 #include <cstdint>
 #include <functional>
-#include <stdio.h>   // For FILE* used by ESP-IDF headers
-#include <string.h>  // For C string functions (must be before namespace)
+#include <stdio.h>  // For FILE* used by ESP-IDF headers
+#include <string.h> // For C string functions (must be before namespace)
 
 #ifndef CONFIG_PCAL95555_INIT_FROM_KCONFIG
 #define CONFIG_PCAL95555_INIT_FROM_KCONFIG 1
@@ -474,18 +475,19 @@ protected:
  * @class PCAL95555
  * @brief Driver for the PCAL95555AHF / PCAL9555A I²C GPIO expander.
  *
- * @tparam I2cType The I2C interface implementation type that inherits from pcal95555::I2cBus<I2cType>
+ * @tparam I2cType The I2C interface implementation type that inherits from
+ * pcal95555::I2cBus<I2cType>
  *
  * @note The driver uses CRTP-based I2C interface for zero virtual call overhead.
  */
 template <typename I2cType>
 class PCAL95555 {
 public:
-
   /**
    * @brief Construct a new PCAL95555 driver instance.
    *
-   * @param bus Pointer to a user-implemented I2C interface (must inherit from pcal95555::I2cBus<I2cType>).
+   * @param bus Pointer to a user-implemented I2C interface (must inherit from
+   * pcal95555::I2cBus<I2cType>).
    * @param address 7-bit I2C address of the PCAL95555 device (0x00 to 0x7F).
    */
   PCAL95555(I2cType* bus, uint8_t address);
@@ -497,21 +499,21 @@ public:
    *                Note: setting N will result in N+1 total attempts per
    * transfer.
    */
-  void setRetries(int retries);
+  void SetRetries(int retries);
 
   /**
    * @brief Retrieve currently latched error flags.
    *
    * @return Bitmask composed of @ref Error values.
    */
-  uint16_t getErrorFlags() const;
+  uint16_t GetErrorFlags() const;
 
   /**
    * @brief Clear specific error flags.
    *
    * @param mask Bitmask of errors to clear (default: all).
    */
-  void clearErrorFlags(uint16_t mask = 0xFFFF);
+  void ClearErrorFlags(uint16_t mask = 0xFFFF);
 
   /**
    * @brief Reset all registers to their power-on default state.
@@ -520,7 +522,7 @@ public:
    * interrupts masked, drive strength set to full, and output mode
    * configured as push-pull as specified by the datasheet.
    */
-  void resetToDefault();
+  void ResetToDefault();
 
   /**
    * @brief Initialize the device using values from Kconfig.
@@ -528,7 +530,7 @@ public:
    * @details This writes the configuration registers using the
    * CONFIG_PCAL95555_INIT_* options defined at compile time.
    */
-  void initFromConfig();
+  void InitFromConfig();
 
   /**
    * @brief Set the direction of a single GPIO pin.
@@ -537,7 +539,7 @@ public:
    * @param dir Direction enum: Input or Output.
    * @return true on success; false on I2C failure.
    */
-  bool setPinDirection(uint16_t pin, GPIODir dir);
+  bool SetPinDirection(uint16_t pin, GPIODir dir);
 
   /**
    * @brief Set the direction for multiple GPIO pins at once.
@@ -546,7 +548,7 @@ public:
    * @param dir Common direction for all selected pins.
    * @return true on success; false if any I2C operation fails.
    */
-  bool setMultipleDirections(uint16_t mask, GPIODir dir);
+  bool SetMultipleDirections(uint16_t mask, GPIODir dir);
 
   /**
    * @brief Read the current logical level of a GPIO pin.
@@ -554,7 +556,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @return true if pin is high; false if pin is low or on read error.
    */
-  bool readPin(uint16_t pin);
+  bool ReadPin(uint16_t pin);
 
   /**
    * @brief Write a logical level to a GPIO output pin.
@@ -563,7 +565,7 @@ public:
    * @param value true to drive high, false to drive low.
    * @return true if write succeeded; false on I2C failure.
    */
-  bool writePin(uint16_t pin, bool value);
+  bool WritePin(uint16_t pin, bool value);
 
   /**
    * @brief Toggle the output state of a GPIO pin.
@@ -571,7 +573,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @return true on success; false on I2C failure.
    */
-  bool togglePin(uint16_t pin);
+  bool TogglePin(uint16_t pin);
 
   /**
    * @brief Enable or disable the pull-up/pull-down resistor on a pin.
@@ -580,15 +582,15 @@ public:
    * @param enable true to enable; false to disable.
    * @return true on success; false on I2C failure.
    */
-  bool setPullEnable(uint16_t pin, bool enable);
+  bool SetPullEnable(uint16_t pin, bool enable);
   /**
    * @brief Select internal pull-up or pull-down resistor direction.
    *
    * @param pin Zero-based pin index (0-15).
-   * @param pullUp true for pull-up; false for pull-down.
+   * @param pull_up true for pull-up; false for pull-down.
    * @return true on success; false on I2C failure.
    */
-  bool setPullDirection(uint16_t pin, bool pullUp);
+  bool SetPullDirection(uint16_t pin, bool pull_up);
 
   /**
    * @brief Configure the output drive strength for a GPIO pin.
@@ -597,7 +599,7 @@ public:
    * @param level Drive strength level (Level0..Level3).
    * @return true on success; false on I2C failure.
    */
-  bool setDriveStrength(uint16_t pin, DriveStrength level);
+  bool SetDriveStrength(uint16_t pin, DriveStrength level);
 
   /**
    * @brief Enable or disable interrupts on multiple pins.
@@ -605,22 +607,22 @@ public:
    * @param mask Bitmask where 0 enables interrupt, 1 disables per pin.
    * @return true on success; false on I2C failure.
    */
-  bool configureInterruptMask(uint16_t mask);
+  bool ConfigureInterruptMask(uint16_t mask);
   /**
    * @brief Retrieve and clear the interrupt status.
    *
    * @return 16-bit mask indicating which pins triggered an interrupt.
    */
-  uint16_t getInterruptStatus();
+  uint16_t GetInterruptStatus();
 
   /**
    * @brief Configure per-port output mode (push-pull or open-drain).
    *
-   * @param port0OpenDrain true for open-drain on port 0.
-   * @param port1OpenDrain true for open-drain on port 1.
+   * @param port_0_open_drain true for open-drain on port 0.
+   * @param port_1_open_drain true for open-drain on port 1.
    * @return true on success; false on I2C failure.
    */
-  bool setOutputMode(bool port0OpenDrain, bool port1OpenDrain);
+  bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain);
 
   /**
    * @brief Configure input polarity inversion for a single pin.
@@ -629,7 +631,7 @@ public:
    * @param polarity Polarity::Normal or Polarity::Inverted.
    * @return true on success; false on I2C failure.
    */
-  bool setPinPolarity(uint16_t pin, Polarity polarity);
+  bool SetPinPolarity(uint16_t pin, Polarity polarity);
 
   /**
    * @brief Configure input polarity for multiple pins.
@@ -638,7 +640,7 @@ public:
    * @param polarity Normal or Inverted for all selected pins.
    * @return true on success; false on any I2C failure.
    */
-  bool setMultiplePolarities(uint16_t mask, Polarity polarity);
+  bool SetMultiplePolarities(uint16_t mask, Polarity polarity);
 
   /**
    * @brief Enable or disable the input latch for a single pin.
@@ -647,7 +649,7 @@ public:
    * @param enable true to enable latch; false to disable.
    * @return true on success; false on I2C failure.
    */
-  bool enableInputLatch(uint16_t pin, bool enable);
+  bool EnableInputLatch(uint16_t pin, bool enable);
 
   /**
    * @brief Enable or disable input latch for multiple pins.
@@ -656,21 +658,21 @@ public:
    * @param enable true to enable; false to disable.
    * @return true on success; false on any I2C failure.
    */
-  bool enableMultipleInputLatches(uint16_t mask, bool enable);
+  bool EnableMultipleInputLatches(uint16_t mask, bool enable);
 
   /**
    * @brief Register a callback to be invoked on GPIO interrupts.
    *
    * @param cb Function taking a 16-bit status mask for active interrupts.
    */
-  void setInterruptCallback(std::function<void(uint16_t)> cb);
+  void SetInterruptCallback(std::function<void(uint16_t)> cb);
   /**
    * @brief Internal handler to process an interrupt event.
    *
    * @details Reads the interrupt status register and invokes the
    * previously registered callback if set.
    */
-  void handleInterrupt();
+  void HandleInterrupt();
 
 protected:
   /**
@@ -691,10 +693,10 @@ protected:
   bool writeRegister(uint8_t reg, uint8_t value);
 
   I2cType* i2c_;
-  uint8_t devAddr_;
+  uint8_t dev_addr_;
   int retries_{1};
-  uint16_t errorFlags_{0};
-  std::function<void(uint16_t)> irqCallback_;
+  uint16_t error_flags_{0};
+  std::function<void(uint16_t)> irq_callback_;
 
   void setError(Error e);
   void clearError(Error e);
@@ -705,4 +707,6 @@ protected:
 #include "../src/pcal95555.cpp"
 #undef PCAL95555_HEADER_INCLUDED
 
-}  // namespace pcal95555
+} // namespace pcal95555
+
+#endif // PCAL95555_HPP

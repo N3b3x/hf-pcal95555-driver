@@ -18,31 +18,31 @@ PACL95555(i2cBus *bus, uint8_t addr);
 
 | Method | Description |
 | ------ | ----------- |
-| `setPinDirection(pin, dir)` | Set pin as input or output |
-| `readPin(pin)` | Read logic level |
-| `writePin(pin, value)` | Drive output pin |
-| `togglePin(pin)` | Toggle output state |
+| `SetPinDirection(pin, dir)` | Set pin as input or output |
+| `ReadPin(pin)` | Read logic level |
+| `WritePin(pin, value)` | Drive output pin |
+| `TogglePin(pin)` | Toggle output state |
 
 Example:
 
 ```cpp
-gpio.setPinDirection(3, PACL95555::GPIODir::Output);
-gpio.writePin(3, true);
+gpio.SetPinDirection(3, PACL95555::GPIODir::Output);
+gpio.WritePin(3, true);
 ```
 
-`setPinDirection` takes a pin index `0-15` and a `GPIODir` enumerator. Pins start
+`SetPinDirection` takes a pin index `0-15` and a `GPIODir` enumerator. Pins start
 as inputs after reset. Writing a value only affects pins configured as outputs.
 
 ## Advanced Features
 
 - **Pull Resistors**
-  - `setPullEnable(pin, bool)` to enable/disable
-  - `setPullDirection(pin, bool)` for pull-up or pull-down
+  - `SetPullEnable(pin, bool)` to enable/disable
+  - `SetPullDirection(pin, bool)` for pull-up or pull-down
 - **Drive Strength**
-  - `setDriveStrength(pin, Level0..Level3)` adjusts output current
+  - `SetDriveStrength(pin, Level0..Level3)` adjusts output current
 - **Interrupts**
-  - `setInterruptCallback(cb)` registers a handler
-  - `getInterruptStatus()` returns pending interrupt flags
+  - `SetInterruptCallback(cb)` registers a handler
+  - `GetInterruptStatus()` returns pending interrupt flags
 
 Example interrupt setup:
 
@@ -52,12 +52,12 @@ auto handler = [](uint16_t mask) {
         // pin 4 changed state
     }
 };
-gpio.setInterruptCallback(handler);
-gpio.enableInputLatch(4, true);
+gpio.SetInterruptCallback(handler);
+gpio.EnableInputLatch(4, true);
 ```
 
-`enableInputLatch` latches a pin's logic level when an interrupt occurs so the
-callback can safely read the latched value later via `getInterruptStatus()`.
+`EnableInputLatch` latches a pin's logic level when an interrupt occurs so the
+callback can safely read the latched value later via `GetInterruptStatus()`.
 
 For further detail consult the inline comments in [`pcal95555.hpp`](../inc/pcal95555.hpp).
 

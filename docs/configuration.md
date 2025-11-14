@@ -7,9 +7,9 @@ The driver can be configured programmatically or through `Kconfig` options. This
 The simplest method is to call the appropriate member functions at runtime:
 
 ```cpp
-gpio.setPinDirection(0, PACL95555::GPIODir::Output);
-gpio.setPullEnable(0, true);
-gpio.setPullDirection(0, true);  // true = pull-up
+gpio.SetPinDirection(0, PACL95555::GPIODir::Output);
+gpio.SetPullEnable(0, true);
+gpio.SetPullDirection(0, true);  // true = pull-up
 ```
 
 Runtime configuration gives you full flexibility and can be changed any time after initialization.
@@ -23,11 +23,11 @@ Important entries include:
 - **PCAL95555_INIT_FROM_KCONFIG** – automatically apply configuration at startup
 - **Pin submenus** – specify direction, pull mode and initial level for each pin
 
-Call `initFromConfig()` during startup to apply the selected values.
+Call `InitFromConfig()` during startup to apply the selected values.
 
 ```cpp
 PACL95555 gpio(&i2c, CONFIG_PCAL95555_DEFAULT_ADDRESS);
-gpio.initFromConfig();
+gpio.InitFromConfig();
 ```
 
 A minimal `Kconfig` snippet might look like:
