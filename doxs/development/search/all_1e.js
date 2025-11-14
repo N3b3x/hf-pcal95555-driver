@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🔌_20platform_20integration_0',['🔌 Platform Integration',['../index.html#autotoc_md5',1,'']]]
+  ['✨_20features_0',['✨ Features',['../index.html#autotoc_md3',1,'']]]
 ];

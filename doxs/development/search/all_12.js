@@ -1,6 +1,15 @@
 var searchData=
 [
-  ['unit_20testing_0',['🧪 Unit Testing',['../index.html#autotoc_md9',1,'']]],
-  ['unit_20tests_1',['Running Unit Tests',['../md_docs_2installation.html#autotoc_md29',1,'']]],
-  ['using_20cmake_2',['Using CMake',['../md_docs_2installation.html#autotoc_md28',1,'']]]
+  ['o_0',['Pin I/O',['../md_docs_2api__reference.html#autotoc_md20',1,'']]],
+  ['of_20contents_1',['📚 Table of Contents',['../index.html#autotoc_md1',1,'']]],
+  ['of_20virtual_20functions_2',['Why CRTP Instead of Virtual Functions?',['../md_docs_2platform__integration.html#autotoc_md89',1,'']]],
+  ['option_201_3a_20copy_20files_3',['Option 1: Copy Files',['../md_docs_2installation.html#autotoc_md83',1,'']]],
+  ['option_202_3a_20git_20submodule_4',['Option 2: Git Submodule',['../md_docs_2installation.html#autotoc_md84',1,'']]],
+  ['optional_5',['Optional',['../md_docs_2hardware__setup.html#autotoc_md70',1,'Interrupt Pin (Optional)'],['../md_docs_2configuration.html#autotoc_md33',1,'Kconfig Configuration (Optional)'],['../md_docs_2hardware__setup.html#autotoc_md71',1,'Reset Pin (Optional)']]],
+  ['options_6',['Configuration Options',['../md_docs_2configuration.html#autotoc_md34',1,'']]],
+  ['output_7',['Expected Output',['../md_docs_2quickstart.html#autotoc_md119',1,'']]],
+  ['output_20mode_8',['Output Mode',['../md_docs_2configuration.html#autotoc_md40',1,'']]],
+  ['output_20pins_9',['For Output Pins',['../md_docs_2configuration.html#autotoc_md49',1,'']]],
+  ['overhead_20strong_10',['1. &lt;strong&gt;Zero Runtime Overhead&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md90',1,'']]],
+  ['overview_11',['📦 Overview',['../index.html#autotoc_md2',1,'']]]
 ];
