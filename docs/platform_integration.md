@@ -1,6 +1,7 @@
 # Platform Integration 🧩
 
-`PACL95555` abstracts the I²C operations behind the `i2cBus` interface. To use the library on a new platform you must implement this interface.
+`PACL95555` abstracts the I²C operations behind the `i2cBus` interface.
+To use the library on a new platform you must implement this interface.
 
 Each platform shown below demonstrates the minimum required methods. You can
 adapt the approach to any framework as long as your implementation performs the
@@ -46,7 +47,8 @@ class ArduinoI2CBus : public PACL95555::i2cBus {
 ```cpp
 class STM32I2CBus : public PACL95555::i2cBus {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
-        return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK;
+        return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*)data, len,
+HAL_MAX_DELAY) == HAL_OK;
     }
     bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override {
         return HAL_I2C_Mem_Read(&hi2c1, addr<<1, reg, I2C_MEMADD_SIZE_8BIT, data, len, HAL_MAX_DELAY) == HAL_OK;

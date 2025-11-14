@@ -1,7 +1,7 @@
 # API Reference 📑
 
 This section lists the most important methods provided by `PACL95555`. For a
-full definition see [`pacl95555.hpp`](../src/pacl95555.hpp). The examples below
+full definition see [`pcal95555.hpp`](../inc/pcal95555.hpp). The examples below
 assume an instance named `gpio` constructed with a platform specific `i2cBus`
 implementation.
 
@@ -59,7 +59,7 @@ gpio.enableInputLatch(4, true);
 `enableInputLatch` latches a pin's logic level when an interrupt occurs so the
 callback can safely read the latched value later via `getInterruptStatus()`.
 
-For further detail consult the inline comments in [`pacl95555.hpp`](../src/pacl95555.hpp).
+For further detail consult the inline comments in [`pcal95555.hpp`](../inc/pcal95555.hpp).
 
 ---
 

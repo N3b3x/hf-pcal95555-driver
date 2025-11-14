@@ -25,12 +25,17 @@ permalink: /
 
 ## 📦 Overview
 
-> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** - 
+> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** -
 > Interactive guides, examples, and step-by-step tutorials
 
-**PACL95555** is a fully-featured, platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced "Agile I/O" capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
+**PACL95555** is a fully-featured,
+platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors.
+The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C
+and supports advanced "Agile I/O" capabilities including
+interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
 
-This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
+This library abstracts all of that into a clear and extensible C++ API,
+ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
 
 ---
 
@@ -55,10 +60,11 @@ This library abstracts all of that into a clear and extensible C++ API, ready to
 ```text
 ├── datasheet/             # PCAL9555A datasheet PDF
 ├── examples/              # Sample usage and wiring examples
+├── inc/                   # Header files
+│   └── pcal95555.hpp      # Driver header
 ├── src/                   # Source files
-│   ├── pacl95555.hpp      # Driver header
-│   ├── pacl95555.cpp      # Driver implementation
-│   └── pacl95555_test.cpp # Mock-based unit tests
+│   ├── pcal95555.cpp      # Driver implementation
+│   └── pcal95555_test.cpp # Mock-based unit tests
 ├── LICENSE                # GNU GPLv3 license
 └── README.md              # Project documentation
 ```
@@ -67,12 +73,12 @@ This library abstracts all of that into a clear and extensible C++ API, ready to
 
 ## 🔧 Installation
 
-1. **Clone or copy** the `pacl95555.hpp` and `pcal95555.cpp` files into your project.
+1. **Clone or copy** the `pcal95555.hpp` and `pcal95555.cpp` files into your project.
 2. **Implement the `i2cBus` interface** for your platform (examples below).
 3. Include the header in your code:
 
    ```cpp
-   #include "pacl95555.hpp"
+   #include "pcal95555.hpp"
    ```
 4. Compile with any **C++11 or newer** compiler.
 
@@ -81,7 +87,7 @@ This library abstracts all of that into a clear and extensible C++ API, ready to
 ## 🚀 Quick Start
 
 ```cpp
-#include "pacl95555.hpp"
+#include "pcal95555.hpp"
 MyPlatformI2CBus i2c;               // Custom i2cBus implementation
 PACL95555 gpio(&i2c, 0x20);        // 0x20 is default I2C address
 
@@ -120,7 +126,8 @@ bool isHigh = gpio.readPin(1);
 
 ### ❗ Error Handling
 
-Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed). The flags persist until the call succeeds or `clearErrorFlags()` is used to reset them.
+Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed).
+The flags persist until the call succeeds or `clearErrorFlags()` is used to reset them.
 
 
 ---
@@ -184,7 +191,8 @@ class ArduinoI2CBus : public PACL95555::i2cBus {
 
 ## 📊 Examples
 
-For ESP32 examples, see the [examples/esp32](examples/esp32/) directory. Additional examples for other platforms are available in the [examples](examples/) directory.
+For ESP32 examples, see the [examples/esp32](examples/esp32/) directory.
+Additional examples for other platforms are available in the [examples](examples/) directory.
 
 ---
 
@@ -194,7 +202,7 @@ To run the built-in unit tests on a desktop:
 
 ```bash
 # Windows PowerShell
-g++ -std=c++11 pacl95555.cpp pcal95555_test.cpp -o test.exe
+g++ -std=c++11 pcal95555.cpp pcal95555_test.cpp -o test.exe
 ./test.exe
 ```
 
@@ -237,16 +245,17 @@ if you want `initFromConfig()` to do nothing at runtime.
 
 ## 📚 Documentation
 
-For a full guide including installation steps, API usage, and platform-specific notes, see the [docs directory](docs/index.md). Generate Doxygen documentation with:
+For a full guide including installation steps, API usage, and platform-specific notes,
+see the [docs directory](docs/index.md). Generate Doxygen documentation with:
 ```bash
 doxygen _config/Doxyfile
 ```
 
 ## 🤝 Contributing
 
-Pull requests and suggestions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
+Pull requests and suggestions are welcome! Please follow the existing code style and include tests for new features.
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3.0**.  
+This project is licensed under the **GNU General Public License v3.0**.
 See the [LICENSE](LICENSE) file for details.

@@ -16,7 +16,8 @@ Runtime configuration gives you full flexibility and can be changed any time aft
 
 ## Kconfig Integration
 
-For projects that use Kconfig (e.g. Zephyr, ESP-IDF) the library provides a set of options under the `PCAL95555` menu. Important entries include:
+For projects that use Kconfig (e.g. Zephyr, ESP-IDF) the library provides a set of options under the `PCAL95555` menu.
+Important entries include:
 
 - **PCAL95555_DEFAULT_ADDRESS** – I²C address of the expander
 - **PCAL95555_INIT_FROM_KCONFIG** – automatically apply configuration at startup
@@ -43,7 +44,8 @@ config PCAL95555_INIT_FROM_KCONFIG
 
 Use menuconfig or your build system's configuration tool to adjust these values.
 
-Adjust `Kconfig` to match your hardware setup. Refer to the [Hardware Overview](./hardware_overview.md) for pin capabilities.
+Adjust `Kconfig` to match your hardware setup.
+Refer to the [Hardware Overview](./hardware_overview.md) for pin capabilities.
 
 ---
 
