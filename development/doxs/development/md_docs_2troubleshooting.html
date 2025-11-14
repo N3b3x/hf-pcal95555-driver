@@ -76,10 +76,10 @@ $(function() {
   <div class="headertitle"><div class="title">Troubleshooting</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md122"></a> This guide helps you diagnose and resolve common issues when using the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md123"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md119"></a> This guide helps you diagnose and resolve common issues when using the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md120"></a>
 Common Error Messages</h1>
-<h2><a class="anchor" id="autotoc_md124"></a>
+<h2><a class="anchor" id="autotoc_md121"></a>
 Error: Device Not Detected</h2>
 <p><b>Symptoms:</b></p><ul>
 <li><code>ResetToDefault()</code> or other operations fail</li>
@@ -109,7 +109,7 @@ Error: Device Not Detected</h2>
 </ul>
 </li>
 </ol>
-<h2><a class="anchor" id="autotoc_md125"></a>
+<h2><a class="anchor" id="autotoc_md122"></a>
 Error: I2C Communication Failures</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Operations fail intermittently</li>
@@ -121,7 +121,7 @@ Error: I2C Communication Failures</h2>
 <li><b>Check bus speed</b>: Reduce I2C speed if using long wires</li>
 <li><b>Verify signal integrity</b>: Check for noise on I2C lines</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md126"></a>
+<h2><a class="anchor" id="autotoc_md123"></a>
 Incorrect Pin States</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Pins don't respond to writes</li>
@@ -133,7 +133,7 @@ Incorrect Pin States</h2>
 <li>[ ] Verify pull resistors are configured if needed</li>
 <li>[ ] Check for external loads affecting pin state</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md127"></a>
+<h2><a class="anchor" id="autotoc_md124"></a>
 Runtime Errors</h2>
 <p><b>Initialization Fails</b></p>
 <p><b>Checklist:</b></p><ul>
@@ -149,16 +149,16 @@ Runtime Errors</h2>
 <li>[ ] I2C communication is working</li>
 <li>[ ] Error flags are checked</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md128"></a>
+<h1><a class="anchor" id="autotoc_md125"></a>
 FAQ</h1>
-<h2><a class="anchor" id="autotoc_md129"></a>
+<h2><a class="anchor" id="autotoc_md126"></a>
 Q: Why do my pin writes not work?</h2>
 <p><b>A:</b> Common causes:</p><ol type="1">
 <li>Pin not configured as output: Call <code>SetPinDirection(pin, GPIODir::Output)</code> first</li>
 <li>Wrong pin number: Valid pins are 0-15</li>
 <li>I2C communication failure: Check I2C bus and connections</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md130"></a>
+<h2><a class="anchor" id="autotoc_md127"></a>
 Q: How do I use interrupts?</h2>
 <p><b>A:</b></p><ol type="1">
 <li>Configure pin as input</li>
@@ -167,11 +167,11 @@ Q: How do I use interrupts?</h2>
 <li>Set callback: <code>SetInterruptCallback(callback)</code></li>
 <li>Call <code>HandleInterrupt()</code> when interrupt occurs</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md131"></a>
+<h2><a class="anchor" id="autotoc_md128"></a>
 Q: Can I use multiple PCAL9555A devices?</h2>
 <p><b>A:</b> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances: </p><div class="fragment"><div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio1(&amp;i2c, 0x20); <span class="comment">// First device</span></div>
 <div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio2(&amp;i2c, 0x21); <span class="comment">// Second device</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md132"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md129"></a>
 Q: What's the difference between pull-up and pull-down?</h2>
 <p><b>A:</b></p><ul>
 <li><b>Pull-up</b>: Resistor connects pin to VDD (default high when floating)</li>

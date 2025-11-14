@@ -76,8 +76,8 @@ $(function() {
   <div class="headertitle"><div class="title">Examples</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md52"></a> This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md53"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md49"></a> This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md50"></a>
 Example 1: Basic GPIO Control</h1>
 <p>This example shows basic input/output operations.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -101,14 +101,14 @@ Example 1: Basic GPIO Control</h1>
 <div class="line">    gpio.SetPinDirection(1, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
 <div class="line">    <span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md54"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md51"></a>
 Explanation</h2>
 <ol type="1">
 <li><b>Reset</b>: Put device in known state</li>
 <li><b>Configure</b>: Set pin directions</li>
 <li><b>Use</b>: Read and write pin states</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md55"></a>
+<h1><a class="anchor" id="autotoc_md52"></a>
 Example 3: Interrupt Handling</h1>
 <p>This example shows how to use interrupts.</p>
 <div class="fragment"><div class="line"><span class="comment">// Configure pin 8 as input with interrupt</span></div>
@@ -126,7 +126,7 @@ Example 3: Interrupt Handling</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">// In your main loop or ISR</span></div>
 <div class="line">gpio.HandleInterrupt();</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md56"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md53"></a>
 Example 5: Drive Strength</h1>
 <p>This example shows drive strength configuration.</p>
 <div class="fragment"><div class="line"><span class="comment">// Set pin as output with reduced drive strength</span></div>

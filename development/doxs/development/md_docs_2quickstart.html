@@ -76,15 +76,15 @@ $(function() {
   <div class="headertitle"><div class="title">Quick Start</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md110"></a> This guide will get you up and running with the PCAL95555 driver in just a few steps.</p>
-<h1><a class="anchor" id="autotoc_md111"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md107"></a> This guide will get you up and running with the PCAL95555 driver in just a few steps.</p>
+<h1><a class="anchor" id="autotoc_md108"></a>
 Prerequisites</h1>
 <ul>
 <li><a class="el" href="md_docs_2installation.html">Driver installed</a></li>
 <li><a class="el" href="md_docs_2hardware__setup.html">Hardware wired</a></li>
 <li><a class="el" href="md_docs_2platform__integration.html">I2C interface implemented</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md112"></a>
+<h1><a class="anchor" id="autotoc_md109"></a>
 Minimal Example</h1>
 <p>Here's a complete working example:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -114,19 +114,19 @@ Minimal Example</h1>
 <div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
 <div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
 <div class="line"><span class="keywordtype">bool</span> input = gpio.ReadPin(1);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md113"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md110"></a>
 Step-by-Step Explanation</h1>
-<h2><a class="anchor" id="autotoc_md114"></a>
+<h2><a class="anchor" id="autotoc_md111"></a>
 Step 1: Include the Header</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md115"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md112"></a>
 Step 2: Implement the I2C Interface</h2>
 <p>You need to implement the <code>I2cInterface</code> for your platform. See <a class="el" href="md_docs_2platform__integration.html">Platform Integration</a> for detailed examples for ESP32, STM32, and Arduino.</p>
 <p>The interface requires two methods:</p><ul>
 <li><code>write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len)</code> - Write data to a register</li>
 <li><code>read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len)</code> - Read data from a register</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md116"></a>
+<h2><a class="anchor" id="autotoc_md113"></a>
 Step 3: Create Driver Instance</h2>
 <div class="fragment"><div class="line">MyI2c i2c;</div>
 <div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20);</div>
@@ -134,11 +134,11 @@ Step 3: Create Driver Instance</h2>
 <li>Pointer to your I2C interface implementation</li>
 <li>I2C address (0x20 is the default, can be changed via A0-A2 pins)</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md117"></a>
+<h2><a class="anchor" id="autotoc_md114"></a>
 Step 4: Initialize</h2>
 <div class="fragment"><div class="line">gpio.ResetToDefault();</div>
 </div><!-- fragment --><p><code>ResetToDefault()</code> puts the device in a known state (all pins as inputs with pull-ups enabled).</p>
-<h2><a class="anchor" id="autotoc_md118"></a>
+<h2><a class="anchor" id="autotoc_md115"></a>
 Step 5: Configure and Use Pins</h2>
 <div class="fragment"><div class="line"><span class="comment">// Set pin 0 as output</span></div>
 <div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
@@ -148,14 +148,14 @@ Step 5: Configure and Use Pins</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Read from pin 1 (input)</span></div>
 <div class="line"><span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md119"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md116"></a>
 Expected Output</h1>
 <p>When running this example:</p><ul>
 <li>Pin 0 should be set high (if connected to an LED, it should light up)</li>
 <li>Pin 1 value should be read correctly</li>
 <li>No error messages should appear</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md120"></a>
+<h1><a class="anchor" id="autotoc_md117"></a>
 Troubleshooting</h1>
 <p>If you encounter issues:</p>
 <ul>
@@ -164,7 +164,7 @@ Troubleshooting</h1>
 <li><b>No response</b>: Check I2C bus and pull-up resistors</li>
 <li><b>See</b>: <a class="el" href="md_docs_2troubleshooting.html">Troubleshooting</a> for common issues</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md121"></a>
+<h1><a class="anchor" id="autotoc_md118"></a>
 Next Steps</h1>
 <ul>
 <li>Explore <a class="el" href="md_docs_2examples.html">Examples</a> for more advanced usage</li>

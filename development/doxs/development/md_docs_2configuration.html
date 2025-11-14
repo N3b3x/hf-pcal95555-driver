@@ -76,8 +76,8 @@ $(function() {
   <div class="headertitle"><div class="title">Configuration</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md31"></a> This guide covers all configuration options available for the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md32"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md28"></a> This guide covers all configuration options available for the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md29"></a>
 I2C Address Configuration</h1>
 <p>The PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field.</p>
 <table class="markdownTable">
@@ -93,11 +93,11 @@ I2C Address Configuration</h1>
 <p><b>Default I2C address</b>: <code>0x20</code> (all address pins to GND)</p>
 <p><b>Address Range</b>: 0x20 to 0x27 (7-bit I2C addresses)</p>
 <p><b>Example</b>: To set address 0x21, connect A0 to VDD and A1-A2 to GND.</p>
-<h1><a class="anchor" id="autotoc_md33"></a>
+<h1><a class="anchor" id="autotoc_md30"></a>
 Kconfig Configuration (Optional)</h1>
 <p>If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration:</p>
 <p><b>Location</b>: <a href="../Kconfig"><code>Kconfig</code></a></p>
-<h2><a class="anchor" id="autotoc_md34"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 Configuration Options</h2>
 <ul>
 <li><b>Per-pin direction</b>: Configure each pin as input (1) or output (0)</li>
@@ -105,7 +105,7 @@ Configuration Options</h2>
 <li><b>Per-pin initial output</b>: Set initial output state</li>
 <li><b>Port open-drain</b>: Configure ports for open-drain or push-pull mode</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md35"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 Using Kconfig</h2>
 <ol type="1">
 <li>Run <code>idf.py menuconfig</code> (or your Kconfig tool)</li>
@@ -114,9 +114,9 @@ Using Kconfig</h2>
 <li>Use <code>InitFromConfig()</code> to apply settings:</li>
 </ol>
 <div class="fragment"><div class="line">gpio.InitFromConfig(); <span class="comment">// Apply Kconfig settings</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md36"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md33"></a>
 Runtime Configuration</h1>
-<h2><a class="anchor" id="autotoc_md37"></a>
+<h2><a class="anchor" id="autotoc_md34"></a>
 Pin Direction</h2>
 <p>Set individual pin direction:</p>
 <div class="fragment"><div class="line"><span class="comment">// Set pin 0 as output</span></div>
@@ -127,7 +127,7 @@ Pin Direction</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Set multiple pins at once</span></div>
 <div class="line">gpio.SetMultipleDirections(0x000F, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); <span class="comment">// Pins 0-3</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md38"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md35"></a>
 Pull Resistors</h2>
 <p>Configure pull-up/pull-down resistors:</p>
 <div class="fragment"><div class="line"><span class="comment">// Enable pull-up on pin 0</span></div>
@@ -137,7 +137,7 @@ Pull Resistors</h2>
 <div class="line"><span class="comment">// Enable pull-down on pin 1</span></div>
 <div class="line">gpio.SetPullEnable(1, <span class="keyword">true</span>);</div>
 <div class="line">gpio.SetPullDirection(1, <span class="keyword">false</span>);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md39"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md36"></a>
 Drive Strength</h2>
 <p>Set output drive strength:</p>
 <div class="fragment"><div class="line">gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Full);</div>
@@ -147,12 +147,12 @@ Drive Strength</h2>
 <li><code>ThreeQuarter</code>: 75% drive strength</li>
 <li><code>Full</code>: 100% drive strength</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md40"></a>
+<h2><a class="anchor" id="autotoc_md37"></a>
 Output Mode</h2>
 <p>Configure port output mode (push-pull or open-drain):</p>
 <div class="fragment"><div class="line"><span class="comment">// Set PORT_0 to open-drain, PORT_1 to push-pull</span></div>
 <div class="line">gpio.SetOutputMode(<span class="keyword">true</span>, <span class="keyword">false</span>);</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md41"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md38"></a>
 Polarity Inversion</h2>
 <p>Invert input polarity:</p>
 <div class="fragment"><div class="line"><span class="comment">// Invert pin 0 polarity</span></div>
@@ -160,9 +160,9 @@ Polarity Inversion</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Invert multiple pins</span></div>
 <div class="line">gpio.SetMultiplePolarities(0x00FF, pcal95555::PCAL95555&lt;MyI2c&gt;::Polarity::Inverted);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md42"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md39"></a>
 Default Configuration</h1>
-<h2><a class="anchor" id="autotoc_md43"></a>
+<h2><a class="anchor" id="autotoc_md40"></a>
 ResetToDefault()</h2>
 <p>Resets all registers to power-on defaults:</p>
 <div class="fragment"><div class="line">gpio.ResetToDefault();</div>
@@ -174,9 +174,9 @@ ResetToDefault()</h2>
 <li>Polarity: Normal (not inverted)</li>
 </ul>
 <p><b>Location</b>: <a href="../src/pcal95555.cpp#L49"><code>src/pcal95555.cpp#L49</code></a></p>
-<h1><a class="anchor" id="autotoc_md44"></a>
+<h1><a class="anchor" id="autotoc_md41"></a>
 Interrupt Configuration</h1>
-<h2><a class="anchor" id="autotoc_md45"></a>
+<h2><a class="anchor" id="autotoc_md42"></a>
 Enable Interrupts</h2>
 <div class="fragment"><div class="line"><span class="comment">// Configure interrupt mask (0 = enabled, 1 = masked)</span></div>
 <div class="line">gpio.ConfigureInterruptMask(0xFF00); <span class="comment">// Enable interrupts on PORT_1 (pins 8-15)</span></div>
@@ -189,30 +189,30 @@ Enable Interrupts</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Handle interrupt (call from ISR or polling)</span></div>
 <div class="line">gpio.HandleInterrupt();</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md46"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md43"></a>
 Get Interrupt Status</h2>
 <div class="fragment"><div class="line">uint16_t status = gpio.GetInterruptStatus();</div>
 <div class="line"><span class="comment">// Check which pins triggered interrupt</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md47"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md44"></a>
 Recommended Settings</h1>
-<h2><a class="anchor" id="autotoc_md48"></a>
+<h2><a class="anchor" id="autotoc_md45"></a>
 For Input Pins</h2>
 <div class="fragment"><div class="line">gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
 <div class="line">gpio.SetPullEnable(pin, <span class="keyword">true</span>);</div>
 <div class="line">gpio.SetPullDirection(pin, <span class="keyword">true</span>); <span class="comment">// Pull-up</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md49"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md46"></a>
 For Output Pins</h2>
 <div class="fragment"><div class="line">gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
 <div class="line">gpio.SetDriveStrength(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Full);</div>
 <div class="line">gpio.WritePin(pin, <span class="keyword">false</span>); <span class="comment">// Set initial state</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md50"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md47"></a>
 For Interrupt-Driven Inputs</h2>
 <div class="fragment"><div class="line">gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
 <div class="line">gpio.SetPullEnable(pin, <span class="keyword">true</span>);</div>
 <div class="line">gpio.SetPullDirection(pin, <span class="keyword">true</span>);</div>
 <div class="line">gpio.EnableInputLatch(pin, <span class="keyword">true</span>); <span class="comment">// Latch input changes</span></div>
 <div class="line">gpio.ConfigureInterruptMask(~(1 &lt;&lt; pin)); <span class="comment">// Enable interrupt for this pin</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md51"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md48"></a>
 Next Steps</h1>
 <ul>
 <li>See <a class="el" href="md_docs_2examples.html">Examples</a> for configuration examples</li>
