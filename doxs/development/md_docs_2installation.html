@@ -76,18 +76,18 @@ $(function() {
   <div class="headertitle"><div class="title">Installation</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md80"></a> This guide covers how to integrate the PCAL95555 driver into your project.</p>
-<h1><a class="anchor" id="autotoc_md81"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md77"></a> This guide covers how to integrate the PCAL95555 driver into your project.</p>
+<h1><a class="anchor" id="autotoc_md78"></a>
 Prerequisites</h1>
 <p>Before installing the driver, ensure you have:</p>
 <ul>
 <li><b>C++11 Compiler</b>: GCC 4.8+, Clang 3.3+, or MSVC 2013+</li>
 <li><b>I2C Interface</b>: Your platform's I2C driver (ESP-IDF, STM32 HAL, Arduino Wire, etc.)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md82"></a>
+<h1><a class="anchor" id="autotoc_md79"></a>
 Integration</h1>
 <p>This driver is a <b>header-only template library</b> designed to be integrated directly into your project. There's no separate build step required.</p>
-<h2><a class="anchor" id="autotoc_md83"></a>
+<h2><a class="anchor" id="autotoc_md80"></a>
 Option 1: Copy Files</h2>
 <p>Copy the following files into your project:</p>
 <div class="fragment"><div class="line">inc/</div>
@@ -95,17 +95,17 @@ Option 1: Copy Files</h2>
 <div class="line">src/</div>
 <div class="line">  └── pcal95555.cpp</div>
 </div><!-- fragment --><p><b>Note</b>: The driver uses a header-only template design where <code>pcal95555.cpp</code> is included by <code>pcal95555.hpp</code>. You typically only need to include the header file in your project.</p>
-<h2><a class="anchor" id="autotoc_md84"></a>
+<h2><a class="anchor" id="autotoc_md81"></a>
 Option 2: Git Submodule</h2>
 <div class="fragment"><div class="line">cd your-project</div>
 <div class="line">git submodule add https://github.com/N3b3x/hf-pcal95555-driver.git drivers/pcal95555</div>
 </div><!-- fragment --><p>Then add to your include path: </p><div class="fragment"><div class="line">target_include_directories(your_target PRIVATE drivers/pcal95555/inc)</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md85"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md82"></a>
 Including the Header</h1>
 <p>Simply include the header in your code:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
 </div><!-- fragment --><p>The implementation is included automatically via the header file.</p>
-<h1><a class="anchor" id="autotoc_md86"></a>
+<h1><a class="anchor" id="autotoc_md83"></a>
 Next Steps</h1>
 <ul>
 <li>Follow the <a class="el" href="md_docs_2quickstart.html">Quick Start</a> guide to create your first application</li>
