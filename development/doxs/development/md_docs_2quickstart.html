@@ -82,7 +82,7 @@ $(function() {
 </ol>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">class </span>MyI2C : <span class="keyword">public</span> PACL95555::i2cBus {</div>
+<div class="line"><span class="keyword">class </span>MyI2C : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2C&gt; {</div>
 <div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) <span class="keyword">override</span>;</div>
 <div class="line">    <span class="keywordtype">bool</span> read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) <span class="keyword">override</span>;</div>
 <div class="line">};</div>

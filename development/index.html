@@ -317,7 +317,7 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
   <li>🧲 Input latching with interrupt capture</li>
   <li>📡 INT interrupt output with per-pin interrupt masks</li>
   <li>🧪 Built-in mock-based unit test suite</li>
-  <li>🔌 Hardware-agnostic <code class="language-plaintext highlighter-rouge">i2cBus</code> interface</li>
+  <li>🔌 Hardware-agnostic <code class="language-plaintext highlighter-rouge">I2cInterface</code> interface</li>
 </ul><hr />
 <h2 id="-project-structure">
   
@@ -358,7 +358,7 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
 
 <ol>
   <li><strong>Clone or copy</strong> the <code class="language-plaintext highlighter-rouge">pcal95555.hpp</code> and <code class="language-plaintext highlighter-rouge">pcal95555.cpp</code> files into your project.</li>
-  <li><strong>Implement the <code class="language-plaintext highlighter-rouge">i2cBus</code> interface</strong> for your platform (examples below).</li>
+  <li><strong>Implement the <code class="language-plaintext highlighter-rouge">I2cInterface</code> interface</strong> for your platform (examples below).</li>
   <li>
     <p>Include the header in your code:</p>
 
@@ -527,7 +527,7 @@ The flags persist until the call succeeds or <code class="language-plaintext hig
 10
 11
 12
-</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ESP32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ESP32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">ESP32I2CBus</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="kt">uint8_t</span> <span class="n">buf</span><span class="p">[</span><span class="mi">1</span> <span class="o">+</span> <span class="n">len</span><span class="p">];</span>
         <span class="n">buf</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">reg</span><span class="p">;</span>
@@ -558,7 +558,7 @@ The flags persist until the call succeeds or <code class="language-plaintext hig
 7
 8
 9
-</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">STM32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">STM32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">STM32I2CBus</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="k">return</span> <span class="n">HAL_I2C_Mem_Write</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hi2c1</span><span class="p">,</span> <span class="n">addr</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="n">HAL_MAX_DELAY</span><span class="p">)</span> <span class="o">==</span> <span class="n">HAL_OK</span><span class="p">;</span>
     <span class="p">}</span>
@@ -594,7 +594,7 @@ The flags persist until the call succeeds or <code class="language-plaintext hig
 15
 16
 17
-</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ArduinoI2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ArduinoI2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">ArduinoI2CBus</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="n">Wire</span><span class="p">.</span><span class="n">beginTransmission</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
         <span class="n">Wire</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">reg</span><span class="p">);</span>

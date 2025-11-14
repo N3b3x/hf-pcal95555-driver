@@ -1,5 +1,5 @@
-warning: ignoring unsupported tag 'PAGE_OUTLINE_PANEL' at line 1765, file /tmp/doxyfile.EbGJXz
-warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.EbGJXz' has become obsolete.
+warning: ignoring unsupported tag 'PAGE_OUTLINE_PANEL' at line 1765, file /tmp/doxyfile.yhjvpw
+warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.yhjvpw' has become obsolete.
          To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555_test.cpp:7: warning: Compound MockI2C is not documented.
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:13: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
@@ -9,26 +9,26 @@ warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.EbGJXz' has b
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:49: warning: documented symbol 'void pcal95555::PCAL95555::ResetToDefault' was not declared or defined.
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:78: warning: documented symbol 'void pcal95555::PCAL95555::InitFromConfig' was not declared or defined.
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:110: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinDirection' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:125: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultipleDirections' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:149: warning: documented symbol 'bool pcal95555::PCAL95555::ReadPin' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:165: warning: documented symbol 'bool pcal95555::PCAL95555::WritePin' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:181: warning: documented symbol 'bool pcal95555::PCAL95555::TogglePin' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:198: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullEnable' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:213: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullDirection' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:230: warning: documented symbol 'bool pcal95555::PCAL95555::SetDriveStrength' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:251: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterruptMask' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:259: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetInterruptStatus' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:268: warning: documented symbol 'bool pcal95555::PCAL95555::SetOutputMode' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:275: warning: documented symbol 'void pcal95555::PCAL95555::SetInterruptCallback' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:281: warning: documented symbol 'void pcal95555::PCAL95555::HandleInterrupt' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:289: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinPolarity' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:304: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultiplePolarities' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:325: warning: documented symbol 'bool pcal95555::PCAL95555::EnableInputLatch' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:340: warning: documented symbol 'bool pcal95555::PCAL95555::EnableMultipleInputLatches' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:362: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetErrorFlags' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:367: warning: documented symbol 'void pcal95555::PCAL95555::ClearErrorFlags' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:372: warning: documented symbol 'void pcal95555::PCAL95555::setError' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:377: warning: documented symbol 'void pcal95555::PCAL95555::clearError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:126: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultipleDirections' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:155: warning: documented symbol 'bool pcal95555::PCAL95555::ReadPin' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:172: warning: documented symbol 'bool pcal95555::PCAL95555::WritePin' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:189: warning: documented symbol 'bool pcal95555::PCAL95555::TogglePin' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:207: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullEnable' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:223: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullDirection' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:241: warning: documented symbol 'bool pcal95555::PCAL95555::SetDriveStrength' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:263: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterruptMask' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:272: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetInterruptStatus' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:282: warning: documented symbol 'bool pcal95555::PCAL95555::SetOutputMode' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:289: warning: documented symbol 'void pcal95555::PCAL95555::SetInterruptCallback' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:295: warning: documented symbol 'void pcal95555::PCAL95555::HandleInterrupt' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:303: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinPolarity' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:319: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultiplePolarities' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:345: warning: documented symbol 'bool pcal95555::PCAL95555::EnableInputLatch' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:361: warning: documented symbol 'bool pcal95555::PCAL95555::EnableMultipleInputLatches' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:388: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetErrorFlags' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:393: warning: documented symbol 'void pcal95555::PCAL95555::ClearErrorFlags' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:398: warning: documented symbol 'void pcal95555::PCAL95555::setError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:403: warning: documented symbol 'void pcal95555::PCAL95555::clearError' was not declared or defined.
 Doxygen version used: 1.10.0 (ebc57c6dd303a980bd19dd74b8b61c8f3f5180ca)
 Searching for include files...
 Searching for example files...
@@ -170,7 +170,16 @@ finalizing index lists...
 writing tag file...
 Running plantuml with JAVA...
 Running dot...
-Patching output file 1/1
-type lookup cache used 2/65536 hits=12 misses=2
-symbol lookup cache used 3/65536 hits=56 misses=3
+Generating dot graphs using 5 parallel threads...
+Running dot for graph 1/3
+Running dot for graph 2/3
+Running dot for graph 3/3
+Patching output file 1/6
+Patching output file 2/6
+Patching output file 3/6
+Patching output file 4/6
+Patching output file 5/6
+Patching output file 6/6
+type lookup cache used 4/65536 hits=26 misses=4
+symbol lookup cache used 7/65536 hits=105 misses=7
 finished...

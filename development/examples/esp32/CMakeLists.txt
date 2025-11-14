@@ -18,9 +18,9 @@ cmake_minimum_required(VERSION 3.16)
 # Shared Default Variables
 # =============================================================================
 # Define default values for requirements phase (used by components)
-set(DEFAULT_APP_TYPE "pcal9555_comprehensive_test" CACHE STRING "Default app type for requirements phase")
+set(DEFAULT_APP_TYPE "pcal95555_comprehensive_test" CACHE STRING "Default app type for requirements phase")
 set(DEFAULT_BUILD_TYPE "Release" CACHE STRING "Default build type for requirements phase")
-set(DEFAULT_SOURCE_FILE "PCAL9555ComprehensiveTest.cpp" CACHE STRING "Default source file for requirements phase")
+set(DEFAULT_SOURCE_FILE "pcal95555_comprehensive_test.cpp" CACHE STRING "Default source file for requirements phase")
 
 # =============================================================================
 # Build Parameter Validation

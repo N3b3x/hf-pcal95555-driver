@@ -76,12 +76,12 @@ $(function() {
   <div class="headertitle"><div class="title">API Reference 📑</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md10"></a> This section lists the most important methods provided by <code>PACL95555</code>. For a full definition see <a href="../inc/pcal95555.hpp"><code>pcal95555.hpp</code></a>. The examples below assume an instance named <code>gpio</code> constructed with a platform specific <code>i2cBus</code> implementation.</p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md10"></a> This section lists the most important methods provided by <code>PACL95555</code>. For a full definition see <a href="../inc/pcal95555.hpp"><code>pcal95555.hpp</code></a>. The examples below assume an instance named <code>gpio</code> constructed with a platform specific <code>I2cInterface</code> implementation.</p>
 <h1><a class="anchor" id="autotoc_md11"></a>
 Construction</h1>
-<div class="fragment"><div class="line">PACL95555(i2cBus *bus, uint8_t addr);</div>
+<div class="fragment"><div class="line">PCAL95555(I2cInterface *bus, uint8_t addr);</div>
 </div><!-- fragment --><ul>
-<li><code>bus</code>: pointer to an object implementing the <code>i2cBus</code> interface.</li>
+<li><code>bus</code>: pointer to an object implementing the <code>I2cInterface</code> interface.</li>
 <li><code>addr</code>: I²C address of the PCAL9555A device.</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md12"></a>

@@ -253,7 +253,7 @@
 </h1>
     
 
-<p><code class="language-plaintext highlighter-rouge">PACL95555</code> abstracts the I²C operations behind the <code class="language-plaintext highlighter-rouge">i2cBus</code> interface.
+<p><code class="language-plaintext highlighter-rouge">PCAL95555</code> abstracts the I²C operations behind the <code class="language-plaintext highlighter-rouge">I2cInterface</code> interface.
 To use the library on a new platform you must implement this interface.</p>
 
 <p>Each platform shown below demonstrates the minimum required methods. You can
@@ -277,7 +277,7 @@ read and write transactions expected by the driver.</p>
 7
 8
 9
-</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ESP32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ESP32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">ESP32I2CBus</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="k">return</span> <span class="n">i2c_master_write_to_device</span><span class="p">(</span><span class="n">I2C_NUM_0</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">reg</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">50</span><span class="o">/</span><span class="n">portTICK_PERIOD_MS</span><span class="p">)</span> <span class="o">==</span> <span class="n">ESP_OK</span> <span class="o">&amp;&amp;</span>
                <span class="n">i2c_master_write_to_device</span><span class="p">(</span><span class="n">I2C_NUM_0</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span> <span class="mi">50</span><span class="o">/</span><span class="n">portTICK_PERIOD_MS</span><span class="p">)</span> <span class="o">==</span> <span class="n">ESP_OK</span><span class="p">;</span>
@@ -312,7 +312,7 @@ read and write transactions expected by the driver.</p>
 14
 15
 16
-</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ArduinoI2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">ArduinoI2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">ArduinoI2CBus</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="n">Wire</span><span class="p">.</span><span class="n">beginTransmission</span><span class="p">(</span><span class="n">addr</span><span class="p">);</span>
         <span class="n">Wire</span><span class="p">.</span><span class="n">write</span><span class="p">(</span><span class="n">reg</span><span class="p">);</span>
@@ -347,7 +347,7 @@ read and write transactions expected by the driver.</p>
 7
 8
 9
-</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">STM32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="k">class</span> <span class="nc">STM32I2CBus</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">STM32I2CBus</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span> <span class="p">{</span>
         <span class="k">return</span> <span class="n">HAL_I2C_Mem_Write</span><span class="p">(</span><span class="o">&amp;</span><span class="n">hi2c1</span><span class="p">,</span> <span class="n">addr</span><span class="o">&lt;&lt;</span><span class="mi">1</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">I2C_MEMADD_SIZE_8BIT</span><span class="p">,</span> <span class="p">(</span><span class="kt">uint8_t</span><span class="o">*</span><span class="p">)</span><span class="n">data</span><span class="p">,</span> <span class="n">len</span><span class="p">,</span>
 <span class="n">HAL_MAX_DELAY</span><span class="p">)</span> <span class="o">==</span> <span class="n">HAL_OK</span><span class="p">;</span>

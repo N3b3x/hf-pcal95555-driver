@@ -267,7 +267,7 @@
 6
 </pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">"pcal95555.hpp"</span><span class="cp">
 </span>
-<span class="k">class</span> <span class="nc">MyI2C</span> <span class="o">:</span> <span class="k">public</span> <span class="n">PACL95555</span><span class="o">::</span><span class="n">i2cBus</span> <span class="p">{</span>
+<span class="k">class</span> <span class="nc">MyI2C</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">MyI2C</span><span class="o">&gt;</span> <span class="p">{</span>
     <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
     <span class="kt">bool</span> <span class="n">read</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="k">override</span><span class="p">;</span>
 <span class="p">};</span>

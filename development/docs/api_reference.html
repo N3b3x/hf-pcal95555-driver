@@ -255,7 +255,7 @@
 
 <p>This section lists the most important methods provided by <code class="language-plaintext highlighter-rouge">PACL95555</code>. For a
 full definition see <a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">pcal95555.hpp</code></a>. The examples below
-assume an instance named <code class="language-plaintext highlighter-rouge">gpio</code> constructed with a platform specific <code class="language-plaintext highlighter-rouge">i2cBus</code>
+assume an instance named <code class="language-plaintext highlighter-rouge">gpio</code> constructed with a platform specific <code class="language-plaintext highlighter-rouge">I2cInterface</code>
 implementation.</p>
 <h2 id="construction">
   
@@ -267,11 +267,11 @@ implementation.</p>
     
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="n">PACL95555</span><span class="p">(</span><span class="n">i2cBus</span> <span class="o">*</span><span class="n">bus</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">);</span>
+</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span><span class="p">(</span><span class="n">I2cInterface</span> <span class="o">*</span><span class="n">bus</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">bus</code>: pointer to an object implementing the <code class="language-plaintext highlighter-rouge">i2cBus</code> interface.</li>
+  <li><code class="language-plaintext highlighter-rouge">bus</code>: pointer to an object implementing the <code class="language-plaintext highlighter-rouge">I2cInterface</code> interface.</li>
   <li><code class="language-plaintext highlighter-rouge">addr</code>: I²C address of the PCAL9555A device.</li>
 </ul>
 <h2 id="basic-io">

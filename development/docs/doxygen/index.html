@@ -126,7 +126,7 @@ $(function() {
 🔌 Platform Integration</h1>
 <h2><a class="anchor" id="autotoc_md6"></a>
 ✅ ESP32 (ESP-IDF)</h2>
-<div class="fragment"><div class="line"><span class="keyword">class </span>ESP32I2CBus : <span class="keyword">public</span> PACL95555::i2cBus {</div>
+<div class="fragment"><div class="line"><span class="keyword">class </span>ESP32I2CBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;ESP32I2CBus&gt; {</div>
 <div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
 <div class="line">        uint8_t buf[1 + len];</div>
 <div class="line">        buf[0] = reg;</div>
@@ -140,7 +140,7 @@ $(function() {
 <div class="line">};</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
 ✅ STM32 (HAL)</h2>
-<div class="fragment"><div class="line"><span class="keyword">class </span>STM32I2CBus : <span class="keyword">public</span> PACL95555::i2cBus {</div>
+<div class="fragment"><div class="line"><span class="keyword">class </span>STM32I2CBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;STM32I2CBus&gt; {</div>
 <div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
 <div class="line">        <span class="keywordflow">return</span> HAL_I2C_Mem_Write(&amp;hi2c1, addr&lt;&lt;1, reg, 1, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK;</div>
 <div class="line">    }</div>
@@ -151,7 +151,7 @@ $(function() {
 <div class="line">};</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
 ✅ Arduino (Wire)</h2>
-<div class="fragment"><div class="line"><span class="keyword">class </span>ArduinoI2CBus : <span class="keyword">public</span> PACL95555::i2cBus {</div>
+<div class="fragment"><div class="line"><span class="keyword">class </span>ArduinoI2CBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;ArduinoI2CBus&gt; {</div>
 <div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
 <div class="line">        Wire.beginTransmission(addr);</div>
 <div class="line">        Wire.write(reg);</div>
