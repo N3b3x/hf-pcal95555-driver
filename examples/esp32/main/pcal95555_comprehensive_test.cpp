@@ -1,5 +1,5 @@
 /**
- * @file PCAL9555ComprehensiveTest.cpp
+ * @file pcal95555_comprehensive_test.cpp
  * @brief Comprehensive test suite for PCAL9555 GPIO expander driver on ESP32-C6
  *
  * This file contains comprehensive testing for PCAL9555 features including:
@@ -22,7 +22,7 @@
  */
 
 #include "pcal95555.hpp"
-#include "Esp32Pcal9555Bus.hpp"
+#include "esp32_pcal95555_bus.hpp"
 #include "TestFramework.h"
 #include <memory>
 #include "freertos/FreeRTOS.h"

@@ -7,7 +7,7 @@ This tutorial demonstrates how to bring up a PCAL9555A expander using the librar
 ```cpp
 #include "pcal95555.hpp"
 
-class MyI2C : public PACL95555::i2cBus {
+class MyI2C : public pcal95555::I2cInterface<MyI2C> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override;
     bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) override;
 };

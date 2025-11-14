@@ -1,6 +1,6 @@
 # Platform Integration 🧩
 
-`PACL95555` abstracts the I²C operations behind the `i2cBus` interface.
+`PCAL95555` abstracts the I²C operations behind the `I2cInterface` interface.
 To use the library on a new platform you must implement this interface.
 
 Each platform shown below demonstrates the minimum required methods. You can
@@ -10,7 +10,7 @@ read and write transactions expected by the driver.
 ## ESP32 (ESP-IDF)
 
 ```cpp
-class ESP32I2CBus : public PACL95555::i2cBus {
+class ESP32I2CBus : public pcal95555::I2cInterface<ESP32I2CBus> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
         return i2c_master_write_to_device(I2C_NUM_0, addr, &reg, 1, 50/portTICK_PERIOD_MS) == ESP_OK &&
                i2c_master_write_to_device(I2C_NUM_0, addr, data, len, 50/portTICK_PERIOD_MS) == ESP_OK;
@@ -24,7 +24,7 @@ class ESP32I2CBus : public PACL95555::i2cBus {
 ## Arduino (Wire)
 
 ```cpp
-class ArduinoI2CBus : public PACL95555::i2cBus {
+class ArduinoI2CBus : public pcal95555::I2cInterface<ArduinoI2CBus> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
         Wire.beginTransmission(addr);
         Wire.write(reg);
@@ -45,7 +45,7 @@ class ArduinoI2CBus : public PACL95555::i2cBus {
 ## STM32 (HAL)
 
 ```cpp
-class STM32I2CBus : public PACL95555::i2cBus {
+class STM32I2CBus : public pcal95555::I2cInterface<STM32I2CBus> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
         return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*)data, len,
 HAL_MAX_DELAY) == HAL_OK;

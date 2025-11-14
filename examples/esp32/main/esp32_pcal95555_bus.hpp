@@ -1,8 +1,8 @@
 /**
- * @file Esp32Pcal9555Bus.hpp
+ * @file esp32_pcal95555_bus.hpp
  * @brief ESP32 I2C bus implementation for PCAL9555 driver
  * 
- * This file provides the ESP32-specific implementation of the pcal95555::I2cBus
+ * This file provides the ESP32-specific implementation of the pcal95555::I2cInterface
  * interface using ESP-IDF's I2C master driver.
  * 
  * @author Nebiyu Tadesse
@@ -33,12 +33,12 @@ static const char* TAG_I2C = "PCAL9555_I2C";
 
 /**
  * @class Esp32Pcal9555Bus
- * @brief ESP32 implementation of PCAL95555::I2cBus interface
+ * @brief ESP32 implementation of PCAL95555::I2cInterface interface
  * 
  * This class provides I2C communication for the PCAL9555 driver using
  * ESP-IDF's I2C master driver API.
  */
-class Esp32Pcal9555Bus : public pcal95555::I2cBus<Esp32Pcal9555Bus> {
+class Esp32Pcal9555Bus : public pcal95555::I2cInterface<Esp32Pcal9555Bus> {
 public:
     /**
      * @brief I2C bus configuration structure

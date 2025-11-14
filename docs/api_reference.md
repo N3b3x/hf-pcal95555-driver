@@ -2,16 +2,16 @@
 
 This section lists the most important methods provided by `PACL95555`. For a
 full definition see [`pcal95555.hpp`](../inc/pcal95555.hpp). The examples below
-assume an instance named `gpio` constructed with a platform specific `i2cBus`
+assume an instance named `gpio` constructed with a platform specific `I2cInterface`
 implementation.
 
 ## Construction
 
 ```cpp
-PACL95555(i2cBus *bus, uint8_t addr);
+PCAL95555(I2cInterface *bus, uint8_t addr);
 ```
 
-- `bus`: pointer to an object implementing the `i2cBus` interface.
+- `bus`: pointer to an object implementing the `I2cInterface` interface.
 - `addr`: I²C address of the PCAL9555A device.
 
 ## Basic I/O

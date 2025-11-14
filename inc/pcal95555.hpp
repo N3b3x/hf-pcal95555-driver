@@ -1,5 +1,5 @@
 /**
- * @file PCAL95555.hpp
+ * @file pcal95555.hpp
  * @brief Driver for the PCAL9555 16-bit I/O expander with I²C interface
  *
  * This header provides a comprehensive C++ interface for controlling the
@@ -27,9 +27,10 @@
 #include <cstddef>
 #include <cstdint>
 #include <functional>
-#include <stdio.h>  // For FILE* used by ESP-IDF headers
-#include <string.h> // For C string functions (must be before namespace)
+#include <stdio.h> // NOLINT(modernize-deprecated-headers) - For FILE* used by ESP-IDF headers
+#include <string.h> // NOLINT(modernize-deprecated-headers) - For C string functions (must be before namespace)
 
+// NOLINTBEGIN(cppcoreguidelines-macro-usage) - Kconfig macros for ESP-IDF integration
 #ifndef CONFIG_PCAL95555_INIT_FROM_KCONFIG
 #define CONFIG_PCAL95555_INIT_FROM_KCONFIG 1
 #endif
@@ -317,6 +318,7 @@
 #ifndef CONFIG_PCAL95555_INIT_OD_PORT1
 #define CONFIG_PCAL95555_INIT_OD_PORT1 CONFIG_PCAL95555_PORT1_OD
 #endif
+// NOLINTEND(cppcoreguidelines-macro-usage)
 
 /** PCAL95555 register map (all control registers). */
 /**
@@ -339,8 +341,7 @@
  * Each register controls 8 pins, with PORT_0 typically handling pins 0-7 and
  * PORT_1 handling pins 8-15.
  */
-namespace PCAL95555_REG {
-enum : uint8_t {
+enum class PCAL95555_REG : uint8_t {
   INPUT_PORT_0 = 0x00,
   INPUT_PORT_1 = 0x01,
   OUTPUT_PORT_0 = 0x02,
@@ -365,7 +366,6 @@ enum : uint8_t {
   INT_STATUS_1 = 0x4D,
   OUTPUT_CONF = 0x4F
 };
-}
 
 /** GPIO direction (1=input, 0=output). */
 enum class GPIODir : uint8_t { Input = 1, Output = 0 };
@@ -380,6 +380,7 @@ enum class DriveStrength : uint8_t { Level0 = 0, Level1 = 1, Level2 = 2, Level3 
 enum class OutputMode : uint8_t { PushPull = 0, OpenDrain = 1 };
 
 /** Error conditions reported by the driver. */
+// NOLINTNEXTLINE(performance-enum-size) - uint16_t allows for future error code expansion
 enum class Error : uint16_t {
   None = 0,
   InvalidPin = 1 << 0,  ///< Provided pin index out of range
@@ -388,11 +389,11 @@ enum class Error : uint16_t {
   I2CWriteFail = 1 << 3 ///< An I2C write operation failed
 };
 
-inline Error operator|(Error a, Error b) {
-  return static_cast<Error>(static_cast<uint16_t>(a) | static_cast<uint16_t>(b));
+inline Error operator|(Error lhs, Error rhs) {
+  return static_cast<Error>(static_cast<uint16_t>(lhs) | static_cast<uint16_t>(rhs));
 }
-inline Error operator&(Error a, Error b) {
-  return static_cast<Error>(static_cast<uint16_t>(a) & static_cast<uint16_t>(b));
+inline Error operator&(Error lhs, Error rhs) {
+  return static_cast<Error>(static_cast<uint16_t>(lhs) & static_cast<uint16_t>(rhs));
 }
 
 namespace pcal95555 {
@@ -411,7 +412,7 @@ namespace pcal95555 {
  *
  * Example usage:
  * @code
- * class MyI2C : public pcal95555::I2cBus<MyI2C> {
+ * class MyI2C : public pcal95555::I2cInterface<MyI2C> {
  * public:
  *   bool write(...) { ... }
  *   bool read(...) { ... }
@@ -421,7 +422,7 @@ namespace pcal95555 {
  * @tparam Derived The derived class type (CRTP pattern)
  */
 template <typename Derived>
-class I2cBus {
+class I2cInterface {
 public:
   /**
    * @brief Write bytes to a device register.
@@ -454,21 +455,21 @@ protected:
   /**
    * @brief Protected constructor to prevent direct instantiation
    */
-  I2cBus() = default;
+  I2cInterface() = default;
 
   // Prevent copying
-  I2cBus(const I2cBus&) = delete;
-  I2cBus& operator=(const I2cBus&) = delete;
+  I2cInterface(const I2cInterface&) = delete;
+  I2cInterface& operator=(const I2cInterface&) = delete;
 
   // Allow moving
-  I2cBus(I2cBus&&) = default;
-  I2cBus& operator=(I2cBus&&) = default;
+  I2cInterface(I2cInterface&&) = default;
+  I2cInterface& operator=(I2cInterface&&) = default;
 
   /**
    * @brief Protected destructor
    * @note Derived classes can have public destructors
    */
-  ~I2cBus() = default;
+  ~I2cInterface() = default;
 };
 
 /**
@@ -487,7 +488,7 @@ public:
    * @brief Construct a new PCAL95555 driver instance.
    *
    * @param bus Pointer to a user-implemented I2C interface (must inherit from
-   * pcal95555::I2cBus<I2cType>).
+   * pcal95555::I2cInterface<I2cType>).
    * @param address 7-bit I2C address of the PCAL95555 device (0x00 to 0x7F).
    */
   PCAL95555(I2cType* bus, uint8_t address);
@@ -506,7 +507,7 @@ public:
    *
    * @return Bitmask composed of @ref Error values.
    */
-  uint16_t GetErrorFlags() const;
+  [[nodiscard]] uint16_t GetErrorFlags() const;
 
   /**
    * @brief Clear specific error flags.
@@ -662,10 +663,9 @@ public:
 
   /**
    * @brief Register a callback to be invoked on GPIO interrupts.
-   *
-   * @param cb Function taking a 16-bit status mask for active interrupts.
+   * @param callback Function taking a 16-bit status mask for active interrupts.
    */
-  void SetInterruptCallback(std::function<void(uint16_t)> cb);
+  void SetInterruptCallback(const std::function<void(uint16_t)>& callback);
   /**
    * @brief Internal handler to process an interrupt event.
    *
@@ -692,18 +692,20 @@ protected:
    */
   bool writeRegister(uint8_t reg, uint8_t value);
 
+private:
   I2cType* i2c_;
   uint8_t dev_addr_;
   int retries_{1};
   uint16_t error_flags_{0};
   std::function<void(uint16_t)> irq_callback_;
 
-  void setError(Error e);
-  void clearError(Error e);
+  void setError(Error error_code);
+  void clearError(Error error_code);
 };
 
 // Include template implementation
 #define PCAL95555_HEADER_INCLUDED
+// NOLINTNEXTLINE(bugprone-suspicious-include) - Intentional: template implementation file
 #include "../src/pcal95555.cpp"
 #undef PCAL95555_HEADER_INCLUDED
 

@@ -51,7 +51,7 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
 - 🧲 Input latching with interrupt capture
 - 📡 INT interrupt output with per-pin interrupt masks
 - 🧪 Built-in mock-based unit test suite
-- 🔌 Hardware-agnostic `i2cBus` interface
+- 🔌 Hardware-agnostic `I2cInterface` interface
 
 ---
 
@@ -74,7 +74,7 @@ ready to be used across a wide range of embedded platforms such as STM32, ESP32 
 ## 🔧 Installation
 
 1. **Clone or copy** the `pcal95555.hpp` and `pcal95555.cpp` files into your project.
-2. **Implement the `i2cBus` interface** for your platform (examples below).
+2. **Implement the `I2cInterface` interface** for your platform (examples below).
 3. Include the header in your code:
 
    ```cpp
@@ -137,7 +137,7 @@ The flags persist until the call succeeds or `ClearErrorFlags()` is used to rese
 ### ✅ ESP32 (ESP-IDF)
 
 ```cpp
-class ESP32I2CBus : public PACL95555::i2cBus {
+class ESP32I2CBus : public pcal95555::I2cInterface<ESP32I2CBus> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
         uint8_t buf[1 + len];
         buf[0] = reg;
@@ -154,7 +154,7 @@ class ESP32I2CBus : public PACL95555::i2cBus {
 ### ✅ STM32 (HAL)
 
 ```cpp
-class STM32I2CBus : public PACL95555::i2cBus {
+class STM32I2CBus : public pcal95555::I2cInterface<STM32I2CBus> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
         return HAL_I2C_Mem_Write(&hi2c1, addr<<1, reg, 1, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK;
     }
@@ -168,7 +168,7 @@ class STM32I2CBus : public PACL95555::i2cBus {
 ### ✅ Arduino (Wire)
 
 ```cpp
-class ArduinoI2CBus : public PACL95555::i2cBus {
+class ArduinoI2CBus : public pcal95555::I2cInterface<ArduinoI2CBus> {
     bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) override {
         Wire.beginTransmission(addr);
         Wire.write(reg);
