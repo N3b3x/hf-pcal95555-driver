@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['quick_20start_0',['🚀 Quick Start',['../index.html#autotoc_md4',1,'']]],
-  ['quick_20start_20⚡_1',['Quick Start ⚡',['../md_docs_2quickstart.html',1,'']]]
+  ['kconfig_0',['Using Kconfig',['../md_docs_2configuration.html#autotoc_md35',1,'']]],
+  ['kconfig_20configuration_20optional_1',['Kconfig Configuration (Optional)',['../md_docs_2configuration.html#autotoc_md33',1,'']]]
 ];

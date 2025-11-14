@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['esp_20idf_0',['ESP IDF',['../index.html#autotoc_md6',1,'✅ ESP32 (ESP-IDF)'],['../md_docs_2platform__integration.html#autotoc_md31',1,'ESP32 (ESP-IDF)']]],
-  ['esp32_20esp_20idf_1',['ESP32 ESP IDF',['../index.html#autotoc_md6',1,'✅ ESP32 (ESP-IDF)'],['../md_docs_2platform__integration.html#autotoc_md31',1,'ESP32 (ESP-IDF)']]],
-  ['examples_20💡_2',['Examples 💡',['../md_docs_2examples.html',1,'']]]
+  ['5_3a_20configure_20and_20use_20pins_0',['Step 5: Configure and Use Pins',['../md_docs_2quickstart.html#autotoc_md118',1,'']]],
+  ['5_3a_20drive_20strength_1',['Example 5: Drive Strength',['../md_docs_2examples.html#autotoc_md56',1,'']]]
 ];

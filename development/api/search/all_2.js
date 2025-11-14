@@ -1,9 +1,6 @@
 var searchData=
 [
-  ['cloning_20the_20repository_0',['Cloning the Repository',['../md_docs_2installation.html#autotoc_md26',1,'']]],
-  ['cmake_1',['Using CMake',['../md_docs_2installation.html#autotoc_md28',1,'']]],
-  ['configuration_2',['Runtime Configuration',['../md_docs_2configuration.html#autotoc_md15',1,'']]],
-  ['configuration_20⚙️_3',['Configuration ⚙️',['../md_docs_2configuration.html',1,'']]],
-  ['construction_4',['Construction',['../md_docs_2api__reference.html#autotoc_md11',1,'']]],
-  ['contents_5',['Contents',['../index.html#autotoc_md1',1,'📚 Table of Contents'],['../md_docs_2index.html#autotoc_md23',1,'Contents']]]
+  ['3_20strong_20memory_20efficiency_20strong_0',['3. &lt;strong&gt;Memory Efficiency&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md92',1,'']]],
+  ['3_3a_20create_20driver_20instance_1',['Step 3: Create Driver Instance',['../md_docs_2quickstart.html#autotoc_md116',1,'']]],
+  ['3_3a_20interrupt_20handling_2',['Example 3: Interrupt Handling',['../md_docs_2examples.html#autotoc_md55',1,'']]]
 ];

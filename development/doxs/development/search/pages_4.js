@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['guidelines_20✍️_0',['Documentation Guidelines ✍️',['../md_docs_2guidelines.html',1,'']]]
+  ['guide_0',['Platform Integration Guide',['../md_docs_2platform__integration.html',1,'']]]
 ];

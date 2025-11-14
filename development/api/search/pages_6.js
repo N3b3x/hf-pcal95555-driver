@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['installation_20🛠️_0',['Installation 🛠️',['../md_docs_2installation.html',1,'']]],
-  ['integration_20🧩_1',['Platform Integration 🧩',['../md_docs_2platform__integration.html',1,'']]]
+  ['installation_0',['Installation',['../md_docs_2installation.html',1,'']]],
+  ['integration_20guide_1',['Platform Integration Guide',['../md_docs_2platform__integration.html',1,'']]]
 ];

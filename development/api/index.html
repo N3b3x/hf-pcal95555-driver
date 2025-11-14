@@ -76,7 +76,7 @@ $(function() {
   <div class="headertitle"><div class="title">HF-PCAL95555 Driver </div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="md_README"></a><b>Hardware Agnostic PCAL95555 library - as used in the HardFOC-V1 controller</b></p>
+<div class="textblock"><p><a class="anchor" id="md_README"></a><b>Hardware-agnostic C++ driver for the NXP PCAL9555A 16-bit I/O expander</b></p>
 <p><a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml"><img src="https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-component-ci.yml/badge.svg?branch=main" alt="CI Build" style="pointer-events: none;" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
 📚 Table of Contents</h1>
@@ -96,96 +96,89 @@ $(function() {
 <blockquote class="doxtable">
 <p>&zwj;<b>📖 <a href="https://n3b3x.github.io/hf-pcal95555-driver/">📚🌐 Live Complete Documentation</a></b> - Interactive guides, examples, and step-by-step tutorials </p>
 </blockquote>
-<p><b>PACL95555</b> is a fully-featured, platform-independent C++ driver for the <b>PCAL9555A</b> GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced "Agile I/O" capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.</p>
-<p>This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.</p>
+<p>The <b>PCAL9555A</b> is a 16-bit I/O expander from NXP Semiconductors that communicates via I²C. It provides 16 GPIO pins organized into two 8-bit ports (PORT_0: pins 0-7, PORT_1: pins 8-15), allowing you to expand your microcontroller's I/O capabilities. The chip features per-pin interrupt capability, configurable pull-up/pull-down resistors, adjustable drive strength, and support for both push-pull and open-drain output modes.</p>
+<p>This driver provides a hardware-agnostic C++ interface that abstracts all register-level operations, requiring only an implementation of the <code>I2cInterface</code> for your platform. The driver uses the CRTP (Curiously Recurring Template Pattern) for zero-overhead hardware abstraction, making it suitable for resource-constrained embedded systems.</p>
 <h1><a class="anchor" id="autotoc_md3"></a>
-📂 Project Structure</h1>
-<div class="fragment"><div class="line">├── datasheet/             # PCAL9555A datasheet PDF</div>
-<div class="line">├── examples/              # Sample usage and wiring examples</div>
-<div class="line">├── inc/                   # Header files</div>
-<div class="line">│   └── pcal95555.hpp      # Driver header</div>
-<div class="line">├── src/                   # Source files</div>
-<div class="line">│   ├── pcal95555.cpp      # Driver implementation</div>
-<div class="line">│   └── pcal95555_test.cpp # Mock-based unit tests</div>
-<div class="line">├── LICENSE                # GNU GPLv3 license</div>
-<div class="line">└── README.md              # Project documentation</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md4"></a>
+✨ Features</h1>
+<ul>
+<li>✅ <b>16 GPIO Pins</b>: Two 8-bit ports (PORT_0: 0-7, PORT_1: 8-15)</li>
+<li>✅ <b>Per-Pin Configuration</b>: Direction, pull-up/pull-down, drive strength, polarity</li>
+<li>✅ <b>Interrupt Support</b>: Per-pin interrupt capability with input latching</li>
+<li>✅ <b>Hardware Agnostic</b>: CRTP-based I2C interface for platform independence</li>
+<li>✅ <b>Modern C++</b>: C++11 compatible with template-based design</li>
+<li>✅ <b>Zero Overhead</b>: CRTP design for compile-time polymorphism</li>
+<li>✅ <b>Kconfig Integration</b>: Optional compile-time configuration via Kconfig</li>
+<li>✅ <b>Error Handling</b>: Comprehensive error reporting with retry support</li>
+</ul>
+<h1><a class="anchor" id="autotoc_md4"></a>
 🚀 Quick Start</h1>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
-<div class="line">MyPlatformI2CBus i2c;               <span class="comment">// Custom i2cBus implementation</span></div>
-<div class="line">PACL95555 gpio(&amp;i2c, 0x20);        <span class="comment">// 0x20 is default I2C address</span></div>
 <div class="line"> </div>
-<div class="line">gpio.ResetToDefault();             <span class="comment">// Safe known state (inputs w/ pull-ups)</span></div>
-<div class="line"><span class="comment">// Optionally configure using values from Kconfig</span></div>
-<div class="line">gpio.InitFromConfig();</div>
+<div class="line"><span class="comment">// 1. Implement the I2C interface (see platform_integration.md)</span></div>
+<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {</div>
+<div class="line"><span class="keyword">public</span>:</div>
+<div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len);</div>
+<div class="line">    <span class="keywordtype">bool</span> read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len);</div>
+<div class="line">};</div>
 <div class="line"> </div>
-<div class="line">gpio.SetPinDirection(0, GPIODir::Output);</div>
+<div class="line"><span class="comment">// 2. Create driver instance</span></div>
+<div class="line">MyI2c i2c;</div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); <span class="comment">// 0x20 is default I2C address</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// 3. Initialize and use</span></div>
+<div class="line">gpio.ResetToDefault(); <span class="comment">// all pins become inputs with pull-ups</span></div>
+<div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
 <div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
-<div class="line"><span class="keywordtype">bool</span> isHigh = gpio.ReadPin(1);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md5"></a>
-🔌 Platform Integration</h1>
-<h2><a class="anchor" id="autotoc_md6"></a>
-✅ ESP32 (ESP-IDF)</h2>
-<div class="fragment"><div class="line"><span class="keyword">class </span>ESP32I2CBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;ESP32I2CBus&gt; {</div>
-<div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
-<div class="line">        uint8_t buf[1 + len];</div>
-<div class="line">        buf[0] = reg;</div>
-<div class="line">        memcpy(&amp;buf[1], data, len);</div>
-<div class="line">        <span class="keywordflow">return</span> i2c_master_write_to_device(I2C_NUM_0, addr, buf, len+1, 100 / portTICK_PERIOD_MS) == ESP_OK;</div>
-<div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordtype">bool</span> read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
-<div class="line">        <span class="keywordflow">return</span> i2c_master_write_read_device(I2C_NUM_0, addr, &amp;reg, 1, data, len, 100 / portTICK_PERIOD_MS) == ESP_OK;</div>
-<div class="line">    }</div>
-<div class="line">};</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md7"></a>
-✅ STM32 (HAL)</h2>
-<div class="fragment"><div class="line"><span class="keyword">class </span>STM32I2CBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;STM32I2CBus&gt; {</div>
-<div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
-<div class="line">        <span class="keywordflow">return</span> HAL_I2C_Mem_Write(&amp;hi2c1, addr&lt;&lt;1, reg, 1, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK;</div>
-<div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordtype">bool</span> read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
-<div class="line">        <span class="keywordflow">return</span> HAL_I2C_Mem_Read(&amp;hi2c1, addr&lt;&lt;1, reg, 1, data, len, HAL_MAX_DELAY) == HAL_OK;</div>
-<div class="line">    }</div>
-<div class="line">};</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md8"></a>
-✅ Arduino (Wire)</h2>
-<div class="fragment"><div class="line"><span class="keyword">class </span>ArduinoI2CBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;ArduinoI2CBus&gt; {</div>
-<div class="line">    <span class="keywordtype">bool</span> write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
-<div class="line">        Wire.beginTransmission(addr);</div>
-<div class="line">        Wire.write(reg);</div>
-<div class="line">        Wire.write(data, len);</div>
-<div class="line">        <span class="keywordflow">return</span> Wire.endTransmission() == 0;</div>
-<div class="line">    }</div>
-<div class="line"> </div>
-<div class="line">    <span class="keywordtype">bool</span> read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len)<span class="keyword"> override </span>{</div>
-<div class="line">        Wire.beginTransmission(addr);</div>
-<div class="line">        Wire.write(reg);</div>
-<div class="line">        <span class="keywordflow">if</span> (Wire.endTransmission(<span class="keyword">false</span>) != 0) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
-<div class="line">        Wire.requestFrom(addr, len);</div>
-<div class="line">        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; len; ++i) data[i] = Wire.read();</div>
-<div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
-<div class="line">    }</div>
-<div class="line">};</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md9"></a>
-🧪 Unit Testing</h1>
-<p>To run the built-in unit tests on a desktop:</p>
-<div class="fragment"><div class="line"># Windows PowerShell</div>
-<div class="line">g++ -std=c++11 pcal95555.cpp pcal95555_test.cpp -o test.exe</div>
-<div class="line">./test.exe</div>
-</div><!-- fragment --><p>These tests use a mock I2C class to validate:</p>
-<ul>
-<li>Register correctness</li>
-<li>Retry logic</li>
-<li>Polarity inversion</li>
-<li>Interrupt latching</li>
-<li>Pull resistor settings</li>
-<li>Output state reflection</li>
-</ul>
-<p>Expected output:</p>
-<div class="fragment"><div class="line">All tests passed.</div>
-</div><!-- fragment --> </div></div><!-- PageDoc -->
+<div class="line"><span class="keywordtype">bool</span> input = gpio.ReadPin(1);</div>
+</div><!-- fragment --><p>For detailed setup, see <a class="el" href="md_docs_2installation.html">Installation</a> and <a class="el" href="md_docs_2quickstart.html">Quick Start Guide</a>.</p>
+<h1><a class="anchor" id="autotoc_md5"></a>
+🔧 Installation</h1>
+<p>This driver is designed to be integrated into your project. It's a header-only template library with implementation included.</p>
+<ol type="1">
+<li><b>Add to your project</b>: Copy or clone the driver files into your project</li>
+<li><b>Implement the I2C interface</b> for your platform (see <a class="el" href="md_docs_2platform__integration.html">Platform Integration</a>)</li>
+<li><b>Include the header</b> in your code: <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
+</div><!-- fragment --></li>
+<li>Compile with a <b>C++11</b> or newer compiler</li>
+</ol>
+<p>For detailed installation instructions, see <a class="el" href="md_docs_2installation.html">docs/installation.md</a>.</p>
+<h1><a class="anchor" id="autotoc_md6"></a>
+📖 API Reference</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ResetToDefault()</code>   </td><td class="markdownTableBodyNone">Reset device to power-on default state    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SetPinDirection(pin, dir)</code>   </td><td class="markdownTableBodyNone">Set pin direction (input/output)    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>ReadPin(pin)</code>   </td><td class="markdownTableBodyNone">Read pin state    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>WritePin(pin, value)</code>   </td><td class="markdownTableBodyNone">Write pin state    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SetPullEnable(pin, enable)</code>   </td><td class="markdownTableBodyNone">Enable/disable pull resistor    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>SetPullDirection(pin, pull_up)</code>   </td><td class="markdownTableBodyNone">Set pull-up or pull-down    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone"><code>SetDriveStrength(pin, level)</code>   </td><td class="markdownTableBodyNone">Set output drive strength    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone"><code>GetInterruptStatus()</code>   </td><td class="markdownTableBodyNone">Get interrupt status register   </td></tr>
+</table>
+<p>For complete API documentation with source code links, see <a class="el" href="md_docs_2api__reference.html">docs/api_reference.md</a>.</p>
+<h1><a class="anchor" id="autotoc_md7"></a>
+📊 Examples</h1>
+<p>For ESP32 examples, see the <a href="examples/esp32/">examples/esp32</a> directory. Additional examples for other platforms are available in the <a href="examples/">examples</a> directory.</p>
+<p>Detailed example walkthroughs are available in <a class="el" href="md_docs_2examples.html">docs/examples.md</a>.</p>
+<h1><a class="anchor" id="autotoc_md8"></a>
+📚 Documentation</h1>
+<p>For complete documentation, see the <a class="el" href="md_docs_2index.html">docs directory</a>.</p>
+<h1><a class="anchor" id="autotoc_md9"></a>
+🤝 Contributing</h1>
+<p>Pull requests and suggestions are welcome! Please follow the existing code style and include tests for new features.</p>
+<h1><a class="anchor" id="autotoc_md10"></a>
+📄 License</h1>
+<p>This project is licensed under the <b>GNU General Public License v3.0</b>. See the [LICENSE](LICENSE) file for details. </p>
+</div></div><!-- PageDoc -->
 <a href="doxygen_crawl.html"/>
 </div><!-- contents -->
 <!-- start footer part -->

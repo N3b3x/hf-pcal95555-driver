@@ -14,9 +14,10 @@
   <style id="jtd-nav-activation">
   
 
+    .site-nav > ul.nav-list:first-child > li > a,
     
-    .site-nav > ul.nav-list:first-child > li:not(:nth-child(6)) > a,
-    .site-nav > ul.nav-list:first-child > li > ul > li a {
+    .site-nav > ul.nav-list:first-child > li > ul > li:not(:nth-child(1)) > a,
+    .site-nav > ul.nav-list:first-child > li > ul > li > ul > li a {
       background-image: none;
     }
 
@@ -25,12 +26,14 @@
       background-image: none;
     }
 
-    .site-nav > ul.nav-list:first-child > li:nth-child(6) > a {
+    .site-nav > ul.nav-list:first-child > li:nth-child(1) > ul > li:nth-child(1) > a {
       font-weight: 600;
       text-decoration: none;
-    }.site-nav > ul.nav-list:first-child > li:nth-child(6) > button svg {
+    }.site-nav > ul.nav-list:first-child > li:nth-child(1) > button svg,
+    .site-nav > ul.nav-list:first-child > li:nth-child(1) > ul > li:nth-child(1) > button svg {
       transform: rotate(-90deg);
-    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(6) > ul.nav-list {
+    }.site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(1) > ul.nav-list,
+    .site-nav > ul.nav-list:first-child > li.nav-list-item:nth-child(1) > ul.nav-list > li.nav-list-item:nth-child(1) > ul.nav-list {
       display: block;
     }
   </style>
@@ -50,21 +53,21 @@
 
 
   <!-- Begin Jekyll SEO tag v2.8.0 -->
-<title>HF-PCAL95555 Documentation 📖 | HardFOC PCAL95555 Driver - development</title>
+<title>📚 Documentation | HardFOC PCAL95555 Driver - development</title>
 <meta name="generator" content="Jekyll v3.10.0" />
-<meta property="og:title" content="HF-PCAL95555 Documentation 📖" />
+<meta property="og:title" content="📚 Documentation" />
 <meta name="author" content="N3b3x" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="Hardware-agnostic C++ driver for the NXP PCAL9555A GPIO expander with 16 general-purpose I/O pins, supporting interrupts, drive strength control, and internal pull-up/pull-down resistors" />
-<meta property="og:description" content="Hardware-agnostic C++ driver for the NXP PCAL9555A GPIO expander with 16 general-purpose I/O pins, supporting interrupts, drive strength control, and internal pull-up/pull-down resistors" />
+<meta name="description" content="Complete documentation for the HardFOC PCAL95555 Driver" />
+<meta property="og:description" content="Complete documentation for the HardFOC PCAL95555 Driver" />
 <link rel="canonical" href="https://n3b3x.github.io/hf-pcal95555-driver/development/docs/" />
 <meta property="og:url" content="https://n3b3x.github.io/hf-pcal95555-driver/development/docs/" />
 <meta property="og:site_name" content="HardFOC PCAL95555 Driver - development" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
-<meta property="twitter:title" content="HF-PCAL95555 Documentation 📖" />
+<meta property="twitter:title" content="📚 Documentation" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"N3b3x","url":"https://github.com/n3b3x"},"description":"Hardware-agnostic C++ driver for the NXP PCAL9555A GPIO expander with 16 general-purpose I/O pins, supporting interrupts, drive strength control, and internal pull-up/pull-down resistors","headline":"HF-PCAL95555 Documentation 📖","url":"https://n3b3x.github.io/hf-pcal95555-driver/development/docs/"}</script>
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"N3b3x","url":"https://github.com/n3b3x"},"description":"Complete documentation for the HardFOC PCAL95555 Driver","headline":"📚 Documentation","url":"https://n3b3x.github.io/hf-pcal95555-driver/development/docs/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -166,7 +169,11 @@
   <nav aria-label="Main" id="site-nav" class="site-nav">
   
   
-    <ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference.html" class="nav-list-link">API Reference 📑</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration.html" class="nav-list-link">Configuration ⚙️</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/guidelines.html" class="nav-list-link">Documentation Guidelines ✍️</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples.html" class="nav-list-link">Examples 💡</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">HF-PCAL95555 Documentation 📖</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_overview.html" class="nav-list-link">Hardware Overview 🔍</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation.html" class="nav-list-link">Installation 🛠️</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration.html" class="nav-list-link">Platform Integration 🧩</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart.html" class="nav-list-link">Quick Start ⚡</a></li></ul>
+    <ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in HardFOC PCAL95555 Driver category" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
   
 </nav>
 
@@ -240,58 +247,164 @@
 </div>
 
     <div class="main-content-wrap">
-      
+      <nav aria-label="Breadcrumb" class="breadcrumb-nav">
+  <ol class="breadcrumb-nav-list">
+    <li class="breadcrumb-nav-list-item"><a href="/hf-pcal95555-driver/development/">HardFOC PCAL95555 Driver</a></li>
+    <li class="breadcrumb-nav-list-item"><span>📚 Documentation</span></li>
+  </ol>
+</nav>
+
+
       <div id="main-content" class="main-content">
         <main>
           
-            <h1 id="hf-pcal95555-documentation-">
+            <h1 id="hf-pcal95555-documentation">
   
   
-    <a href="#hf-pcal95555-documentation-" class="anchor-heading" aria-labelledby="hf-pcal95555-documentation-"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> HF-PCAL95555 Documentation 📖
+    <a href="#hf-pcal95555-documentation" class="anchor-heading" aria-labelledby="hf-pcal95555-documentation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> HF-PCAL95555 Documentation
   
   
 </h1>
     
 
-<p>Welcome to the official documentation for <strong>HF-PCAL95555</strong>,
-a hardware-agnostic C++ driver for the PCAL9555A I/O expander by NXP.
-These pages are organized as concise guides that take you from installation all the way to advanced integration topics.
-Use them whenever you need a refresher or when bringing the driver into a new project.</p>
+<p>Welcome! This directory contains step-by-step guides for installing, building, and using the <strong>HF-PCAL95555</strong> library.</p>
+<h2 id="-documentation-structure">
+  
+  
+    <a href="#-documentation-structure" class="anchor-heading" aria-labelledby="-documentation-structure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📚 Documentation Structure
+  
+  
+</h2>
+    
+<h3 id="getting-started">
+  
+  
+    <a href="#getting-started" class="anchor-heading" aria-labelledby="getting-started"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <strong>Getting Started</strong>
+  
+  
+</h3>
+    
 
-<p>Every document ends with navigation links.
-In addition to previous and next references,
-a <strong>Back to Index</strong> link lets you return here from anywhere in the documentation.</p>
-<h2 id="contents">
+<ol>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/installation/">🛠️ Installation</a></strong> – How to integrate the driver into your project</li>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/quickstart/">⚡ Quick Start</a></strong> – Minimal working example to get you running</li>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/hardware_setup/">🔌 Hardware Setup</a></strong> – Wiring diagrams and pin connections</li>
+</ol>
+<h3 id="integration">
   
   
-    <a href="#contents" class="anchor-heading" aria-labelledby="contents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Contents
+    <a href="#integration" class="anchor-heading" aria-labelledby="integration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <strong>Integration</strong>
+  
+  
+</h3>
+    
+
+<ol>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/platform_integration/">🔧 Platform Integration</a></strong> – Implement the CRTP I2C interface for your platform</li>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/configuration/">⚙️ Configuration</a></strong> – Configuration options and Kconfig settings</li>
+</ol>
+<h3 id="reference">
+  
+  
+    <a href="#reference" class="anchor-heading" aria-labelledby="reference"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <strong>Reference</strong>
+  
+  
+</h3>
+    
+
+<ol>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/api_reference/">📖 API Reference</a></strong> – Complete API documentation</li>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/examples/">💡 Examples</a></strong> – Detailed example walkthroughs</li>
+</ol>
+<h3 id="troubleshooting">
+  
+  
+    <a href="#troubleshooting" class="anchor-heading" aria-labelledby="troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <strong>Troubleshooting</strong>
+  
+  
+</h3>
+    
+
+<ol>
+  <li><strong><a href="/hf-pcal95555-driver/development/docs/troubleshooting/">🐛 Troubleshooting</a></strong> – Common issues and solutions</li>
+</ol><hr />
+<h2 id="-quick-start-path">
+  
+  
+    <a href="#-quick-start-path" class="anchor-heading" aria-labelledby="-quick-start-path"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚀 Quick Start Path
   
   
 </h2>
     
 
-<ol>
-  <li><a href="/hf-pcal95555-driver/development/docs/installation.html">Installation</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/quickstart.html">Quick Start</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/configuration.html">Configuration</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/api_reference.html">API Reference</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/platform_integration.html">Platform Integration</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/examples.html">Examples</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/hardware_overview.html">Hardware Overview</a></li>
-  <li><a href="/hf-pcal95555-driver/development/docs/guidelines.html">Documentation Guidelines</a></li>
-  <li>Contributing (see README.md)</li>
-</ol>
+<p><strong>New to PCAL95555?</strong> Follow this recommended path:</p>
 
-<p>Start with <a href="/hf-pcal95555-driver/development/docs/installation.html">Installation</a> to set up your environment,
-then follow the sections in order or jump directly to the topic you need.</p><hr />
+<ol>
+  <li>Start with <strong><a href="/hf-pcal95555-driver/development/docs/installation/">Installation</a></strong> to integrate the driver</li>
+  <li>Follow <strong><a href="/hf-pcal95555-driver/development/docs/hardware_setup/">Hardware Setup</a></strong> to wire your I/O expander</li>
+  <li>Read <strong><a href="/hf-pcal95555-driver/development/docs/quickstart/">Quick Start</a></strong> for a minimal working example</li>
+  <li>Check <strong><a href="/hf-pcal95555-driver/development/docs/platform_integration/">Platform Integration</a></strong> to implement the I2C interface</li>
+  <li>Explore <strong><a href="/hf-pcal95555-driver/development/docs/examples/">Examples</a></strong> for more advanced usage</li>
+</ol><hr />
+<h2 id="-need-help">
+  
+  
+    <a href="#-need-help" class="anchor-heading" aria-labelledby="-need-help"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 💡 Need Help?
+  
+  
+</h2>
+    
+
+<ul>
+  <li><strong>🐛 Found a bug?</strong> Check the <a href="/hf-pcal95555-driver/development/docs/troubleshooting/">Troubleshooting</a> guide</li>
+  <li><strong>❓ Have questions?</strong> Review the <a href="/hf-pcal95555-driver/development/docs/api_reference/">API Reference</a></li>
+  <li><strong>📝 Want to contribute?</strong> See the contributing guidelines in the main README</li>
+</ul><hr />
 
 <p><strong>Navigation</strong>
-➡️ <a href="/hf-pcal95555-driver/development/docs/installation.html">Installation</a></p>
+➡️ <a href="/hf-pcal95555-driver/development/docs/installation/">Installation</a></p>
 
           
 
           
-            
+            <hr>
+<h2 class="text-delta">Table of contents</h2>
+
+<ul>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/installation/">🛠️ Installation</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/quickstart/">⚡ Quick Start</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/hardware_setup/">🔌 Hardware Setup</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/platform_integration/">🔧 Platform Integration</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/configuration/">⚙️ Configuration</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/api_reference/">📖 API Reference</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/examples/">💡 Examples</a>
+  </li>
+  
+  <li>
+    <a href="/hf-pcal95555-driver/development/docs/troubleshooting/">🐛 Troubleshooting</a>
+  </li>
+  
+</ul>
           
         </main>
         

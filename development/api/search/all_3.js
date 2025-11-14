@@ -1,6 +1,5 @@
 var searchData=
 [
-  ['documentation_20📖_0',['HF-PCAL95555 Documentation 📖',['../md_docs_2index.html',1,'']]],
-  ['documentation_20guidelines_20✍️_1',['Documentation Guidelines ✍️',['../md_docs_2guidelines.html',1,'']]],
-  ['driver_2',['HF-PCAL95555 Driver',['../index.html',1,'']]]
+  ['4_20type_20safety_0',['4. **Type Safety**',['../md_docs_2platform__integration.html#autotoc_md93',1,'']]],
+  ['4_3a_20initialize_1',['Step 4: Initialize',['../md_docs_2quickstart.html#autotoc_md117',1,'']]]
 ];

@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['start_20⚡_0',['Quick Start ⚡',['../md_docs_2quickstart.html',1,'']]]
+  ['troubleshooting_0',['Troubleshooting',['../md_docs_2troubleshooting.html',1,'']]]
 ];

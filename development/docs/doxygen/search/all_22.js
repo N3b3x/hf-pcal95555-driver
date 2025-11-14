@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['🧩_0',['Platform Integration 🧩',['../md_docs_2platform__integration.html',1,'']]]
+  ['📊_20examples_0',['📊 Examples',['../index.html#autotoc_md7',1,'']]]
 ];

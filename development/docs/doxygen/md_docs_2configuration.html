@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=11"/>
 <meta name="generator" content="Doxygen 1.10.0"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>HF-PCAL95555: Configuration ⚙️</title>
+<title>HF-PCAL95555: Configuration</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -73,38 +73,151 @@ $(function() {
 
 </div><!-- top -->
 <div><div class="header">
-  <div class="headertitle"><div class="title">Configuration ⚙️</div></div>
+  <div class="headertitle"><div class="title">Configuration</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md14"></a> The driver can be configured programmatically or through <code>Kconfig</code> options. This section covers both approaches.</p>
-<h1><a class="anchor" id="autotoc_md15"></a>
-Runtime Configuration</h1>
-<p>The simplest method is to call the appropriate member functions at runtime:</p>
-<div class="fragment"><div class="line">gpio.SetPinDirection(0, PACL95555::GPIODir::Output);</div>
-<div class="line">gpio.SetPullEnable(0, <span class="keyword">true</span>);</div>
-<div class="line">gpio.SetPullDirection(0, <span class="keyword">true</span>);  <span class="comment">// true = pull-up</span></div>
-</div><!-- fragment --><p>Runtime configuration gives you full flexibility and can be changed any time after initialization.</p>
-<h1><a class="anchor" id="autotoc_md16"></a>
-Kconfig Integration</h1>
-<p>For projects that use Kconfig (e.g. Zephyr, ESP-IDF) the library provides a set of options under the <code>PCAL95555</code> menu. Important entries include:</p>
+<div class="textblock"><p><a class="anchor" id="autotoc_md31"></a> This guide covers all configuration options available for the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md32"></a>
+I2C Address Configuration</h1>
+<p>The PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field.</p>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Pin   </th><th class="markdownTableHeadNone">Address Bit   </th><th class="markdownTableHeadNone">Description    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">A0   </td><td class="markdownTableBodyNone">Bit 0   </td><td class="markdownTableBodyNone">Least significant address bit    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">A1   </td><td class="markdownTableBodyNone">Bit 1   </td><td class="markdownTableBodyNone"></td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">A2   </td><td class="markdownTableBodyNone">Bit 2   </td><td class="markdownTableBodyNone">Most significant address bit   </td></tr>
+</table>
+<p><b>Default I2C address</b>: <code>0x20</code> (all address pins to GND)</p>
+<p><b>Address Range</b>: 0x20 to 0x27 (7-bit I2C addresses)</p>
+<p><b>Example</b>: To set address 0x21, connect A0 to VDD and A1-A2 to GND.</p>
+<h1><a class="anchor" id="autotoc_md33"></a>
+Kconfig Configuration (Optional)</h1>
+<p>If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration:</p>
+<p><b>Location</b>: <a href="../Kconfig"><code>Kconfig</code></a></p>
+<h2><a class="anchor" id="autotoc_md34"></a>
+Configuration Options</h2>
 <ul>
-<li><b>PCAL95555_DEFAULT_ADDRESS</b> – I²C address of the expander</li>
-<li><b>PCAL95555_INIT_FROM_KCONFIG</b> – automatically apply configuration at startup</li>
-<li><b>Pin submenus</b> – specify direction, pull mode and initial level for each pin</li>
+<li><b>Per-pin direction</b>: Configure each pin as input (1) or output (0)</li>
+<li><b>Per-pin pull-up/pull-down</b>: Enable pull resistors and select direction</li>
+<li><b>Per-pin initial output</b>: Set initial output state</li>
+<li><b>Port open-drain</b>: Configure ports for open-drain or push-pull mode</li>
 </ul>
-<p>Call <code>InitFromConfig()</code> during startup to apply the selected values.</p>
-<div class="fragment"><div class="line">PACL95555 gpio(&amp;i2c, CONFIG_PCAL95555_DEFAULT_ADDRESS);</div>
-<div class="line">gpio.InitFromConfig();</div>
-</div><!-- fragment --><p>A minimal <code>Kconfig</code> snippet might look like:</p>
-<div class="fragment"><div class="line">config PCAL95555_DEFAULT_ADDRESS</div>
-<div class="line">    hex &quot;Expander address&quot;</div>
-<div class="line">    default 0x20</div>
+<h2><a class="anchor" id="autotoc_md35"></a>
+Using Kconfig</h2>
+<ol type="1">
+<li>Run <code>idf.py menuconfig</code> (or your Kconfig tool)</li>
+<li>Navigate to component configuration</li>
+<li>Configure per-pin settings as needed</li>
+<li>Use <code>InitFromConfig()</code> to apply settings:</li>
+</ol>
+<div class="fragment"><div class="line">gpio.InitFromConfig(); <span class="comment">// Apply Kconfig settings</span></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md36"></a>
+Runtime Configuration</h1>
+<h2><a class="anchor" id="autotoc_md37"></a>
+Pin Direction</h2>
+<p>Set individual pin direction:</p>
+<div class="fragment"><div class="line"><span class="comment">// Set pin 0 as output</span></div>
+<div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
 <div class="line"> </div>
-<div class="line">config PCAL95555_INIT_FROM_KCONFIG</div>
-<div class="line">    bool &quot;Initialize expander at startup&quot;</div>
-<div class="line">    default y</div>
-</div><!-- fragment --><p>Use menuconfig or your build system's configuration tool to adjust these values.</p>
-<p>Adjust <code>Kconfig</code> to match your hardware setup. Refer to the <a class="el" href="md_docs_2hardware__overview.html">Hardware Overview</a> for pin capabilities. </p>
+<div class="line"><span class="comment">// Set pin 1 as input</span></div>
+<div class="line">gpio.SetPinDirection(1, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Set multiple pins at once</span></div>
+<div class="line">gpio.SetMultipleDirections(0x000F, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); <span class="comment">// Pins 0-3</span></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md38"></a>
+Pull Resistors</h2>
+<p>Configure pull-up/pull-down resistors:</p>
+<div class="fragment"><div class="line"><span class="comment">// Enable pull-up on pin 0</span></div>
+<div class="line">gpio.SetPullEnable(0, <span class="keyword">true</span>);</div>
+<div class="line">gpio.SetPullDirection(0, <span class="keyword">true</span>); <span class="comment">// true = pull-up, false = pull-down</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Enable pull-down on pin 1</span></div>
+<div class="line">gpio.SetPullEnable(1, <span class="keyword">true</span>);</div>
+<div class="line">gpio.SetPullDirection(1, <span class="keyword">false</span>);</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md39"></a>
+Drive Strength</h2>
+<p>Set output drive strength:</p>
+<div class="fragment"><div class="line">gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Full);</div>
+</div><!-- fragment --><p><b>Drive Strength Levels</b>:</p><ul>
+<li><code>Quarter</code>: 25% drive strength</li>
+<li><code>Half</code>: 50% drive strength</li>
+<li><code>ThreeQuarter</code>: 75% drive strength</li>
+<li><code>Full</code>: 100% drive strength</li>
+</ul>
+<h2><a class="anchor" id="autotoc_md40"></a>
+Output Mode</h2>
+<p>Configure port output mode (push-pull or open-drain):</p>
+<div class="fragment"><div class="line"><span class="comment">// Set PORT_0 to open-drain, PORT_1 to push-pull</span></div>
+<div class="line">gpio.SetOutputMode(<span class="keyword">true</span>, <span class="keyword">false</span>);</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md41"></a>
+Polarity Inversion</h2>
+<p>Invert input polarity:</p>
+<div class="fragment"><div class="line"><span class="comment">// Invert pin 0 polarity</span></div>
+<div class="line">gpio.SetPinPolarity(0, pcal95555::PCAL95555&lt;MyI2c&gt;::Polarity::Inverted);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Invert multiple pins</span></div>
+<div class="line">gpio.SetMultiplePolarities(0x00FF, pcal95555::PCAL95555&lt;MyI2c&gt;::Polarity::Inverted);</div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md42"></a>
+Default Configuration</h1>
+<h2><a class="anchor" id="autotoc_md43"></a>
+ResetToDefault()</h2>
+<p>Resets all registers to power-on defaults:</p>
+<div class="fragment"><div class="line">gpio.ResetToDefault();</div>
+</div><!-- fragment --><p><b>Default State</b>:</p><ul>
+<li>All pins: Inputs with pull-ups enabled</li>
+<li>Drive strength: Full</li>
+<li>Output mode: Push-pull</li>
+<li>Interrupts: Masked (disabled)</li>
+<li>Polarity: Normal (not inverted)</li>
+</ul>
+<p><b>Location</b>: <a href="../src/pcal95555.cpp#L49"><code>src/pcal95555.cpp#L49</code></a></p>
+<h1><a class="anchor" id="autotoc_md44"></a>
+Interrupt Configuration</h1>
+<h2><a class="anchor" id="autotoc_md45"></a>
+Enable Interrupts</h2>
+<div class="fragment"><div class="line"><span class="comment">// Configure interrupt mask (0 = enabled, 1 = masked)</span></div>
+<div class="line">gpio.ConfigureInterruptMask(0xFF00); <span class="comment">// Enable interrupts on PORT_1 (pins 8-15)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Set interrupt callback</span></div>
+<div class="line">gpio.SetInterruptCallback([](uint16_t status) {</div>
+<div class="line">    <span class="comment">// Handle interrupt</span></div>
+<div class="line">    printf(<span class="stringliteral">&quot;Interrupt on pins: 0x%04X\n&quot;</span>, status);</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Handle interrupt (call from ISR or polling)</span></div>
+<div class="line">gpio.HandleInterrupt();</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md46"></a>
+Get Interrupt Status</h2>
+<div class="fragment"><div class="line">uint16_t status = gpio.GetInterruptStatus();</div>
+<div class="line"><span class="comment">// Check which pins triggered interrupt</span></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md47"></a>
+Recommended Settings</h1>
+<h2><a class="anchor" id="autotoc_md48"></a>
+For Input Pins</h2>
+<div class="fragment"><div class="line">gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
+<div class="line">gpio.SetPullEnable(pin, <span class="keyword">true</span>);</div>
+<div class="line">gpio.SetPullDirection(pin, <span class="keyword">true</span>); <span class="comment">// Pull-up</span></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md49"></a>
+For Output Pins</h2>
+<div class="fragment"><div class="line">gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
+<div class="line">gpio.SetDriveStrength(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Full);</div>
+<div class="line">gpio.WritePin(pin, <span class="keyword">false</span>); <span class="comment">// Set initial state</span></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md50"></a>
+For Interrupt-Driven Inputs</h2>
+<div class="fragment"><div class="line">gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
+<div class="line">gpio.SetPullEnable(pin, <span class="keyword">true</span>);</div>
+<div class="line">gpio.SetPullDirection(pin, <span class="keyword">true</span>);</div>
+<div class="line">gpio.EnableInputLatch(pin, <span class="keyword">true</span>); <span class="comment">// Latch input changes</span></div>
+<div class="line">gpio.ConfigureInterruptMask(~(1 &lt;&lt; pin)); <span class="comment">// Enable interrupt for this pin</span></div>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md51"></a>
+Next Steps</h1>
+<ul>
+<li>See <a class="el" href="md_docs_2examples.html">Examples</a> for configuration examples</li>
+<li>Review <a class="el" href="md_docs_2api__reference.html">API Reference</a> for all configuration methods </li>
+</ul>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->
