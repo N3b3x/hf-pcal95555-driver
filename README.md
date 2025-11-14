@@ -25,12 +25,17 @@ permalink: /
 
 ## 📦 Overview
 
-> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** - 
+> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** -
 > Interactive guides, examples, and step-by-step tutorials
 
-**PACL95555** is a fully-featured, platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors. The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C and supports advanced "Agile I/O" capabilities including interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
+**PACL95555** is a fully-featured,
+platform-independent C++ driver for the **PCAL9555A** GPIO expander by NXP Semiconductors.
+The PCAL9555A provides 16 general-purpose I/O pins (two 8-bit ports) accessible over I²C
+and supports advanced "Agile I/O" capabilities including
+interrupts, drive strength control, polarity inversion, input latching, and internal pull-up/pull-down resistors.
 
-This library abstracts all of that into a clear and extensible C++ API, ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
+This library abstracts all of that into a clear and extensible C++ API,
+ready to be used across a wide range of embedded platforms such as STM32, ESP32 (ESP-IDF), Arduino, and more.
 
 ---
 
@@ -121,7 +126,8 @@ bool isHigh = gpio.readPin(1);
 
 ### ❗ Error Handling
 
-Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed). The flags persist until the call succeeds or `clearErrorFlags()` is used to reset them.
+Each driver method sets an error flag when it fails (e.g. on I²C NACK or when an invalid pin is passed).
+The flags persist until the call succeeds or `clearErrorFlags()` is used to reset them.
 
 
 ---
@@ -185,7 +191,8 @@ class ArduinoI2CBus : public PACL95555::i2cBus {
 
 ## 📊 Examples
 
-For ESP32 examples, see the [examples/esp32](examples/esp32/) directory. Additional examples for other platforms are available in the [examples](examples/) directory.
+For ESP32 examples, see the [examples/esp32](examples/esp32/) directory.
+Additional examples for other platforms are available in the [examples](examples/) directory.
 
 ---
 
@@ -238,7 +245,8 @@ if you want `initFromConfig()` to do nothing at runtime.
 
 ## 📚 Documentation
 
-For a full guide including installation steps, API usage, and platform-specific notes, see the [docs directory](docs/index.md). Generate Doxygen documentation with:
+For a full guide including installation steps, API usage, and platform-specific notes,
+see the [docs directory](docs/index.md). Generate Doxygen documentation with:
 ```bash
 doxygen _config/Doxyfile
 ```
@@ -249,5 +257,5 @@ Pull requests and suggestions are welcome! Please follow the existing code style
 
 ## 📄 License
 
-This project is licensed under the **GNU General Public License v3.0**.  
+This project is licensed under the **GNU General Public License v3.0**.
 See the [LICENSE](LICENSE) file for details.

@@ -9,7 +9,8 @@ To keep the documentation clear and consistent, follow these rules when contribu
 5. **Provide context** for example code so users know where to place it in their applications.
 6. **Add a Back to Index link** at the bottom of any new documentation files so users can easily navigate.
 
-When in doubt, mirror the style used in the existing documents. PRs that add new features should also update the relevant docs to maintain synchronization.
+When in doubt, mirror the style used in the existing documents.
+PRs that add new features should also update the relevant docs to maintain synchronization.
 
 ---
 

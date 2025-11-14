@@ -7,13 +7,15 @@ This section explains how to acquire the source, build the library and verify th
 - **C++11** compatible compiler (e.g. `g++`, `clang++`)
 - `make` build tool
 
-For embedded targets, ensure your toolchain is configured to compile standard C++ code and provides access to an I²C implementation. Any modern GCC or Clang toolchain should suffice.
+For embedded targets,
+ensure your toolchain is configured to compile standard C++ code and provides access to an I²C implementation.
+Any modern GCC or Clang toolchain should suffice.
 
 ## Cloning the Repository
 
 ```bash
-git clone https://github.com/yourusername/pcal95555.git
-cd pcal95555
+git clone https://github.com/N3b3x/hf-pcal95555-driver.git
+cd hf-pcal95555-driver
 ```
 
 ## Building the Static Library
@@ -52,5 +54,5 @@ Continue with the [Quick Start](./quickstart.md) once the build succeeds.
 
 ---
 
-**Navigation**  
+**Navigation**
 ⬅️ [Index](./index.md) • ➡️ [Quick Start](./quickstart.md)
