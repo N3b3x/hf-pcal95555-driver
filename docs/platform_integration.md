@@ -40,7 +40,7 @@ The PCAL95555 driver uses **CRTP** (Curiously Recurring Template Pattern) for ha
 ### How CRTP Works
 
 ```cpp
-// Base template class (from pcal95555.hpp)
+// Base template class (from pcal95555_i2c_interface.hpp)
 template <typename Derived>
 class I2cInterface {
 public:
