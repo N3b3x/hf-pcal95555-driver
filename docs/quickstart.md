@@ -40,9 +40,20 @@ public:
 
 // 2. Create instances
 MyI2c i2c;
-pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // 0x20 is default I2C address
+// Option 1: Using address directly (recommended)
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // Address 0x20 (default)
 
-// 3. Initialize
+// Option 2: Using pin levels
+// pcal95555::PCAL95555<MyI2c> gpio(&i2c, false, false, false); // A0=LOW, A1=LOW, A2=LOW -> 0x20
+
+// 3. Initialize (lazy initialization - happens automatically on first use)
+// You can also explicitly initialize:
+if (!gpio.EnsureInitialized()) {
+    // Handle initialization failure
+    return;
+}
+
+// Reset to default state
 gpio.ResetToDefault(); // all pins become inputs with pull-ups
 
 // 4. Configure and use
@@ -69,20 +80,57 @@ The interface requires two methods:
 
 ### Step 3: Create Driver Instance
 
+You can create the driver instance in two ways:
+
+**Option 1: Using I2C address directly (recommended)**
 ```cpp
 MyI2c i2c;
-pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20);
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // Address 0x20 (default)
 ```
 
-The constructor takes:
+**Option 2: Using address pin levels**
+```cpp
+MyI2c i2c;
+// Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default)
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, false, false, false);
+```
+
+**Constructor Parameters:**
+
+**Using address (Option 1):**
 - Pointer to your I2C interface implementation
-- I2C address (0x20 is the default, can be changed via A0-A2 pins)
+- I2C address (0x20 to 0x27). Address bits are calculated automatically.
+
+**Using pin levels (Option 2):**
+- Pointer to your I2C interface implementation
+- A0 pin level (true = HIGH/VDD, false = LOW/GND)
+- A1 pin level (true = HIGH/VDD, false = LOW/GND)
+- A2 pin level (true = HIGH/VDD, false = LOW/GND)
+
+The I2C address is calculated automatically: base address 0x20 + (A2<<2 | A1<<1 | A0). For example:
+- Address 0x20 → A0=LOW, A1=LOW, A2=LOW (default)
+- Address 0x21 → A0=HIGH, A1=LOW, A2=LOW
 
 ### Step 4: Initialize
 
+The driver uses **lazy initialization** - it initializes automatically on first use. However, you can explicitly initialize:
+
 ```cpp
+// Explicit initialization (optional)
+if (!gpio.EnsureInitialized()) {
+    // Handle initialization failure
+    return;
+}
+
+// Reset to default state
 gpio.ResetToDefault();
 ```
+
+**Lazy Initialization:**
+- The driver initializes automatically when you call any method that requires I2C communication
+- Initialization includes setting address pins, verifying I2C communication, and initializing internal state
+- If initialization fails, methods return `false` or appropriate error values
+- You can call `EnsureInitialized()` explicitly to verify initialization before use
 
 `ResetToDefault()` puts the device in a known state (all pins as inputs with pull-ups enabled).
 

@@ -1,6 +1,6 @@
-# PCAL9555 ESP32-C6 Comprehensive Test Suite
+# PCAL9555 ESP32-S3 Comprehensive Test Suite
 
-This directory contains comprehensive test suites for the PCAL9555 16-bit I/O expander driver using the ESP32-C6 DevKit-M-1.
+This directory contains comprehensive test suites for the PCAL9555 16-bit I/O expander driver using the ESP32-S3.
 
 ## 📋 Table of Contents
 
@@ -16,19 +16,22 @@ This directory contains comprehensive test suites for the PCAL9555 16-bit I/O ex
 
 ## 🔌 Hardware Overview
 
-### ESP32-C6 DevKit-M-1
+### ESP32-S3
 
-The ESP32-C6 DevKit-M-1 serves as the host controller for communicating with the PCAL9555 GPIO expander via I2C.
+The ESP32-S3 serves as the host controller for communicating with the PCAL9555 GPIO expander via I2C.
 
 ```
 ┌─────────────────────────────────────────────────┐
-│        ESP32-C6 DevKit-M-1                      │
+│        ESP32-S3 Development Board               │
 │                                                 │
 │  ┌──────────────────────────────────────────┐   │
-│  │        ESP32-C6 Microcontroller          │   │
+│  │        ESP32-S3 Microcontroller          │   │
 │  │                                          │   │
 │  │  GPIO Pins:                              │   │
 │  │  • I2C: SDA (GPIO4), SCL (GPIO5)         │   │
+│  │  • Interrupt: INT (GPIO7)                │   │
+│  │  • Address Control:                      │   │
+│  │   - A0 (GPIO45), A1 (GPIO48), A2 (GPIO47)│   │
 │  │  • Test Indicator: GPIO14                │   │
 │  └──────────────────────────────────────────┘   │
 │                                                 │
@@ -75,17 +78,29 @@ The PCAL9555 is a 16-bit I/O expander with I²C interface, providing 16 GPIO pin
 
 ### I2C Bus Connections
 
-| PCAL9555 Pin | ESP32-C6 GPIO | Function | Notes |
+| PCAL9555 Pin | ESP32-S3 GPIO | Function | Notes |
 |--------------|---------------|----------|-------|
 | SDA | GPIO4 | I2C Data | With 4.7kΩ pull-up to 3.3V |
 | SCL | GPIO5 | I2C Clock | With 4.7kΩ pull-up to 3.3V |
 | VDD | 3.3V | Power Supply | |
 | GND | GND | Ground | |
-| INT | GPIO15 (optional) | Interrupt Output | Open-drain, requires pull-up |
+| INT | GPIO7 | Interrupt Output | Open-drain, requires pull-up |
+
+### Address Pin Control (GPIO-Controlled)
+
+The comprehensive test uses GPIO pins to dynamically control the PCAL9555 address pins:
+
+| PCAL9555 Pin | ESP32-S3 GPIO | Function | Notes |
+|--------------|---------------|----------|-------|
+| A0 | GPIO45 | Address Bit 0 | Controlled by MCU (output) |
+| A1 | GPIO48 | Address Bit 1 | Controlled by MCU (output) |
+| A2 | GPIO47 | Address Bit 2 | Controlled by MCU (output) |
+
+**Note**: The driver automatically configures these GPIOs as outputs and sets them during initialization based on the constructor parameters. This allows dynamic address configuration without hardware changes.
 
 ### Test Indicator
 
-| Signal | ESP32-C6 GPIO | Function |
+| Signal | ESP32-S3 GPIO | Function |
 |--------|---------------|----------|
 | Test Progress | GPIO14 | Visual test progression indicator |
 
@@ -95,38 +110,52 @@ The PCAL9555 I2C address is determined by the A0, A1, and A2 address pins:
 
 | A2 | A1 | A0 | I2C Address (7-bit) | I2C Address (8-bit) |
 |----|----|----|---------------------|---------------------|
-| GND | GND | GND | 0x20 | 0x40 |
-| GND | GND | VDD | 0x21 | 0x42 |
-| GND | VDD | GND | 0x22 | 0x44 |
-| GND | VDD | VDD | 0x23 | 0x46 |
-| VDD | GND | GND | 0x24 | 0x48 |
-| VDD | GND | VDD | 0x25 | 0x4A |
-| VDD | VDD | GND | 0x26 | 0x4C |
-| VDD | VDD | VDD | 0x27 | 0x4E |
+| LOW | LOW | LOW | 0x20 | 0x40 |
+| LOW | LOW | HIGH | 0x21 | 0x42 |
+| LOW | HIGH | LOW | 0x22 | 0x44 |
+| LOW | HIGH | HIGH | 0x23 | 0x46 |
+| HIGH | LOW | LOW | 0x24 | 0x48 |
+| HIGH | LOW | HIGH | 0x25 | 0x4A |
+| HIGH | HIGH | LOW | 0x26 | 0x4C |
+| HIGH | HIGH | HIGH | 0x27 | 0x4E |
 
-**Default**: All address pins to GND = **0x20** (used in examples)
+**Default**: All address pins LOW = **0x20** (used in comprehensive test)
+
+The comprehensive test configures address pins via GPIO:
+- **A0**: GPIO45 (default: LOW)
+- **A1**: GPIO48 (default: LOW)
+- **A2**: GPIO47 (default: LOW)
+
+This results in I2C address **0x20** by default.
 
 ---
 
 ## 🛠️ Hardware Setup
 
-### Basic Setup
+### Basic Setup for Comprehensive Test
 
 1. **Connect I2C Bus**:
-   - Connect PCAL9555 SDA to ESP32-C6 GPIO4
-   - Connect PCAL9555 SCL to ESP32-C6 GPIO5
+   - Connect PCAL9555 SDA to ESP32-S3 GPIO4
+   - Connect PCAL9555 SCL to ESP32-S3 GPIO5
    - Add 4.7kΩ pull-up resistors on both SDA and SCL to 3.3V
 
 2. **Power Connections**:
-   - Connect PCAL9555 VDD to ESP32-C6 3.3V
-   - Connect PCAL9555 GND to ESP32-C6 GND
+   - Connect PCAL9555 VDD to ESP32-S3 3.3V
+   - Connect PCAL9555 GND to ESP32-S3 GND
 
-3. **Optional Interrupt**:
-   - Connect PCAL9555 INT to ESP32-C6 GPIO15 (with pull-up resistor)
+3. **Interrupt Connection** (for interrupt tests):
+   - Connect PCAL9555 INT to ESP32-S3 GPIO7
+   - Add 4.7kΩ pull-up resistor to 3.3V (INT is open-drain)
 
-4. **Address Configuration**:
-   - Connect A0, A1, A2 to GND for default address 0x20
-   - Or configure for different address if needed
+4. **Address Pin Control** (GPIO-controlled):
+   - Connect PCAL9555 A0 to ESP32-S3 GPIO45
+   - Connect PCAL9555 A1 to ESP32-S3 GPIO48
+   - Connect PCAL9555 A2 to ESP32-S3 GPIO47
+   - **Note**: These are controlled by the MCU, not hardwired to GND/VDD
+
+5. **Test Indicator** (optional):
+   - Connect LED to ESP32-S3 GPIO14 (with current-limiting resistor)
+   - Provides visual feedback of test progress
 
 ### Test Setup
 
@@ -154,7 +183,7 @@ For comprehensive testing, you can connect:
    git submodule update --init --recursive
    
    # Install ESP-IDF (Linux/macOS)
-   ./install.sh esp32c6
+   ./install.sh esp32s3
    
    # Set up environment (add to ~/.bashrc or ~/.zshrc for persistence)
    . ./export.sh
@@ -206,8 +235,8 @@ The test suites use a centralized build system with scripts. Available applicati
 ### Flash Application
 
 ```bash
-# Flash the application to ESP32-C6
-./scripts/flash_app.sh pcal9555_comprehensive_test Debug
+# Flash the application to ESP32-S3
+./scripts/flash_app.sh pcal95555_comprehensive_test Debug
 
 # Or manually:
 idf.py -p /dev/ttyUSB0 flash
@@ -220,7 +249,7 @@ idf.py -p /dev/ttyUSB0 flash
 idf.py -p /dev/ttyUSB0 monitor
 
 # Or use the flash script which includes monitoring
-./scripts/flash_app.sh pcal9555_comprehensive_test Debug
+./scripts/flash_app.sh pcal95555_comprehensive_test Debug
 ```
 
 ### Auto-detect Port
@@ -236,7 +265,14 @@ idf.py -p /dev/ttyUSB0 monitor
 
 ### Comprehensive Test Suite
 
-**Application**: `pcal9555_comprehensive_test`
+**Application**: `pcal95555_comprehensive_test`
+
+This comprehensive test suite validates all PCAL9555 functionality. For detailed documentation on each test, see [Comprehensive Test Documentation](docs/comprehensive_test.md).
+
+**Key Features**:
+- GPIO-controlled address pins (A0-A2 via GPIO45, GPIO48, GPIO47)
+- Hardware interrupt support (INT pin on GPIO7)
+- Complete feature coverage (all PCAL9555 registers and functions)
 
 This comprehensive test suite validates all PCAL9555 functionality:
 
@@ -334,19 +370,30 @@ Default I2C configuration (can be modified in test file):
 ```cpp
 Esp32Pcal9555Bus::I2CConfig config;
 config.port = I2C_NUM_0;
-config.sda_pin = GPIO_NUM_4;      // SDA pin
-config.scl_pin = GPIO_NUM_5;       // SCL pin
+config.sda_pin = GPIO_NUM_4;      // SDA pin (ESP32-S3)
+config.scl_pin = GPIO_NUM_5;       // SCL pin (ESP32-S3)
 config.frequency = 400000;         // 400 kHz
 config.pullup_enable = true;        // Enable internal pullups
+
+// Address pin GPIO control (ESP32-S3)
+config.a0_pin = GPIO_NUM_45;       // A0 address pin control
+config.a1_pin = GPIO_NUM_48;       // A1 address pin control
+config.a2_pin = GPIO_NUM_47;       // A2 address pin control
 ```
 
-### PCAL9555 Address
+### PCAL9555 Address Configuration
 
-Default I2C address (can be modified in test file):
+The driver uses GPIO-controlled address pins. Default address configuration:
 
 ```cpp
-static constexpr uint8_t PCAL9555_I2C_ADDRESS = 0x20;  // Default address
+// Address pin levels (A2, A1, A0)
+static constexpr bool PCAL9555_A0_LEVEL = false;  // LOW = 0x20
+static constexpr bool PCAL9555_A1_LEVEL = false;  // LOW = 0x20
+static constexpr bool PCAL9555_A2_LEVEL = false;  // LOW = 0x20
+// Results in I2C address 0x20
 ```
+
+The driver automatically sets the GPIO pins during initialization to configure the I2C address.
 
 ---
 
@@ -389,7 +436,7 @@ static constexpr uint8_t PCAL9555_I2C_ADDRESS = 0x20;  // Default address
 2. **Clean and rebuild**:
    ```bash
    idf.py fullclean
-   ./scripts/build_app.sh pcal9555_comprehensive_test Debug
+   ./scripts/build_app.sh pcal95555_comprehensive_test Debug
    ```
 
 3. **Check component paths**:
@@ -417,6 +464,7 @@ static constexpr uint8_t PCAL9555_I2C_ADDRESS = 0x20;  // Default address
 
 ## 📚 Additional Resources
 
+- [Comprehensive Test Documentation](docs/comprehensive_test.md) - Detailed test documentation
 - [PCAL9555 Datasheet](../../datasheet/PCAL9555A.pdf)
 - [Driver API Documentation](../../docs/api_reference.md)
 - [Platform Integration Guide](../../docs/platform_integration.md)
@@ -433,10 +481,10 @@ static constexpr uint8_t PCAL9555_I2C_ADDRESS = 0x20;  // Default address
 ./scripts/build_app.sh list
 
 # Build comprehensive test
-./scripts/build_app.sh pcal9555_comprehensive_test Debug
+./scripts/build_app.sh pcal95555_comprehensive_test Debug
 
 # Flash and monitor
-./scripts/flash_app.sh pcal9555_comprehensive_test Debug
+./scripts/flash_app.sh pcal95555_comprehensive_test Debug
 ```
 
 ### Test Execution
@@ -466,6 +514,7 @@ GPIO14 toggles between HIGH/LOW for each completed test, providing visual feedba
 
 <div style="text-align: center; margin: 2em 0; padding: 1em; background: #f8f9fa; border-radius: 8px;">
   <strong>🎯 Ready to test the PCAL9555?</strong><br>
-  Start with: <code>./scripts/build_app.sh pcal9555_comprehensive_test Debug</code>
+  Start with: <code>./scripts/build_app.sh pcal95555_comprehensive_test Debug</code><br>
+  <small>See <a href="docs/comprehensive_test.md">Comprehensive Test Documentation</a> for detailed test information</small>
 </div>
 

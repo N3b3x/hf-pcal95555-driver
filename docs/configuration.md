@@ -25,7 +25,51 @@ The PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin repres
 
 **Address Range**: 0x20 to 0x27 (7-bit I2C addresses)
 
-**Example**: To set address 0x21, connect A0 to VDD and A1-A2 to GND.
+### Address Pin Configuration Table
+
+| A2 | A1 | A0 | I2C Address (7-bit) | Constructor Call |
+|----|----|----|---------------------|------------------|
+| LOW | LOW | LOW | 0x20 (default) | `PCAL95555(bus, false, false, false)` |
+| LOW | LOW | HIGH | 0x21 | `PCAL95555(bus, true, false, false)` |
+| LOW | HIGH | LOW | 0x22 | `PCAL95555(bus, false, true, false)` |
+| LOW | HIGH | HIGH | 0x23 | `PCAL95555(bus, true, true, false)` |
+| HIGH | LOW | LOW | 0x24 | `PCAL95555(bus, false, false, true)` |
+| HIGH | LOW | HIGH | 0x25 | `PCAL95555(bus, true, false, true)` |
+| HIGH | HIGH | LOW | 0x26 | `PCAL95555(bus, false, true, true)` |
+| HIGH | HIGH | HIGH | 0x27 | `PCAL95555(bus, true, true, true)` |
+
+### Dynamic Address Changes
+
+If your I2C interface supports GPIO control of address pins (via `SetAddressPins()`), you can change the address dynamically:
+
+**Option 1: Using address directly (recommended)**
+```cpp
+// Change address to 0x21
+if (gpio.ChangeAddress(0x21)) {
+    printf("Address changed to 0x%02X\n", gpio.GetAddress()); // 0x21
+}
+
+// Change address to 0x25
+if (gpio.ChangeAddress(0x25)) {
+    printf("Address changed to 0x%02X\n", gpio.GetAddress()); // 0x25
+}
+```
+
+**Option 2: Using pin levels**
+```cpp
+// Change address to 0x21 (A0=HIGH, A1=LOW, A2=LOW)
+if (gpio.ChangeAddress(true, false, false)) {
+    printf("Address changed to 0x%02X\n", gpio.GetAddress()); // 0x21
+}
+```
+
+**Get current address and address bits:**
+```cpp
+uint8_t addr = gpio.GetAddress();      // Returns current address (e.g., 0x21)
+uint8_t bits = gpio.GetAddressBits();  // Returns address bits (e.g., 1 = binary 001)
+```
+
+**Note**: Dynamic address changes require hardware support. If address pins are hardwired, `ChangeAddress()` will still update internal state but won't change hardware pins.
 
 ## Kconfig Configuration (Optional)
 
@@ -87,14 +131,14 @@ gpio.SetPullDirection(1, false);
 Set output drive strength:
 
 ```cpp
-gpio.SetDriveStrength(0, pcal95555::PCAL95555<MyI2c>::DriveStrength::Full);
+gpio.SetDriveStrength(0, pcal95555::PCAL95555<MyI2c>::DriveStrength::Level3); // Full strength
 ```
 
 **Drive Strength Levels**:
-- `Quarter`: 25% drive strength
-- `Half`: 50% drive strength
-- `ThreeQuarter`: 75% drive strength
-- `Full`: 100% drive strength
+- `Level0`: 25% drive strength (¼)
+- `Level1`: 50% drive strength (½)
+- `Level2`: 75% drive strength (¾)
+- `Level3`: 100% drive strength (full)
 
 ### Output Mode
 
@@ -138,15 +182,25 @@ gpio.ResetToDefault();
 
 ## Interrupt Configuration
 
-### Enable Interrupts
+### Basic Interrupt Setup
 
 ```cpp
-// Configure interrupt mask (0 = enabled, 1 = masked)
-gpio.ConfigureInterruptMask(0xFF00); // Enable interrupts on PORT_1 (pins 8-15)
+// Enable interrupt on pin 5 (recommended method)
+gpio.ConfigureInterrupt(5, InterruptState::Enabled);
 
-// Set interrupt callback
+// Disable interrupt on pin 3
+gpio.ConfigureInterrupt(3, InterruptState::Disabled);
+
+// Configure multiple pins at once
+gpio.ConfigureInterrupts({
+    {0, InterruptState::Enabled},
+    {5, InterruptState::Enabled},
+    {10, InterruptState::Enabled},
+    {3, InterruptState::Disabled}
+});
+
+// Set global interrupt callback (optional)
 gpio.SetInterruptCallback([](uint16_t status) {
-    // Handle interrupt
     printf("Interrupt on pins: 0x%04X\n", status);
 });
 
@@ -154,11 +208,34 @@ gpio.SetInterruptCallback([](uint16_t status) {
 gpio.HandleInterrupt();
 ```
 
+### Per-Pin Interrupt Callbacks
+
+```cpp
+// Register callback for specific pin with edge detection
+gpio.RegisterPinInterrupt(5, InterruptEdge::Rising, [](uint16_t pin, bool state) {
+    printf("Pin %d went HIGH\n", pin);
+});
+
+// Register callback for falling edge
+gpio.RegisterPinInterrupt(3, InterruptEdge::Falling, [](uint16_t pin, bool state) {
+    printf("Pin %d went LOW\n", pin);
+});
+
+// Register callback for both edges
+gpio.RegisterPinInterrupt(7, InterruptEdge::Both, [](uint16_t pin, bool state) {
+    printf("Pin %d changed to %s\n", pin, state ? "HIGH" : "LOW");
+});
+
+// Register interrupt handler with I2C interface (for hardware interrupts)
+gpio.RegisterInterruptHandler(); // Sets up INT pin handling
+```
+
 ### Get Interrupt Status
 
 ```cpp
 uint16_t status = gpio.GetInterruptStatus();
 // Check which pins triggered interrupt
+// Reading this register clears the interrupt condition
 ```
 
 ## Recommended Settings
@@ -175,7 +252,7 @@ gpio.SetPullDirection(pin, true); // Pull-up
 
 ```cpp
 gpio.SetPinDirection(pin, pcal95555::PCAL95555<MyI2c>::GPIODir::Output);
-gpio.SetDriveStrength(pin, pcal95555::PCAL95555<MyI2c>::DriveStrength::Full);
+gpio.SetDriveStrength(pin, pcal95555::PCAL95555<MyI2c>::DriveStrength::Level3); // Full strength
 gpio.WritePin(pin, false); // Set initial state
 ```
 
@@ -186,7 +263,7 @@ gpio.SetPinDirection(pin, pcal95555::PCAL95555<MyI2c>::GPIODir::Input);
 gpio.SetPullEnable(pin, true);
 gpio.SetPullDirection(pin, true);
 gpio.EnableInputLatch(pin, true); // Latch input changes
-gpio.ConfigureInterruptMask(~(1 << pin)); // Enable interrupt for this pin
+gpio.ConfigureInterrupt(pin, InterruptState::Enabled); // Enable interrupt for this pin
 ```
 
 ## Next Steps

@@ -96,10 +96,15 @@ public:
 };
 ```
 
-**Method Requirements**:
+**Required Methods** (must be implemented):
 - `write()`: Write `len` bytes from `data` to register `reg` at I2C address `addr` (7-bit address)
 - `read()`: Read `len` bytes into `data` from register `reg` at I2C address `addr` (7-bit address)
-- Both return `true` on success, `false` on failure (NACK, timeout, etc.)
+- `EnsureInitialized()`: Ensure I2C bus is initialized and ready for communication
+- All return `true` on success, `false` on failure (NACK, timeout, etc.)
+
+**Optional Methods** (can be overridden for additional functionality):
+- `SetAddressPins()`: Control A2-A0 address pins via GPIO (returns `false` by default if not supported)
+- `RegisterInterruptHandler()`: Register interrupt handler for INT pin (returns `false` by default if not supported)
 
 ## Implementation Steps
 
@@ -127,6 +132,35 @@ public:
         // Your I2C read implementation
         return true;
     }
+    
+    // Required: Ensure I2C bus is initialized and ready
+    bool EnsureInitialized() {
+        if (initialized_) {
+            return true;  // Already initialized
+        }
+        // Initialize I2C hardware, configure pins, set up bus, etc.
+        // ...
+        initialized_ = true;
+        return true;
+    }
+    
+    // Optional: Override to support dynamic address pin control
+    bool SetAddressPins(bool a0_level, bool a1_level, bool a2_level) {
+        // Set GPIO pins connected to A2-A0 address pins
+        // Return true if supported, false if not supported (hardwired)
+        return false; // Default: not supported
+    }
+    
+    // Optional: Override to support hardware interrupt handling
+    bool RegisterInterruptHandler(std::function<void()> handler) {
+        // Set up GPIO interrupt for INT pin
+        // Call handler() when INT pin fires
+        // Return true if supported, false if not supported
+        return false; // Default: not supported
+    }
+    
+private:
+    bool initialized_ = false;  // Track initialization state
 };
 ```
 
@@ -274,7 +308,8 @@ After implementing the interface, test it:
 
 ```cpp
 MyPlatformI2c i2c;
-pcal95555::PCAL95555<MyPlatformI2c> gpio(&i2c, 0x20);
+// Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default)
+pcal95555::PCAL95555<MyPlatformI2c> gpio(&i2c, false, false, false);
 
 gpio.ResetToDefault();
 gpio.SetPinDirection(0, pcal95555::PCAL95555<MyPlatformI2c>::GPIODir::Output);

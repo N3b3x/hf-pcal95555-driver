@@ -59,7 +59,11 @@ public:
 
 // 2. Create driver instance
 MyI2c i2c;
-pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // 0x20 is default I2C address
+// Option 1: Using address directly (recommended)
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // Address 0x20 (default)
+
+// Option 2: Using pin levels
+// pcal95555::PCAL95555<MyI2c> gpio(&i2c, false, false, false); // A0=LOW, A1=LOW, A2=LOW -> 0x20
 
 // 3. Initialize and use
 gpio.ResetToDefault(); // all pins become inputs with pull-ups

@@ -28,7 +28,16 @@ This guide helps you diagnose and resolve common issues when using the PCAL95555
 1. **Check I2C address**:
    - Default is 0x20 (all A0-A2 pins to GND)
    - Use I2C scanner to verify device address
-   - Update address in constructor if different
+   - Update address pin levels in constructor if different:
+     ```cpp
+     // For address 0x21: A0=HIGH, A1=LOW, A2=LOW
+     PCAL95555 driver(bus, true, false, false);
+     ```
+   - Use `GetAddress()` to verify current address:
+     ```cpp
+     uint8_t addr = driver.GetAddress();
+     printf("Current address: 0x%02X\n", addr);
+     ```
 
 2. **Verify hardware connections**:
    - Check SDA/SCL connections
@@ -201,19 +210,53 @@ void i2c_scanner() {
 
 ### Q: How do I use interrupts?
 
-**A:**
-1. Configure pin as input
-2. Enable input latching: `EnableInputLatch(pin, true)`
-3. Configure interrupt mask: `ConfigureInterruptMask(~(1 << pin))`
-4. Set callback: `SetInterruptCallback(callback)`
-5. Call `HandleInterrupt()` when interrupt occurs
+**A:** There are two ways to handle interrupts:
+
+**Method 1: Per-pin callbacks (recommended)**
+```cpp
+// Configure pin as input
+gpio.SetPinDirection(pin, GPIODir::Input);
+gpio.SetPullEnable(pin, true);
+gpio.EnableInputLatch(pin, true);
+
+// Enable interrupt (easy-to-use method)
+gpio.ConfigureInterrupt(pin, InterruptState::Enabled);
+
+// Register per-pin callback
+gpio.RegisterPinInterrupt(pin, InterruptEdge::Rising, [](uint16_t p, bool state) {
+    printf("Pin %d interrupt!\n", p);
+});
+
+// Register interrupt handler with I2C interface (for hardware INT pin)
+gpio.RegisterInterruptHandler();
+
+// Handle interrupt (called automatically if INT pin configured, or call manually)
+gpio.HandleInterrupt();
+```
+
+**Method 2: Global callback**
+```cpp
+gpio.SetInterruptCallback([](uint16_t status) {
+    printf("Interrupt on pins: 0x%04X\n", status);
+});
+```
 
 ### Q: Can I use multiple PCAL9555A devices?
 
 **A:** Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances:
 ```cpp
-pcal95555::PCAL95555<MyI2c> gpio1(&i2c, 0x20); // First device
-pcal95555::PCAL95555<MyI2c> gpio2(&i2c, 0x21); // Second device
+// First device: A0=LOW, A1=LOW, A2=LOW -> address 0x20
+pcal95555::PCAL95555<MyI2c> gpio1(&i2c, false, false, false);
+
+// Second device: A0=HIGH, A1=LOW, A2=LOW -> address 0x21
+pcal95555::PCAL95555<MyI2c> gpio2(&i2c, true, false, false);
+```
+
+You can also change the address dynamically if your I2C interface supports GPIO control:
+```cpp
+if (gpio1.ChangeAddress(true, false, false)) {
+    printf("Address changed to 0x%02X\n", gpio1.GetAddress()); // Now 0x21
+}
 ```
 
 ### Q: What's the difference between pull-up and pull-down?
@@ -223,6 +266,33 @@ pcal95555::PCAL95555<MyI2c> gpio2(&i2c, 0x21); // Second device
 - **Pull-down**: Resistor connects pin to GND (default low when floating)
 
 Choose based on your circuit requirements.
+
+### Q: What drive strength levels are available?
+
+**A:** The driver supports four drive strength levels:
+- `Level0`: 25% drive strength (¼)
+- `Level1`: 50% drive strength (½)
+- `Level2`: 75% drive strength (¾)
+- `Level3`: 100% drive strength (full)
+
+Example:
+```cpp
+gpio.SetDriveStrength(pin, DriveStrength::Level1); // 50% strength
+```
+
+### Q: How do I check for errors?
+
+**A:** Use error flags to check for errors:
+```cpp
+uint16_t errors = gpio.GetErrorFlags();
+if (errors & static_cast<uint16_t>(Error::I2CReadFail)) {
+    // I2C read failed
+}
+if (errors & static_cast<uint16_t>(Error::InvalidPin)) {
+    // Invalid pin number
+}
+gpio.ClearErrorFlags(); // Clear all errors
+```
 
 ---
 
