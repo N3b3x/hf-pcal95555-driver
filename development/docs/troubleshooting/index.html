@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -308,7 +308,20 @@
     <ul>
       <li>Default is 0x20 (all A0-A2 pins to GND)</li>
       <li>Use I2C scanner to verify device address</li>
-      <li>Update address in constructor if different</li>
+      <li>Update address pin levels in constructor if different:
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="c1">// For address 0x21: A0=HIGH, A1=LOW, A2=LOW</span>
+<span class="n">PCAL95555</span> <span class="nf">driver</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div>        </div>
+      </li>
+      <li>Use <code class="language-plaintext highlighter-rouge">GetAddress()</code> to verify current address:
+        <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="kt">uint8_t</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">();</span>
+<span class="n">printf</span><span class="p">(</span><span class="s">"Current address: 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">addr</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div>        </div>
+      </li>
     </ul>
   </li>
   <li><strong>Verify hardware connections</strong>:
@@ -607,14 +620,55 @@
 </h3>
     
 
-<p><strong>A:</strong></p>
-<ol>
-  <li>Configure pin as input</li>
-  <li>Enable input latching: <code class="language-plaintext highlighter-rouge">EnableInputLatch(pin, true)</code></li>
-  <li>Configure interrupt mask: <code class="language-plaintext highlighter-rouge">ConfigureInterruptMask(~(1 &lt;&lt; pin))</code></li>
-  <li>Set callback: <code class="language-plaintext highlighter-rouge">SetInterruptCallback(callback)</code></li>
-  <li>Call <code class="language-plaintext highlighter-rouge">HandleInterrupt()</code> when interrupt occurs</li>
-</ol>
+<p><strong>A:</strong> There are two ways to handle interrupts:</p>
+
+<p><strong>Method 1: Per-pin callbacks (recommended)</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre><span class="c1">// Configure pin as input</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Input</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">EnableInputLatch</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+<span class="c1">// Enable interrupt (easy-to-use method)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupt</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">);</span>
+
+<span class="c1">// Register per-pin callback</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterPinInterrupt</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">InterruptEdge</span><span class="o">::</span><span class="n">Rising</span><span class="p">,</span> <span class="p">[](</span><span class="kt">uint16_t</span> <span class="n">p</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Pin %d interrupt!</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">p</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Register interrupt handler with I2C interface (for hardware INT pin)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterInterruptHandler</span><span class="p">();</span>
+
+<span class="c1">// Handle interrupt (called automatically if INT pin configured, or call manually)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">HandleInterrupt</span><span class="p">();</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Method 2: Global callback</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetInterruptCallback</span><span class="p">([](</span><span class="kt">uint16_t</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Interrupt on pins: 0x%04X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
+<span class="p">});</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
 <h3 id="q-can-i-use-multiple-pcal9555a-devices">
   
   
@@ -627,8 +681,23 @@
 <p><strong>A:</strong> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances:</p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
-</pre></td><td class="rouge-code"><pre><span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio1</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span> <span class="c1">// First device</span>
-<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio2</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">);</span> <span class="c1">// Second device</span>
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="c1">// First device: A0=LOW, A1=LOW, A2=LOW -&gt; address 0x20</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio1</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+
+<span class="c1">// Second device: A0=HIGH, A1=LOW, A2=LOW -&gt; address 0x21</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio2</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p>You can also change the address dynamically if your I2C interface supports GPIO control:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="p">(</span><span class="n">gpio1</span><span class="p">.</span><span class="n">ChangeAddress</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio1</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// Now 0x21</span>
+<span class="p">}</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 <h3 id="q-whats-the-difference-between-pull-up-and-pull-down">
   
@@ -645,7 +714,55 @@
   <li><strong>Pull-down</strong>: Resistor connects pin to GND (default low when floating)</li>
 </ul>
 
-<p>Choose based on your circuit requirements.</p><hr />
+<p>Choose based on your circuit requirements.</p>
+<h3 id="q-what-drive-strength-levels-are-available">
+  
+  
+    <a href="#q-what-drive-strength-levels-are-available" class="anchor-heading" aria-labelledby="q-what-drive-strength-levels-are-available"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Q: What drive strength levels are available?
+  
+  
+</h3>
+    
+
+<p><strong>A:</strong> The driver supports four drive strength levels:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">Level0</code>: 25% drive strength (¼)</li>
+  <li><code class="language-plaintext highlighter-rouge">Level1</code>: 50% drive strength (½)</li>
+  <li><code class="language-plaintext highlighter-rouge">Level2</code>: 75% drive strength (¾)</li>
+  <li><code class="language-plaintext highlighter-rouge">Level3</code>: 100% drive strength (full)</li>
+</ul>
+
+<p>Example:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level1</span><span class="p">);</span> <span class="c1">// 50% strength</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<h3 id="q-how-do-i-check-for-errors">
+  
+  
+    <a href="#q-how-do-i-check-for-errors" class="anchor-heading" aria-labelledby="q-how-do-i-check-for-errors"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Q: How do I check for errors?
+  
+  
+</h3>
+    
+
+<p><strong>A:</strong> Use error flags to check for errors:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="kt">uint16_t</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetErrorFlags</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CReadFail</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// I2C read failed</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">InvalidPin</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// Invalid pin number</span>
+<span class="p">}</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ClearErrorFlags</span><span class="p">();</span> <span class="c1">// Clear all errors</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div><hr />
 <h2 id="getting-more-help">
   
   

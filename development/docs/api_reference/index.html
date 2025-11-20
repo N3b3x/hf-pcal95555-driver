@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -308,9 +308,64 @@
 
 <p><strong>Location</strong>: <a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></p>
 
-<p><strong>Constructor:</strong></p>
+<p><strong>Constructors:</strong></p>
+
+<p><strong>Constructor 1: Using address pin levels</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span><span class="p">(</span><span class="n">I2cType</span><span class="o">*</span> <span class="n">bus</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a0_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a1_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a2_level</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Parameters:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">bus</code>: Pointer to your I2C interface implementation</li>
+  <li><code class="language-plaintext highlighter-rouge">a0_level</code>: Initial state of A0 pin (true = HIGH/VDD, false = LOW/GND)</li>
+  <li><code class="language-plaintext highlighter-rouge">a1_level</code>: Initial state of A1 pin (true = HIGH/VDD, false = LOW/GND)</li>
+  <li><code class="language-plaintext highlighter-rouge">a2_level</code>: Initial state of A2 pin (true = HIGH/VDD, false = LOW/GND)</li>
+</ul>
+
+<p><strong>Constructor 2: Using I2C address directly</strong></p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 </pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span><span class="p">(</span><span class="n">I2cType</span><span class="o">*</span> <span class="n">bus</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">address</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Parameters:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">bus</code>: Pointer to your I2C interface implementation</li>
+  <li><code class="language-plaintext highlighter-rouge">address</code>: 7-bit I2C address (0x20 to 0x27). Address bits are calculated automatically.</li>
+</ul>
+
+<p><strong>Description:</strong>
+Both constructors calculate the I2C address and attempt to set address pins via <code class="language-plaintext highlighter-rouge">SetAddressPins()</code> if supported by the I2C interface, then verify communication afterward.</p>
+
+<p><strong>Examples:</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+</pre></td><td class="rouge-code"><pre><span class="c1">// Using pin levels - A2=LOW, A1=LOW, A0=LOW -&gt; address 0x20 (default)</span>
+<span class="n">PCAL95555</span> <span class="nf">driver1</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+
+<span class="c1">// Using pin levels - A2=LOW, A1=LOW, A0=HIGH -&gt; address 0x21</span>
+<span class="n">PCAL95555</span> <span class="nf">driver2</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+
+<span class="c1">// Using address directly - address 0x20 (default)</span>
+<span class="n">PCAL95555</span> <span class="nf">driver3</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+
+<span class="c1">// Using address directly - address 0x21</span>
+<span class="n">PCAL95555</span> <span class="nf">driver4</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">);</span>
+
+<span class="c1">// Using address directly - address 0x25</span>
+<span class="n">PCAL95555</span> <span class="nf">driver5</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x25</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p><strong>Location</strong>: <a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></p>
@@ -341,14 +396,19 @@
   </thead>
   <tbody>
     <tr>
+      <td><code class="language-plaintext highlighter-rouge">EnsureInitialized()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool EnsureInitialized()</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
       <td><code class="language-plaintext highlighter-rouge">ResetToDefault()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void ResetToDefault()</code></td>
-      <td><a href="../src/pcal95555.cpp#L49"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L49</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">InitFromConfig()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void InitFromConfig()</code></td>
-      <td><a href="../src/pcal95555.cpp#L78"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L78</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -373,12 +433,17 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetPinDirection()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetPinDirection(uint16_t pin, GPIODir dir)</code></td>
-      <td><a href="../src/pcal95555.cpp#L110"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L110</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SetDirections()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool SetDirections(std::initializer_list&lt;std::pair&lt;uint16_t, GPIODir&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetMultipleDirections()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetMultipleDirections(uint16_t mask, GPIODir dir)</code></td>
-      <td><a href="../src/pcal95555.cpp#L552"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L552</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -403,17 +468,27 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">ReadPin()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool ReadPin(uint16_t pin)</code></td>
-      <td><a href="../src/pcal95555.cpp#L560"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L560</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ReadPins()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">std::vector&lt;std::pair&lt;uint16_t, bool&gt;&gt; ReadPins(std::initializer_list&lt;uint16_t&gt; pins)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">WritePin()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool WritePin(uint16_t pin, bool value)</code></td>
-      <td><a href="../src/pcal95555.cpp#L569"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L569</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">WritePins()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool WritePins(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">TogglePin()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool TogglePin(uint16_t pin)</code></td>
-      <td><a href="../src/pcal95555.cpp#L577"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L577</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -438,12 +513,22 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetPullEnable()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetPullEnable(uint16_t pin, bool enable)</code></td>
-      <td><a href="../src/pcal95555.cpp#L586"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L586</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SetPullEnables()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool SetPullEnables(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetPullDirection()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetPullDirection(uint16_t pin, bool pull_up)</code></td>
-      <td><a href="../src/pcal95555.cpp#L594"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L594</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SetPullDirections()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool SetPullDirections(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -468,7 +553,12 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetDriveStrength()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetDriveStrength(uint16_t pin, DriveStrength level)</code></td>
-      <td><a href="../src/pcal95555.cpp#L603"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L603</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SetDriveStrengths()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool SetDriveStrengths(std::initializer_list&lt;std::pair&lt;uint16_t, DriveStrength&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -491,24 +581,49 @@
   </thead>
   <tbody>
     <tr>
+      <td><code class="language-plaintext highlighter-rouge">ConfigureInterrupt()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool ConfigureInterrupt(uint16_t pin, InterruptState state)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ConfigureInterrupts()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool ConfigureInterrupts(std::initializer_list&lt;std::pair&lt;uint16_t, InterruptState&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
       <td><code class="language-plaintext highlighter-rouge">ConfigureInterruptMask()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool ConfigureInterruptMask(uint16_t mask)</code></td>
-      <td><a href="../src/pcal95555.cpp#L611"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L611</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code></td>
       <td><code class="language-plaintext highlighter-rouge">uint16_t GetInterruptStatus()</code></td>
-      <td><a href="../src/pcal95555.cpp#L617"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L617</code></a></td>
+      <td><a href="../src/pcal95555.cpp#L300"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L300</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">RegisterPinInterrupt()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function&lt;void(uint16_t, bool)&gt; callback)</code></td>
+      <td><a href="../src/pcal95555.cpp#L317"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L317</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">UnregisterPinInterrupt()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool UnregisterPinInterrupt(uint16_t pin)</code></td>
+      <td><a href="../src/pcal95555.cpp#L342"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L342</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetInterruptCallback()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void SetInterruptCallback(const std::function&lt;void(uint16_t)&gt;&amp; callback)</code></td>
-      <td><a href="../src/pcal95555.cpp#L668"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L668</code></a></td>
+      <td><a href="../src/pcal95555.cpp#L360"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L360</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">RegisterInterruptHandler()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool RegisterInterruptHandler()</code></td>
+      <td><a href="../src/pcal95555.cpp#L366"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L366</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">HandleInterrupt()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void HandleInterrupt()</code></td>
-      <td><a href="../src/pcal95555.cpp#L675"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L675</code></a></td>
+      <td><a href="../src/pcal95555.cpp#L385"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L385</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -558,12 +673,17 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetPinPolarity()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetPinPolarity(uint16_t pin, Polarity polarity)</code></td>
-      <td><a href="../src/pcal95555.cpp#L635"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L635</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">SetPolarities()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool SetPolarities(std::initializer_list&lt;std::pair&lt;uint16_t, Polarity&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetMultiplePolarities()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetMultiplePolarities(uint16_t mask, Polarity polarity)</code></td>
-      <td><a href="../src/pcal95555.cpp#L644"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L644</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -588,12 +708,57 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">EnableInputLatch()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool EnableInputLatch(uint16_t pin, bool enable)</code></td>
-      <td><a href="../src/pcal95555.cpp#L653"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L653</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">EnableInputLatches()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool EnableInputLatches(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">EnableMultipleInputLatches()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool EnableMultipleInputLatches(uint16_t mask, bool enable)</code></td>
-      <td><a href="../src/pcal95555.cpp#L662"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L662</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="address-management">
+  
+  
+    <a href="#address-management" class="anchor-heading" aria-labelledby="address-management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Address Management
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Signature</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">GetAddress()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">uint8_t GetAddress() const</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">GetAddressBits()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">uint8_t GetAddressBits() const</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ChangeAddress()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool ChangeAddress(bool a0_level, bool a1_level, bool a2_level)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ChangeAddress()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">bool ChangeAddress(uint8_t address)</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -618,17 +783,17 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetRetries()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void SetRetries(int retries)</code></td>
-      <td><a href="../inc/pcal95555.hpp#L503"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp#L503</code></a></td>
+      <td><a href="../src/pcal95555.cpp#L46"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L46</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">GetErrorFlags()</code></td>
       <td><code class="language-plaintext highlighter-rouge">uint16_t GetErrorFlags() const</code></td>
-      <td><a href="../inc/pcal95555.hpp#L510"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp#L510</code></a></td>
+      <td><a href="../src/pcal95555.cpp#L525"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L525</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">ClearErrorFlags()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void ClearErrorFlags(uint16_t mask = 0xFFFF)</code></td>
-      <td><a href="../inc/pcal95555.hpp#L517"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp#L517</code></a></td>
+      <td><a href="../src/pcal95555.cpp#L530"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L530</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -654,6 +819,7 @@
     <tr>
       <th>Type</th>
       <th>Values</th>
+      <th>Description</th>
       <th>Location</th>
     </tr>
   </thead>
@@ -661,16 +827,43 @@
     <tr>
       <td><code class="language-plaintext highlighter-rouge">GPIODir</code></td>
       <td><code class="language-plaintext highlighter-rouge">Input</code>, <code class="language-plaintext highlighter-rouge">Output</code></td>
+      <td>GPIO pin direction</td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">DriveStrength</code></td>
       <td><code class="language-plaintext highlighter-rouge">Level0</code>, <code class="language-plaintext highlighter-rouge">Level1</code>, <code class="language-plaintext highlighter-rouge">Level2</code>, <code class="language-plaintext highlighter-rouge">Level3</code></td>
+      <td>Output drive strength (Level0=25%, Level1=50%, Level2=75%, Level3=100%)</td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">Polarity</code></td>
       <td><code class="language-plaintext highlighter-rouge">Normal</code>, <code class="language-plaintext highlighter-rouge">Inverted</code></td>
+      <td>Input polarity inversion</td>
+      <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">OutputMode</code></td>
+      <td><code class="language-plaintext highlighter-rouge">PushPull</code>, <code class="language-plaintext highlighter-rouge">OpenDrain</code></td>
+      <td>Output mode (per port)</td>
+      <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">InterruptState</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Enabled</code>, <code class="language-plaintext highlighter-rouge">Disabled</code></td>
+      <td>Interrupt enable/disable state</td>
+      <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">InterruptEdge</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Rising</code>, <code class="language-plaintext highlighter-rouge">Falling</code>, <code class="language-plaintext highlighter-rouge">Both</code></td>
+      <td>Interrupt edge trigger type</td>
+      <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">Error</code></td>
+      <td><code class="language-plaintext highlighter-rouge">None</code>, <code class="language-plaintext highlighter-rouge">InvalidPin</code>, <code class="language-plaintext highlighter-rouge">InvalidMask</code>, <code class="language-plaintext highlighter-rouge">I2CReadFail</code>, <code class="language-plaintext highlighter-rouge">I2CWriteFail</code></td>
+      <td>Error conditions (bitmask)</td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
   </tbody>

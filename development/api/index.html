@@ -123,7 +123,11 @@ $(function() {
 <div class="line"> </div>
 <div class="line"><span class="comment">// 2. Create driver instance</span></div>
 <div class="line">MyI2c i2c;</div>
-<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); <span class="comment">// 0x20 is default I2C address</span></div>
+<div class="line"><span class="comment">// Option 1: Using address directly (recommended)</span></div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); <span class="comment">// Address 0x20 (default)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Option 2: Using pin levels</span></div>
+<div class="line"><span class="comment">// pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false); // A0=LOW, A1=LOW, A2=LOW -&gt; 0x20</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// 3. Initialize and use</span></div>
 <div class="line">gpio.ResetToDefault(); <span class="comment">// all pins become inputs with pull-ups</span></div>

@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -313,8 +313,135 @@
 <p><strong>Default I2C address</strong>: <code class="language-plaintext highlighter-rouge">0x20</code> (all address pins to GND)</p>
 
 <p><strong>Address Range</strong>: 0x20 to 0x27 (7-bit I2C addresses)</p>
+<h3 id="address-pin-configuration-table">
+  
+  
+    <a href="#address-pin-configuration-table" class="anchor-heading" aria-labelledby="address-pin-configuration-table"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Address Pin Configuration Table
+  
+  
+</h3>
+    
 
-<p><strong>Example</strong>: To set address 0x21, connect A0 to VDD and A1-A2 to GND.</p>
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th>A2</th>
+      <th>A1</th>
+      <th>A0</th>
+      <th>I2C Address (7-bit)</th>
+      <th>Constructor Call</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>LOW</td>
+      <td>LOW</td>
+      <td>LOW</td>
+      <td>0x20 (default)</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, false, false, false)</code></td>
+    </tr>
+    <tr>
+      <td>LOW</td>
+      <td>LOW</td>
+      <td>HIGH</td>
+      <td>0x21</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, true, false, false)</code></td>
+    </tr>
+    <tr>
+      <td>LOW</td>
+      <td>HIGH</td>
+      <td>LOW</td>
+      <td>0x22</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, false, true, false)</code></td>
+    </tr>
+    <tr>
+      <td>LOW</td>
+      <td>HIGH</td>
+      <td>HIGH</td>
+      <td>0x23</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, true, true, false)</code></td>
+    </tr>
+    <tr>
+      <td>HIGH</td>
+      <td>LOW</td>
+      <td>LOW</td>
+      <td>0x24</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, false, false, true)</code></td>
+    </tr>
+    <tr>
+      <td>HIGH</td>
+      <td>LOW</td>
+      <td>HIGH</td>
+      <td>0x25</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, true, false, true)</code></td>
+    </tr>
+    <tr>
+      <td>HIGH</td>
+      <td>HIGH</td>
+      <td>LOW</td>
+      <td>0x26</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, false, true, true)</code></td>
+    </tr>
+    <tr>
+      <td>HIGH</td>
+      <td>HIGH</td>
+      <td>HIGH</td>
+      <td>0x27</td>
+      <td><code class="language-plaintext highlighter-rouge">PCAL95555(bus, true, true, true)</code></td>
+    </tr>
+  </tbody>
+</table></div>
+<h3 id="dynamic-address-changes">
+  
+  
+    <a href="#dynamic-address-changes" class="anchor-heading" aria-labelledby="dynamic-address-changes"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Dynamic Address Changes
+  
+  
+</h3>
+    
+
+<p>If your I2C interface supports GPIO control of address pins (via <code class="language-plaintext highlighter-rouge">SetAddressPins()</code>), you can change the address dynamically:</p>
+
+<p><strong>Option 1: Using address directly (recommended)</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="c1">// Change address to 0x21</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">ChangeAddress</span><span class="p">(</span><span class="mh">0x21</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// 0x21</span>
+<span class="p">}</span>
+
+<span class="c1">// Change address to 0x25</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">ChangeAddress</span><span class="p">(</span><span class="mh">0x25</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// 0x25</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Option 2: Using pin levels</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+</pre></td><td class="rouge-code"><pre><span class="c1">// Change address to 0x21 (A0=HIGH, A1=LOW, A2=LOW)</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">ChangeAddress</span><span class="p">(</span><span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// 0x21</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Get current address and address bits:</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre><span class="kt">uint8_t</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">();</span>      <span class="c1">// Returns current address (e.g., 0x21)</span>
+<span class="kt">uint8_t</span> <span class="n">bits</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddressBits</span><span class="p">();</span>  <span class="c1">// Returns address bits (e.g., 1 = binary 001)</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Note</strong>: Dynamic address changes require hardware support. If address pins are hardwired, <code class="language-plaintext highlighter-rouge">ChangeAddress()</code> will still update internal state but won’t change hardware pins.</p>
 <h2 id="kconfig-configuration-optional">
   
   
@@ -435,15 +562,15 @@
 <p>Set output drive strength:</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Full</span><span class="p">);</span>
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level3</span><span class="p">);</span> <span class="c1">// Full strength</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p><strong>Drive Strength Levels</strong>:</p>
 <ul>
-  <li><code class="language-plaintext highlighter-rouge">Quarter</code>: 25% drive strength</li>
-  <li><code class="language-plaintext highlighter-rouge">Half</code>: 50% drive strength</li>
-  <li><code class="language-plaintext highlighter-rouge">ThreeQuarter</code>: 75% drive strength</li>
-  <li><code class="language-plaintext highlighter-rouge">Full</code>: 100% drive strength</li>
+  <li><code class="language-plaintext highlighter-rouge">Level0</code>: 25% drive strength (¼)</li>
+  <li><code class="language-plaintext highlighter-rouge">Level1</code>: 50% drive strength (½)</li>
+  <li><code class="language-plaintext highlighter-rouge">Level2</code>: 75% drive strength (¾)</li>
+  <li><code class="language-plaintext highlighter-rouge">Level3</code>: 100% drive strength (full)</li>
 </ul>
 <h3 id="output-mode">
   
@@ -524,10 +651,10 @@
   
 </h2>
     
-<h3 id="enable-interrupts">
+<h3 id="basic-interrupt-setup">
   
   
-    <a href="#enable-interrupts" class="anchor-heading" aria-labelledby="enable-interrupts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Enable Interrupts
+    <a href="#basic-interrupt-setup" class="anchor-heading" aria-labelledby="basic-interrupt-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Basic Interrupt Setup
   
   
 </h3>
@@ -544,17 +671,81 @@
 9
 10
 11
-</pre></td><td class="rouge-code"><pre><span class="c1">// Configure interrupt mask (0 = enabled, 1 = masked)</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterruptMask</span><span class="p">(</span><span class="mh">0xFF00</span><span class="p">);</span> <span class="c1">// Enable interrupts on PORT_1 (pins 8-15)</span>
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+</pre></td><td class="rouge-code"><pre><span class="c1">// Enable interrupt on pin 5 (recommended method)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupt</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">);</span>
 
-<span class="c1">// Set interrupt callback</span>
+<span class="c1">// Disable interrupt on pin 3</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupt</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Disabled</span><span class="p">);</span>
+
+<span class="c1">// Configure multiple pins at once</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupts</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Disabled</span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Set global interrupt callback (optional)</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetInterruptCallback</span><span class="p">([](</span><span class="kt">uint16_t</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
-    <span class="c1">// Handle interrupt</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">"Interrupt on pins: 0x%04X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
 <span class="p">});</span>
 
 <span class="c1">// Handle interrupt (call from ISR or polling)</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">HandleInterrupt</span><span class="p">();</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<h3 id="per-pin-interrupt-callbacks">
+  
+  
+    <a href="#per-pin-interrupt-callbacks" class="anchor-heading" aria-labelledby="per-pin-interrupt-callbacks"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Per-Pin Interrupt Callbacks
+  
+  
+</h3>
+    
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+</pre></td><td class="rouge-code"><pre><span class="c1">// Register callback for specific pin with edge detection</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterPinInterrupt</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">InterruptEdge</span><span class="o">::</span><span class="n">Rising</span><span class="p">,</span> <span class="p">[](</span><span class="kt">uint16_t</span> <span class="n">pin</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Pin %d went HIGH</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pin</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Register callback for falling edge</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterPinInterrupt</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="n">InterruptEdge</span><span class="o">::</span><span class="n">Falling</span><span class="p">,</span> <span class="p">[](</span><span class="kt">uint16_t</span> <span class="n">pin</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Pin %d went LOW</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pin</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Register callback for both edges</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterPinInterrupt</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="n">InterruptEdge</span><span class="o">::</span><span class="n">Both</span><span class="p">,</span> <span class="p">[](</span><span class="kt">uint16_t</span> <span class="n">pin</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Pin %d changed to %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="n">state</span> <span class="o">?</span> <span class="s">"HIGH"</span> <span class="o">:</span> <span class="s">"LOW"</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Register interrupt handler with I2C interface (for hardware interrupts)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterInterruptHandler</span><span class="p">();</span> <span class="c1">// Sets up INT pin handling</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 <h3 id="get-interrupt-status">
   
@@ -567,8 +758,10 @@
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
+3
 </pre></td><td class="rouge-code"><pre><span class="kt">uint16_t</span> <span class="n">status</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetInterruptStatus</span><span class="p">();</span>
 <span class="c1">// Check which pins triggered interrupt</span>
+<span class="c1">// Reading this register clears the interrupt condition</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 <h2 id="recommended-settings">
   
@@ -607,7 +800,7 @@
 2
 3
 </pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Full</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level3</span><span class="p">);</span> <span class="c1">// Full strength</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">WritePin</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span> <span class="c1">// Set initial state</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 <h3 id="for-interrupt-driven-inputs">
@@ -628,7 +821,7 @@
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">EnableInputLatch</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">// Latch input changes</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterruptMask</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">pin</span><span class="p">));</span> <span class="c1">// Enable interrupt for this pin</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupt</span><span class="p">(</span><span class="n">pin</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">);</span> <span class="c1">// Enable interrupt for this pin</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 <h2 id="next-steps">
   

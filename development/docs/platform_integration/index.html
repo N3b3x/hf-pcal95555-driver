@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -480,11 +480,18 @@
 <span class="p">};</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
-<p><strong>Method Requirements</strong>:</p>
+<p><strong>Required Methods</strong> (must be implemented):</p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">write()</code>: Write <code class="language-plaintext highlighter-rouge">len</code> bytes from <code class="language-plaintext highlighter-rouge">data</code> to register <code class="language-plaintext highlighter-rouge">reg</code> at I2C address <code class="language-plaintext highlighter-rouge">addr</code> (7-bit address)</li>
   <li><code class="language-plaintext highlighter-rouge">read()</code>: Read <code class="language-plaintext highlighter-rouge">len</code> bytes into <code class="language-plaintext highlighter-rouge">data</code> from register <code class="language-plaintext highlighter-rouge">reg</code> at I2C address <code class="language-plaintext highlighter-rouge">addr</code> (7-bit address)</li>
-  <li>Both return <code class="language-plaintext highlighter-rouge">true</code> on success, <code class="language-plaintext highlighter-rouge">false</code> on failure (NACK, timeout, etc.)</li>
+  <li><code class="language-plaintext highlighter-rouge">EnsureInitialized()</code>: Ensure I2C bus is initialized and ready for communication</li>
+  <li>All return <code class="language-plaintext highlighter-rouge">true</code> on success, <code class="language-plaintext highlighter-rouge">false</code> on failure (NACK, timeout, etc.)</li>
+</ul>
+
+<p><strong>Optional Methods</strong> (can be overridden for additional functionality):</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SetAddressPins()</code>: Control A2-A0 address pins via GPIO (returns <code class="language-plaintext highlighter-rouge">false</code> by default if not supported)</li>
+  <li><code class="language-plaintext highlighter-rouge">RegisterInterruptHandler()</code>: Register interrupt handler for INT pin (returns <code class="language-plaintext highlighter-rouge">false</code> by default if not supported)</li>
 </ul>
 <h2 id="implementation-steps">
   
@@ -525,6 +532,35 @@
 20
 21
 22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+41
+42
+43
+44
+45
+46
+47
+48
+49
+50
+51
 </pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">"pcal95555.hpp"</span><span class="cp">
 </span>
 <span class="k">class</span> <span class="nc">MyPlatformI2c</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">MyPlatformI2c</span><span class="o">&gt;</span> <span class="p">{</span>
@@ -546,6 +582,35 @@
         <span class="c1">// Your I2C read implementation</span>
         <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
     <span class="p">}</span>
+    
+    <span class="c1">// Required: Ensure I2C bus is initialized and ready</span>
+    <span class="kt">bool</span> <span class="n">EnsureInitialized</span><span class="p">()</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">initialized_</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>  <span class="c1">// Already initialized</span>
+        <span class="p">}</span>
+        <span class="c1">// Initialize I2C hardware, configure pins, set up bus, etc.</span>
+        <span class="c1">// ...</span>
+        <span class="n">initialized_</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+        <span class="k">return</span> <span class="nb">true</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Optional: Override to support dynamic address pin control</span>
+    <span class="kt">bool</span> <span class="n">SetAddressPins</span><span class="p">(</span><span class="kt">bool</span> <span class="n">a0_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a1_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a2_level</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Set GPIO pins connected to A2-A0 address pins</span>
+        <span class="c1">// Return true if supported, false if not supported (hardwired)</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Default: not supported</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Optional: Override to support hardware interrupt handling</span>
+    <span class="kt">bool</span> <span class="n">RegisterInterruptHandler</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">function</span><span class="o">&lt;</span><span class="kt">void</span><span class="p">()</span><span class="o">&gt;</span> <span class="n">handler</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Set up GPIO interrupt for INT pin</span>
+        <span class="c1">// Call handler() when INT pin fires</span>
+        <span class="c1">// Return true if supported, false if not supported</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Default: not supported</span>
+    <span class="p">}</span>
+    
+<span class="nl">private:</span>
+    <span class="kt">bool</span> <span class="n">initialized_</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>  <span class="c1">// Track initialization state</span>
 <span class="p">};</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 <h3 id="step-2-platform-specific-examples">
@@ -851,8 +916,10 @@
 6
 7
 8
+9
 </pre></td><td class="rouge-code"><pre><span class="n">MyPlatformI2c</span> <span class="n">i2c</span><span class="p">;</span>
-<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyPlatformI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+<span class="c1">// Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyPlatformI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
 <span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyPlatformI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>

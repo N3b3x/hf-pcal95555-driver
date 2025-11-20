@@ -76,10 +76,10 @@ $(function() {
   <div class="headertitle"><div class="title">Troubleshooting</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md119"></a> This guide helps you diagnose and resolve common issues when using the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md120"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md125"></a> This guide helps you diagnose and resolve common issues when using the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md126"></a>
 Common Error Messages</h1>
-<h2><a class="anchor" id="autotoc_md121"></a>
+<h2><a class="anchor" id="autotoc_md127"></a>
 Error: Device Not Detected</h2>
 <p><b>Symptoms:</b></p><ul>
 <li><code>ResetToDefault()</code> or other operations fail</li>
@@ -94,7 +94,12 @@ Error: Device Not Detected</h2>
 <li><b>Check I2C address</b>:<ul>
 <li>Default is 0x20 (all A0-A2 pins to GND)</li>
 <li>Use I2C scanner to verify device address</li>
-<li>Update address in constructor if different</li>
+<li>Update address pin levels in constructor if different: <div class="fragment"><div class="line"><span class="comment">// For address 0x21: A0=HIGH, A1=LOW, A2=LOW</span></div>
+<div class="line">PCAL95555 driver(bus, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
+</div><!-- fragment --></li>
+<li>Use <code>GetAddress()</code> to verify current address: <div class="fragment"><div class="line">uint8_t addr = driver.GetAddress();</div>
+<div class="line">printf(<span class="stringliteral">&quot;Current address: 0x%02X\n&quot;</span>, addr);</div>
+</div><!-- fragment --></li>
 </ul>
 </li>
 <li><b>Verify hardware connections</b>:<ul>
@@ -109,7 +114,7 @@ Error: Device Not Detected</h2>
 </ul>
 </li>
 </ol>
-<h2><a class="anchor" id="autotoc_md122"></a>
+<h2><a class="anchor" id="autotoc_md128"></a>
 Error: I2C Communication Failures</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Operations fail intermittently</li>
@@ -121,7 +126,7 @@ Error: I2C Communication Failures</h2>
 <li><b>Check bus speed</b>: Reduce I2C speed if using long wires</li>
 <li><b>Verify signal integrity</b>: Check for noise on I2C lines</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md123"></a>
+<h2><a class="anchor" id="autotoc_md129"></a>
 Incorrect Pin States</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Pins don't respond to writes</li>
@@ -133,7 +138,7 @@ Incorrect Pin States</h2>
 <li>[ ] Verify pull resistors are configured if needed</li>
 <li>[ ] Check for external loads affecting pin state</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md124"></a>
+<h2><a class="anchor" id="autotoc_md130"></a>
 Runtime Errors</h2>
 <p><b>Initialization Fails</b></p>
 <p><b>Checklist:</b></p><ul>
@@ -149,36 +154,76 @@ Runtime Errors</h2>
 <li>[ ] I2C communication is working</li>
 <li>[ ] Error flags are checked</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md125"></a>
+<h1><a class="anchor" id="autotoc_md131"></a>
 FAQ</h1>
-<h2><a class="anchor" id="autotoc_md126"></a>
+<h2><a class="anchor" id="autotoc_md132"></a>
 Q: Why do my pin writes not work?</h2>
 <p><b>A:</b> Common causes:</p><ol type="1">
 <li>Pin not configured as output: Call <code>SetPinDirection(pin, GPIODir::Output)</code> first</li>
 <li>Wrong pin number: Valid pins are 0-15</li>
 <li>I2C communication failure: Check I2C bus and connections</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md127"></a>
+<h2><a class="anchor" id="autotoc_md133"></a>
 Q: How do I use interrupts?</h2>
-<p><b>A:</b></p><ol type="1">
-<li>Configure pin as input</li>
-<li>Enable input latching: <code>EnableInputLatch(pin, true)</code></li>
-<li>Configure interrupt mask: <code>ConfigureInterruptMask(~(1 &lt;&lt; pin))</code></li>
-<li>Set callback: <code>SetInterruptCallback(callback)</code></li>
-<li>Call <code>HandleInterrupt()</code> when interrupt occurs</li>
-</ol>
-<h2><a class="anchor" id="autotoc_md128"></a>
+<p><b>A:</b> There are two ways to handle interrupts:</p>
+<p><b>Method 1: Per-pin callbacks (recommended)</b> </p><div class="fragment"><div class="line"><span class="comment">// Configure pin as input</span></div>
+<div class="line">gpio.SetPinDirection(pin, GPIODir::Input);</div>
+<div class="line">gpio.SetPullEnable(pin, <span class="keyword">true</span>);</div>
+<div class="line">gpio.EnableInputLatch(pin, <span class="keyword">true</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Enable interrupt (easy-to-use method)</span></div>
+<div class="line">gpio.ConfigureInterrupt(pin, InterruptState::Enabled);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Register per-pin callback</span></div>
+<div class="line">gpio.RegisterPinInterrupt(pin, InterruptEdge::Rising, [](uint16_t p, <span class="keywordtype">bool</span> state) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Pin %d interrupt!\n&quot;</span>, p);</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Register interrupt handler with I2C interface (for hardware INT pin)</span></div>
+<div class="line">gpio.RegisterInterruptHandler();</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Handle interrupt (called automatically if INT pin configured, or call manually)</span></div>
+<div class="line">gpio.HandleInterrupt();</div>
+</div><!-- fragment --><p><b>Method 2: Global callback</b> </p><div class="fragment"><div class="line">gpio.SetInterruptCallback([](uint16_t status) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Interrupt on pins: 0x%04X\n&quot;</span>, status);</div>
+<div class="line">});</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md134"></a>
 Q: Can I use multiple PCAL9555A devices?</h2>
-<p><b>A:</b> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances: </p><div class="fragment"><div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio1(&amp;i2c, 0x20); <span class="comment">// First device</span></div>
-<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio2(&amp;i2c, 0x21); <span class="comment">// Second device</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md129"></a>
+<p><b>A:</b> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances: </p><div class="fragment"><div class="line"><span class="comment">// First device: A0=LOW, A1=LOW, A2=LOW -&gt; address 0x20</span></div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio1(&amp;i2c, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Second device: A0=HIGH, A1=LOW, A2=LOW -&gt; address 0x21</span></div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio2(&amp;i2c, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
+</div><!-- fragment --><p>You can also change the address dynamically if your I2C interface supports GPIO control: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (gpio1.ChangeAddress(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Address changed to 0x%02X\n&quot;</span>, gpio1.GetAddress()); <span class="comment">// Now 0x21</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md135"></a>
 Q: What's the difference between pull-up and pull-down?</h2>
 <p><b>A:</b></p><ul>
 <li><b>Pull-up</b>: Resistor connects pin to VDD (default high when floating)</li>
 <li><b>Pull-down</b>: Resistor connects pin to GND (default low when floating)</li>
 </ul>
 <p>Choose based on your circuit requirements.</p>
-<p><b>Navigation</b> ⬅️ <a class="el" href="md_docs_2examples.html">Examples</a> | <a class="el" href="md_docs_2index.html">Back to Index</a> </p>
+<h2><a class="anchor" id="autotoc_md136"></a>
+Q: What drive strength levels are available?</h2>
+<p><b>A:</b> The driver supports four drive strength levels:</p><ul>
+<li><code>Level0</code>: 25% drive strength (¼)</li>
+<li><code>Level1</code>: 50% drive strength (½)</li>
+<li><code>Level2</code>: 75% drive strength (¾)</li>
+<li><code>Level3</code>: 100% drive strength (full)</li>
+</ul>
+<p>Example: </p><div class="fragment"><div class="line">gpio.SetDriveStrength(pin, DriveStrength::Level1); <span class="comment">// 50% strength</span></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md137"></a>
+Q: How do I check for errors?</h2>
+<p><b>A:</b> Use error flags to check for errors: </p><div class="fragment"><div class="line">uint16_t errors = gpio.GetErrorFlags();</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::I2CReadFail)) {</div>
+<div class="line">    <span class="comment">// I2C read failed</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::InvalidPin)) {</div>
+<div class="line">    <span class="comment">// Invalid pin number</span></div>
+<div class="line">}</div>
+<div class="line">gpio.ClearErrorFlags(); <span class="comment">// Clear all errors</span></div>
+</div><!-- fragment --><p><b>Navigation</b> ⬅️ <a class="el" href="md_docs_2examples.html">Examples</a> | <a class="el" href="md_docs_2index.html">Back to Index</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

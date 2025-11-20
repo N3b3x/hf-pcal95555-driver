@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -304,6 +304,16 @@
 19
 20
 21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
 </pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">"pcal95555.hpp"</span><span class="cp">
 </span>
 <span class="c1">// Implement I2C interface (see platform_integration.md)</span>
@@ -312,9 +322,19 @@
 <span class="p">};</span>
 
 <span class="n">MyI2c</span> <span class="n">i2c</span><span class="p">;</span>
-<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+<span class="c1">// Option 1: Using address directly (recommended)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span> <span class="c1">// Address 0x20 (default)</span>
+
+<span class="c1">// Option 2: Using pin levels</span>
+<span class="c1">// pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false);</span>
 
 <span class="kt">void</span> <span class="n">app_main</span><span class="p">(</span><span class="kt">void</span><span class="p">)</span> <span class="p">{</span>
+    <span class="c1">// Initialize driver (lazy initialization happens automatically, but explicit is clearer)</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">gpio</span><span class="p">.</span><span class="n">EnsureInitialized</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="s">"APP"</span><span class="p">,</span> <span class="s">"Failed to initialize PCAL95555"</span><span class="p">);</span>
+        <span class="k">return</span><span class="p">;</span>
+    <span class="p">}</span>
+    
     <span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span>
     
     <span class="c1">// Configure pin 0 as output</span>
@@ -340,42 +360,16 @@
   <li><strong>Configure</strong>: Set pin directions</li>
   <li><strong>Use</strong>: Read and write pin states</li>
 </ol><hr />
-<h2 id="example-2-multiple-pins">
+<h2 id="example-2-multiple-pins-configuration">
   
   
-    <a href="#example-2-multiple-pins" class="anchor-heading" aria-labelledby="example-2-multiple-pins"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example 2: Multiple Pins
-  
-  
-</h2>
-    
-
-<p>This example demonstrates configuring multiple pins at once.</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-</pre></td><td class="rouge-code"><pre><span class="c1">// Set pins 0-7 as outputs</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetMultipleDirections</span><span class="p">(</span><span class="mh">0x00FF</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
-
-<span class="c1">// Write to multiple pins</span>
-<span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">8</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">gpio</span><span class="p">.</span><span class="n">WritePin</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="p">(</span><span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">));</span> <span class="c1">// Alternate pattern</span>
-<span class="p">}</span>
-</pre></td></tr></tbody></table></div></code></pre></div></div><hr />
-<h2 id="example-3-interrupt-handling">
-  
-  
-    <a href="#example-3-interrupt-handling" class="anchor-heading" aria-labelledby="example-3-interrupt-handling"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example 3: Interrupt Handling
+    <a href="#example-2-multiple-pins-configuration" class="anchor-heading" aria-labelledby="example-2-multiple-pins-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example 2: Multiple Pins Configuration
   
   
 </h2>
     
 
-<p>This example shows how to use interrupts.</p>
+<p>This example demonstrates configuring multiple pins at once with individual settings.</p>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
@@ -392,21 +386,155 @@
 13
 14
 15
+16
+17
+18
+19
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+</pre></td><td class="rouge-code"><pre><span class="c1">// Configure multiple pins with individual directions</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetDirections</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Input</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Input</span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Write to multiple pins at once</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">WritePins</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="nb">false</span><span class="p">},</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="nb">true</span><span class="p">}</span>
+<span class="p">});</span>
+
+<span class="c1">// Read multiple pins at once</span>
+<span class="k">auto</span> <span class="n">results</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">ReadPins</span><span class="p">({</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">,</span> <span class="mi">10</span><span class="p">});</span>
+<span class="k">for</span> <span class="p">(</span><span class="k">const</span> <span class="k">auto</span><span class="o">&amp;</span> <span class="p">[</span><span class="n">pin</span><span class="p">,</span> <span class="n">value</span><span class="p">]</span> <span class="o">:</span> <span class="n">results</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Pin %d: %s</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pin</span><span class="p">,</span> <span class="n">value</span> <span class="o">?</span> <span class="s">"HIGH"</span> <span class="o">:</span> <span class="s">"LOW"</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// Configure pull resistors for multiple pins</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnables</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">},</span>   <span class="c1">// Enable pull on pin 1</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="nb">true</span><span class="p">}</span>   <span class="c1">// Enable pull on pin 10</span>
+<span class="p">});</span>
+
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirections</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">},</span>   <span class="c1">// Pull-up on pin 1</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="nb">false</span><span class="p">}</span>  <span class="c1">// Pull-down on pin 10</span>
+<span class="p">});</span>
+
+<span class="c1">// Configure drive strength for multiple pins</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrengths</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level3</span><span class="p">},</span>  <span class="c1">// Full strength</span>
+    <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level1</span><span class="p">}</span>   <span class="c1">// 50% strength</span>
+<span class="p">});</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div><hr />
+<h2 id="example-3-interrupt-handling">
+  
+  
+    <a href="#example-3-interrupt-handling" class="anchor-heading" aria-labelledby="example-3-interrupt-handling"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example 3: Interrupt Handling
+  
+  
+</h2>
+    
+
+<p>This example shows how to use interrupts with per-pin callbacks.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
 </pre></td><td class="rouge-code"><pre><span class="c1">// Configure pin 8 as input with interrupt</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Input</span><span class="p">);</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">// Pull-up</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">EnableInputLatch</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterruptMask</span><span class="p">(</span><span class="o">~</span><span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">));</span> <span class="c1">// Enable interrupt</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupt</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">);</span> <span class="c1">// Enable interrupt</span>
 
-<span class="c1">// Set callback</span>
+<span class="c1">// Register per-pin callback for rising edge</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterPinInterrupt</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="n">InterruptEdge</span><span class="o">::</span><span class="n">Rising</span><span class="p">,</span> <span class="p">[](</span><span class="kt">uint16_t</span> <span class="n">pin</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Pin %d interrupt: went HIGH</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">pin</span><span class="p">);</span>
+<span class="p">});</span>
+
+<span class="c1">// Register interrupt handler with I2C interface (for hardware INT pin)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">RegisterInterruptHandler</span><span class="p">();</span> <span class="c1">// Sets up INT pin handling</span>
+
+<span class="c1">// In your main loop or ISR (if using polling)</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">HandleInterrupt</span><span class="p">();</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<h3 id="configure-multiple-interrupts">
+  
+  
+    <a href="#configure-multiple-interrupts" class="anchor-heading" aria-labelledby="configure-multiple-interrupts"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Configure Multiple Interrupts
+  
+  
+</h3>
+    
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="c1">// Configure interrupts for multiple pins at once</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ConfigureInterrupts</span><span class="p">({</span>
+    <span class="p">{</span><span class="mi">0</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">},</span>   <span class="c1">// Enable on pin 0</span>
+    <span class="p">{</span><span class="mi">5</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">},</span>   <span class="c1">// Enable on pin 5</span>
+    <span class="p">{</span><span class="mi">10</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Enabled</span><span class="p">},</span>  <span class="c1">// Enable on pin 10</span>
+    <span class="p">{</span><span class="mi">3</span><span class="p">,</span> <span class="n">InterruptState</span><span class="o">::</span><span class="n">Disabled</span><span class="p">}</span>   <span class="c1">// Disable on pin 3</span>
+<span class="p">});</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<h3 id="global-interrupt-callback">
+  
+  
+    <a href="#global-interrupt-callback" class="anchor-heading" aria-labelledby="global-interrupt-callback"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Global Interrupt Callback
+  
+  
+</h3>
+    
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="c1">// Set global callback for all interrupts</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetInterruptCallback</span><span class="p">([](</span><span class="kt">uint16_t</span> <span class="n">status</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">"Interrupt on pins: 0x%04X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
     <span class="c1">// Handle interrupt</span>
 <span class="p">});</span>
-
-<span class="c1">// In your main loop or ISR</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">HandleInterrupt</span><span class="p">();</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
 <h2 id="example-4-pull-resistors">
   
@@ -444,8 +572,116 @@
 3
 </pre></td><td class="rouge-code"><pre><span class="c1">// Set pin as output with reduced drive strength</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Half</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level1</span><span class="p">);</span> <span class="c1">// 50% strength</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
+<h2 id="example-6-address-management">
+  
+  
+    <a href="#example-6-address-management" class="anchor-heading" aria-labelledby="example-6-address-management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example 6: Address Management
+  
+  
+</h2>
+    
+
+<p>This example shows how to work with I2C addresses.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+</pre></td><td class="rouge-code"><pre><span class="c1">// Option 1: Create driver using address directly (recommended)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">);</span> <span class="c1">// Address 0x21</span>
+
+<span class="c1">// Option 2: Create driver using pin levels</span>
+<span class="c1">// pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, true, false, false); // A0=HIGH -&gt; 0x21</span>
+
+<span class="c1">// Get current address</span>
+<span class="kt">uint8_t</span> <span class="n">addr</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">();</span> <span class="c1">// Returns 0x21</span>
+<span class="kt">uint8_t</span> <span class="n">bits</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddressBits</span><span class="p">();</span> <span class="c1">// Returns 1 (binary: 001)</span>
+
+<span class="c1">// Change address dynamically using address value (if I2C interface supports GPIO control)</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">ChangeAddress</span><span class="p">(</span><span class="mh">0x20</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// Now 0x20</span>
+<span class="p">}</span>
+
+<span class="c1">// Change address using pin levels</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">ChangeAddress</span><span class="p">(</span><span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// Now 0x20</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<h2 id="example-7-error-handling">
+  
+  
+    <a href="#example-7-error-handling" class="anchor-heading" aria-labelledby="example-7-error-handling"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Example 7: Error Handling
+  
+  
+</h2>
+    
+
+<p>This example shows error handling and retry configuration.</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+19
+20
+21
+22
+23
+</pre></td><td class="rouge-code"><pre><span class="c1">// Configure retry mechanism</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetRetries</span><span class="p">(</span><span class="mi">3</span><span class="p">);</span> <span class="c1">// Retry up to 3 times on I2C failure</span>
+
+<span class="c1">// Perform operations</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">SetPinDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">WritePin</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+
+<span class="c1">// Check for errors</span>
+<span class="kt">uint16_t</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetErrorFlags</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CReadFail</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"I2C read failed</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CWriteFail</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"I2C write failed</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">InvalidPin</span><span class="p">))</span> <span class="p">{</span>
+        <span class="n">printf</span><span class="p">(</span><span class="s">"Invalid pin number</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+    <span class="p">}</span>
+    
+    <span class="c1">// Clear errors</span>
+    <span class="n">gpio</span><span class="p">.</span><span class="n">ClearErrorFlags</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
 <h2 id="running-the-examples">
   
   

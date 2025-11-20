@@ -76,10 +76,10 @@ $(function() {
   <div class="headertitle"><div class="title">Hardware Setup</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md54"></a> This guide covers the physical connections and hardware requirements for the PCAL9555A chip.</p>
-<h1><a class="anchor" id="autotoc_md55"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md60"></a> This guide covers the physical connections and hardware requirements for the PCAL9555A chip.</p>
+<h1><a class="anchor" id="autotoc_md61"></a>
 Pin Connections</h1>
-<h2><a class="anchor" id="autotoc_md56"></a>
+<h2><a class="anchor" id="autotoc_md62"></a>
 Basic I2C Connections</h2>
 <div class="fragment"><div class="line">MCU              PCAL9555A</div>
 <div class="line">─────────────────────────</div>
@@ -87,7 +87,7 @@ Basic I2C Connections</h2>
 <div class="line">GND       ────── GND</div>
 <div class="line">SCL       ────── SCL (with 4.7kΩ pull-up to 3.3V)</div>
 <div class="line">SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md57"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md63"></a>
 Pin Descriptions</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -107,7 +107,7 @@ Pin Descriptions</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">RESET   </td><td class="markdownTableBodyNone">Reset   </td><td class="markdownTableBodyNone">Hardware reset (optional)   </td><td class="markdownTableBodyNone">No   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md58"></a>
+<h2><a class="anchor" id="autotoc_md64"></a>
 GPIO Pins</h2>
 <p>The PCAL9555A provides 16 GPIO pins organized into two ports:</p>
 <ul>
@@ -120,7 +120,7 @@ GPIO Pins</h2>
 <li>Push-pull or open-drain output (per port)</li>
 <li>Interrupt enabled or disabled</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md59"></a>
+<h1><a class="anchor" id="autotoc_md65"></a>
 Power Requirements</h1>
 <ul>
 <li><b>Supply Voltage</b>: 1.65V to 5.5V (3.3V typical)</li>
@@ -132,9 +132,9 @@ Power Requirements</h1>
 <li><b>Power Supply</b>: Stable, low-noise supply recommended</li>
 <li><b>Decoupling</b>: 100 nF ceramic capacitor close to VDD pin recommended</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md60"></a>
+<h1><a class="anchor" id="autotoc_md66"></a>
 I2C Configuration</h1>
-<h2><a class="anchor" id="autotoc_md61"></a>
+<h2><a class="anchor" id="autotoc_md67"></a>
 Address Configuration</h2>
 <p>The PCAL9555A I2C address is determined by pins A0-A2:</p>
 <table class="markdownTable">
@@ -158,7 +158,7 @@ Address Configuration</h2>
 <td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">1   </td><td class="markdownTableBodyNone">0x27   </td></tr>
 </table>
 <p><b>Default</b>: All address pins to GND = <b>0x20</b> (used in examples)</p>
-<h2><a class="anchor" id="autotoc_md62"></a>
+<h2><a class="anchor" id="autotoc_md68"></a>
 I2C Bus Configuration</h2>
 <ul>
 <li><b>Speed</b>: Up to 400 kHz (Fast Mode)<ul>
@@ -169,7 +169,7 @@ I2C Bus Configuration</h2>
 <li><b>Pull-up Resistors</b>: 4.7 kΩ on SCL and SDA (required for I2C)</li>
 <li><b>Bus Voltage</b>: Must match VDD (typically 3.3V)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md63"></a>
+<h1><a class="anchor" id="autotoc_md69"></a>
 Physical Layout Recommendations</h1>
 <ul>
 <li><b>Trace Length</b>: Keep I2C traces short (&lt; 10 cm recommended)</li>
@@ -178,9 +178,9 @@ Physical Layout Recommendations</h1>
 <li><b>Routing</b>: Route clock and data lines away from noise sources</li>
 <li><b>Multiple Devices</b>: When using multiple expanders, use proper bus termination</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md64"></a>
+<h1><a class="anchor" id="autotoc_md70"></a>
 Example Wiring Diagram</h1>
-<h2><a class="anchor" id="autotoc_md65"></a>
+<h2><a class="anchor" id="autotoc_md71"></a>
 Single PCAL9555A</h2>
 <div class="fragment"><div class="line">            PCAL9555A</div>
 <div class="line">            ┌─────────┐</div>
@@ -192,7 +192,7 @@ Single PCAL9555A</h2>
 <div class="line">            │ P0.0-7  │─── GPIO pins (PORT_0)</div>
 <div class="line">            │ P1.0-7  │─── GPIO pins (PORT_1)</div>
 <div class="line">            └─────────┘</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md66"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md72"></a>
 Multiple PCAL9555A Devices</h2>
 <div class="fragment"><div class="line">MCU SCL ──┬─── PCAL9555A #1 (A0=0, Addr=0x20) SCL</div>
 <div class="line">          │</div>
@@ -201,7 +201,7 @@ Multiple PCAL9555A Devices</h2>
 <div class="line">MCU SDA ──┬─── PCAL9555A #1 SDA</div>
 <div class="line">          │</div>
 <div class="line">          └─── PCAL9555A #2 SDA</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md67"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md73"></a>
 Interrupt Pin (Optional)</h1>
 <p>The INT pin provides hardware interrupt notification:</p>
 <ul>
@@ -209,7 +209,7 @@ Interrupt Pin (Optional)</h1>
 <li><b>Requires</b>: External pull-up resistor (typically 10kΩ to 3.3V)</li>
 <li><b>Usage</b>: Connect to a GPIO input on your MCU for interrupt-driven I/O</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md68"></a>
+<h1><a class="anchor" id="autotoc_md74"></a>
 Reset Pin (Optional)</h1>
 <p>The RESET pin provides hardware reset:</p>
 <ul>
@@ -217,7 +217,7 @@ Reset Pin (Optional)</h1>
 <li><b>Usage</b>: Connect to MCU GPIO for software reset capability</li>
 <li><b>Default</b>: Leave floating (internal pull-up enables device)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md69"></a>
+<h1><a class="anchor" id="autotoc_md75"></a>
 Next Steps</h1>
 <ul>
 <li>Verify connections with a multimeter</li>

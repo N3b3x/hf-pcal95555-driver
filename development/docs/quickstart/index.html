@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="toggle items in 📚 Documentation category" aria-pressed="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-C6 Comprehensive Test Suite</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -324,6 +324,17 @@
 25
 26
 27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
 </pre></td><td class="rouge-code"><pre><span class="cp">#include</span> <span class="cpf">"pcal95555.hpp"</span><span class="cp">
 </span>
 <span class="c1">// 1. Implement the I2C interface</span>
@@ -342,9 +353,20 @@
 
 <span class="c1">// 2. Create instances</span>
 <span class="n">MyI2c</span> <span class="n">i2c</span><span class="p">;</span>
-<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span> <span class="c1">// 0x20 is default I2C address</span>
+<span class="c1">// Option 1: Using address directly (recommended)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span> <span class="c1">// Address 0x20 (default)</span>
 
-<span class="c1">// 3. Initialize</span>
+<span class="c1">// Option 2: Using pin levels</span>
+<span class="c1">// pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false); // A0=LOW, A1=LOW, A2=LOW -&gt; 0x20</span>
+
+<span class="c1">// 3. Initialize (lazy initialization - happens automatically on first use)</span>
+<span class="c1">// You can also explicitly initialize:</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">gpio</span><span class="p">.</span><span class="n">EnsureInitialized</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// Handle initialization failure</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Reset to default state</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span> <span class="c1">// all pins become inputs with pull-ups</span>
 
 <span class="c1">// 4. Configure and use</span>
@@ -397,16 +419,44 @@
 </h3>
     
 
+<p>You can create the driver instance in two ways:</p>
+
+<p><strong>Option 1: Using I2C address directly (recommended)</strong></p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 </pre></td><td class="rouge-code"><pre><span class="n">MyI2c</span> <span class="n">i2c</span><span class="p">;</span>
-<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span> <span class="c1">// Address 0x20 (default)</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
-<p>The constructor takes:</p>
+<p><strong>Option 2: Using address pin levels</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="n">MyI2c</span> <span class="n">i2c</span><span class="p">;</span>
+<span class="c1">// Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Constructor Parameters:</strong></p>
+
+<p><strong>Using address (Option 1):</strong></p>
 <ul>
   <li>Pointer to your I2C interface implementation</li>
-  <li>I2C address (0x20 is the default, can be changed via A0-A2 pins)</li>
+  <li>I2C address (0x20 to 0x27). Address bits are calculated automatically.</li>
+</ul>
+
+<p><strong>Using pin levels (Option 2):</strong></p>
+<ul>
+  <li>Pointer to your I2C interface implementation</li>
+  <li>A0 pin level (true = HIGH/VDD, false = LOW/GND)</li>
+  <li>A1 pin level (true = HIGH/VDD, false = LOW/GND)</li>
+  <li>A2 pin level (true = HIGH/VDD, false = LOW/GND)</li>
+</ul>
+
+<p>The I2C address is calculated automatically: base address 0x20 + (A2«2 | A1«1 | A0). For example:</p>
+<ul>
+  <li>Address 0x20 → A0=LOW, A1=LOW, A2=LOW (default)</li>
+  <li>Address 0x21 → A0=HIGH, A1=LOW, A2=LOW</li>
 </ul>
 <h3 id="step-4-initialize">
   
@@ -417,9 +467,33 @@
 </h3>
     
 
+<p>The driver uses <strong>lazy initialization</strong> - it initializes automatically on first use. However, you can explicitly initialize:</p>
+
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span>
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="c1">// Explicit initialization (optional)</span>
+<span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">gpio</span><span class="p">.</span><span class="n">EnsureInitialized</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// Handle initialization failure</span>
+    <span class="k">return</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="c1">// Reset to default state</span>
+<span class="n">gpio</span><span class="p">.</span><span class="n">ResetToDefault</span><span class="p">();</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p><strong>Lazy Initialization:</strong></p>
+<ul>
+  <li>The driver initializes automatically when you call any method that requires I2C communication</li>
+  <li>Initialization includes setting address pins, verifying I2C communication, and initializing internal state</li>
+  <li>If initialization fails, methods return <code class="language-plaintext highlighter-rouge">false</code> or appropriate error values</li>
+  <li>You can call <code class="language-plaintext highlighter-rouge">EnsureInitialized()</code> explicitly to verify initialization before use</li>
+</ul>
 
 <p><code class="language-plaintext highlighter-rouge">ResetToDefault()</code> puts the device in a known state (all pins as inputs with pull-ups enabled).</p>
 <h3 id="step-5-configure-and-use-pins">
