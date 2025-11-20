@@ -76,8 +76,8 @@ $(function() {
   <div class="headertitle"><div class="title">Examples</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md49"></a> This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md50"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md53"></a> This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md54"></a>
 Example 1: Basic GPIO Control</h1>
 <p>This example shows basic input/output operations.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -88,9 +88,19 @@ Example 1: Basic GPIO Control</h1>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line">MyI2c i2c;</div>
-<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20);</div>
+<div class="line"><span class="comment">// Option 1: Using address directly (recommended)</span></div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); <span class="comment">// Address 0x20 (default)</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Option 2: Using pin levels</span></div>
+<div class="line"><span class="comment">// pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false);</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keywordtype">void</span> app_main(<span class="keywordtype">void</span>) {</div>
+<div class="line">    <span class="comment">// Initialize driver (lazy initialization happens automatically, but explicit is clearer)</span></div>
+<div class="line">    <span class="keywordflow">if</span> (!gpio.EnsureInitialized()) {</div>
+<div class="line">        ESP_LOGE(<span class="stringliteral">&quot;APP&quot;</span>, <span class="stringliteral">&quot;Failed to initialize PCAL95555&quot;</span>);</div>
+<div class="line">        <span class="keywordflow">return</span>;</div>
+<div class="line">    }</div>
+<div class="line">    </div>
 <div class="line">    gpio.ResetToDefault();</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Configure pin 0 as output</span></div>
@@ -101,37 +111,55 @@ Example 1: Basic GPIO Control</h1>
 <div class="line">    gpio.SetPinDirection(1, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
 <div class="line">    <span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md51"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md55"></a>
 Explanation</h2>
 <ol type="1">
 <li><b>Reset</b>: Put device in known state</li>
 <li><b>Configure</b>: Set pin directions</li>
 <li><b>Use</b>: Read and write pin states</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md52"></a>
+<h1><a class="anchor" id="autotoc_md56"></a>
 Example 3: Interrupt Handling</h1>
-<p>This example shows how to use interrupts.</p>
+<p>This example shows how to use interrupts with per-pin callbacks.</p>
 <div class="fragment"><div class="line"><span class="comment">// Configure pin 8 as input with interrupt</span></div>
 <div class="line">gpio.SetPinDirection(8, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
 <div class="line">gpio.SetPullEnable(8, <span class="keyword">true</span>);</div>
 <div class="line">gpio.SetPullDirection(8, <span class="keyword">true</span>); <span class="comment">// Pull-up</span></div>
 <div class="line">gpio.EnableInputLatch(8, <span class="keyword">true</span>);</div>
-<div class="line">gpio.ConfigureInterruptMask(~(1 &lt;&lt; 8)); <span class="comment">// Enable interrupt</span></div>
+<div class="line">gpio.ConfigureInterrupt(8, InterruptState::Enabled); <span class="comment">// Enable interrupt</span></div>
 <div class="line"> </div>
-<div class="line"><span class="comment">// Set callback</span></div>
+<div class="line"><span class="comment">// Register per-pin callback for rising edge</span></div>
+<div class="line">gpio.RegisterPinInterrupt(8, InterruptEdge::Rising, [](uint16_t pin, <span class="keywordtype">bool</span> state) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Pin %d interrupt: went HIGH\n&quot;</span>, pin);</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Register interrupt handler with I2C interface (for hardware INT pin)</span></div>
+<div class="line">gpio.RegisterInterruptHandler(); <span class="comment">// Sets up INT pin handling</span></div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// In your main loop or ISR (if using polling)</span></div>
+<div class="line">gpio.HandleInterrupt();</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md57"></a>
+Configure Multiple Interrupts</h2>
+<div class="fragment"><div class="line"><span class="comment">// Configure interrupts for multiple pins at once</span></div>
+<div class="line">gpio.ConfigureInterrupts({</div>
+<div class="line">    {0, InterruptState::Enabled},   <span class="comment">// Enable on pin 0</span></div>
+<div class="line">    {5, InterruptState::Enabled},   <span class="comment">// Enable on pin 5</span></div>
+<div class="line">    {10, InterruptState::Enabled},  <span class="comment">// Enable on pin 10</span></div>
+<div class="line">    {3, InterruptState::Disabled}   <span class="comment">// Disable on pin 3</span></div>
+<div class="line">});</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md58"></a>
+Global Interrupt Callback</h2>
+<div class="fragment"><div class="line"><span class="comment">// Set global callback for all interrupts</span></div>
 <div class="line">gpio.SetInterruptCallback([](uint16_t status) {</div>
 <div class="line">    printf(<span class="stringliteral">&quot;Interrupt on pins: 0x%04X\n&quot;</span>, status);</div>
 <div class="line">    <span class="comment">// Handle interrupt</span></div>
 <div class="line">});</div>
-<div class="line"> </div>
-<div class="line"><span class="comment">// In your main loop or ISR</span></div>
-<div class="line">gpio.HandleInterrupt();</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md53"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md59"></a>
 Example 5: Drive Strength</h1>
 <p>This example shows drive strength configuration.</p>
 <div class="fragment"><div class="line"><span class="comment">// Set pin as output with reduced drive strength</span></div>
 <div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
-<div class="line">gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Half);</div>
+<div class="line">gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Level1); <span class="comment">// 50% strength</span></div>
 </div><!-- fragment --><p><b>Navigation</b> ⬅️ <a class="el" href="md_docs_2api__reference.html">API Reference</a> | <a class="el" href="md_docs_2troubleshooting.html">Next: Troubleshooting ➡️</a> | <a class="el" href="md_docs_2index.html">Back to Index</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
