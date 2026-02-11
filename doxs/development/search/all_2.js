@@ -1,6 +1,8 @@
 var searchData=
 [
-  ['3_20strong_20memory_20efficiency_20strong_0',['3. &lt;strong&gt;Memory Efficiency&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md95',1,'']]],
-  ['3_3a_20create_20driver_20instance_1',['Step 3: Create Driver Instance',['../md_docs_2quickstart.html#autotoc_md119',1,'']]],
-  ['3_3a_20interrupt_20handling_2',['Example 3: Interrupt Handling',['../md_docs_2examples.html#autotoc_md56',1,'']]]
+  ['2_20create_20the_20driver_20and_20use_20it_0',['2. Create the driver and use it',['../index.html#autotoc_md5',1,'']]],
+  ['2_20strong_20compile_20time_20polymorphism_20strong_1',['2. &lt;strong&gt;Compile-Time Polymorphism&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md108',1,'']]],
+  ['2_3a_20git_20submodule_2',['Option 2: Git Submodule',['../md_docs_2installation.html#autotoc_md101',1,'']]],
+  ['2_3a_20implement_20the_20i2c_20interface_3',['Step 2: Implement the I2C Interface',['../md_docs_2quickstart.html#autotoc_md132',1,'']]],
+  ['2_3a_20platform_20specific_20examples_4',['Step 2: Platform-Specific Examples',['../md_docs_2platform__integration.html#autotoc_md116',1,'']]]
 ];

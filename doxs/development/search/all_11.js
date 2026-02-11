@@ -1,7 +1,7 @@
 var searchData=
 [
-  ['need_20help_0',['💡 Need Help?',['../md_docs_2index.html#autotoc_md82',1,'']]],
-  ['next_20steps_1',['Next Steps',['../md_docs_2configuration.html#autotoc_md52',1,'Next Steps'],['../md_docs_2hardware__setup.html#autotoc_md75',1,'Next Steps'],['../md_docs_2installation.html#autotoc_md89',1,'Next Steps'],['../md_docs_2platform__integration.html#autotoc_md112',1,'Next Steps'],['../md_docs_2quickstart.html#autotoc_md124',1,'Next Steps']]],
-  ['not_20detected_2',['Error: Device Not Detected',['../md_docs_2troubleshooting.html#autotoc_md127',1,'']]],
-  ['not_20work_3',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md132',1,'']]]
+  ['latch_20pcal9555a_20only_0',['Input Latch (PCAL9555A only)',['../md_docs_2api__reference.html#autotoc_md31',1,'']]],
+  ['layout_20recommendations_1',['Physical Layout Recommendations',['../md_docs_2hardware__setup.html#autotoc_md83',1,'']]],
+  ['led_20animation_20demo_20tt_20pcal95555_5fled_5fanimation_20tt_2',['LED Animation Demo (&lt;tt&gt;pcal95555_led_animation&lt;/tt&gt;)',['../index.html#autotoc_md12',1,'']]],
+  ['led_20animation_20demo_20wiring_3',['LED animation demo wiring',['../index.html#autotoc_md15',1,'']]]
 ];
