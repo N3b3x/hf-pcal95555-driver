@@ -46,6 +46,9 @@ pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20); // Address 0x20 (default)
 // Option 2: Using pin levels
 // pcal95555::PCAL95555<MyI2c> gpio(&i2c, false, false, false); // A0=LOW, A1=LOW, A2=LOW -> 0x20
 
+// Option 3: Force chip variant (skip auto-detection)
+// pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20, pcal95555::ChipVariant::PCA9555);
+
 // 3. Initialize (lazy initialization - happens automatically on first use)
 // You can also explicitly initialize:
 if (!gpio.EnsureInitialized()) {
@@ -56,7 +59,14 @@ if (!gpio.EnsureInitialized()) {
 // Reset to default state
 gpio.ResetToDefault(); // all pins become inputs with pull-ups
 
-// 4. Configure and use
+// 4. Check chip variant (auto-detected during init)
+if (gpio.HasAgileIO()) {
+    // PCAL9555A detected -- pull resistors, drive strength, etc. available
+} else {
+    // PCA9555 detected -- standard GPIO only
+}
+
+// 5. Configure and use
 gpio.SetPinDirection(0, pcal95555::PCAL95555<MyI2c>::GPIODir::Output);
 gpio.WritePin(0, true);
 bool input = gpio.ReadPin(1);
@@ -128,11 +138,17 @@ gpio.ResetToDefault();
 
 **Lazy Initialization:**
 - The driver initializes automatically when you call any method that requires I2C communication
-- Initialization includes setting address pins, verifying I2C communication, and initializing internal state
+- Initialization includes setting address pins, verifying I2C communication, **auto-detecting the chip variant** (PCA9555 vs PCAL9555A), and initializing internal state
 - If initialization fails, methods return `false` or appropriate error values
 - You can call `EnsureInitialized()` explicitly to verify initialization before use
 
-`ResetToDefault()` puts the device in a known state (all pins as inputs with pull-ups enabled).
+**Chip Variant Detection:**
+- The driver automatically probes the Agile I/O register bank to determine if the chip is a PCA9555 or PCAL9555A
+- Use `HasAgileIO()` to check if PCAL9555A features are available
+- Use `GetChipVariant()` to get the specific variant enum
+- PCAL9555A-only methods return `false` and set `Error::UnsupportedFeature` on a PCA9555
+
+`ResetToDefault()` puts the device in a known state (all pins as inputs with pull-ups enabled on PCAL9555A).
 
 ### Step 5: Configure and Use Pins
 

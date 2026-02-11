@@ -1,26 +1,38 @@
 /**
  * @file pcal95555.hpp
- * @brief Driver for the PCAL9555 16-bit I/O expander with I²C interface
+ * @brief Driver for the PCA9555 and PCAL9555A 16-bit I/O expanders with I²C interface
  *
- * This header provides a comprehensive C++ interface for controlling the
- * PCAL9555/PCAL95555AHF 16-bit I/O expander. The driver handles all
- * register-level operations required to configure and operate the device
- * including:
- *   - Setting I/O directions (input/output)
- *   - Reading and writing pin states
- *   - Configuring pull-up/pull-down resistors
- *   - Managing interrupt functionality
- *   - Setting drive strength and output modes
+ * This header provides a comprehensive C++ interface for controlling both the
+ * NXP PCA9555 and PCAL9555A (PCAL95555AHF) 16-bit I/O expanders. The driver
+ * auto-detects the chip variant during initialization and enables/disables
+ * features accordingly.
+ *
+ * Supported features:
+ *   - Setting I/O directions (input/output) [PCA9555 + PCAL9555A]
+ *   - Reading and writing pin states [PCA9555 + PCAL9555A]
+ *   - Polarity inversion [PCA9555 + PCAL9555A]
+ *   - Configuring pull-up/pull-down resistors [PCAL9555A only]
+ *   - Managing interrupt mask/status [PCAL9555A only]
+ *   - Setting drive strength [PCAL9555A only]
+ *   - Setting output modes (push-pull/open-drain) [PCAL9555A only]
+ *   - Input latching [PCAL9555A only]
+ *
+ * The PCAL9555A is a pin-to-pin, software-backward-compatible superset of the
+ * PCA9555. It adds "Agile I/O" features via extended registers (0x40-0x4F).
+ * Methods that require these extended registers will return false and set
+ * Error::UnsupportedFeature when a standard PCA9555 is detected.
  *
  * The implementation uses an abstract I2C interface that must be provided by
  * the user to accommodate different hardware platforms and I2C libraries.
  *
  * @author Nebiyu Tadesse
  * @date 2025-05-21
- * @version 1.0
+ * @version 2.0
  *
- * @note This driver supports the PCAL9555/PCAL95555AHF device with 16 GPIO pins
- *       divided into two 8-bit ports (PORT_0 and PORT_1).
+ * @note This driver supports the PCA9555 and PCAL9555A/PCAL95555AHF devices
+ *       with 16 GPIO pins divided into two 8-bit ports (PORT_0 and PORT_1).
+ * @note The chip variant is auto-detected during initialization. Use
+ *       HasAgileIO() or GetChipVariant() to query the detected variant.
  */
 #ifndef PCAL95555_HPP
 #define PCAL95555_HPP
@@ -327,49 +339,55 @@
 
 /** PCAL95555 register map (all control registers). */
 /**
- * @namespace PCAL95555_REG
- * @brief Contains register addresses for the PCAL9555 I/O expander chip
+ * @enum PCAL95555_REG
+ * @brief Register addresses for the PCA9555 / PCAL9555A I/O expander chips
  *
- * The PCAL9555 is a 16-bit I/O expander with I²C interface. This namespace
- * defines the memory-mapped register addresses used to control and interact
- * with the device.
+ * The register map is split into two banks:
  *
- * Register groups:
+ * **Standard PCA9555 registers (0x00-0x07)** - Supported by both PCA9555 and PCAL9555A:
  * - Input/Output registers (0x00-0x03): Read inputs and control outputs
  * - Configuration registers (0x04-0x07): Configure polarity and port direction
+ *
+ * **PCAL9555A Agile I/O registers (0x40-0x4F)** - PCAL9555A only:
  * - Drive strength registers (0x40-0x43): Control output drive strength
  * - Input/Pull registers (0x44-0x49): Configure input latching and pull-up/down
- * resistors
- * - Interrupt registers (0x4A-0x4D): Manage interrupt functionality
- * - Output configuration (0x4F): General output configuration
+ * - Interrupt registers (0x4A-0x4D): Manage interrupt mask and status
+ * - Output configuration (0x4F): Push-pull vs open-drain per port
  *
- * Each register controls 8 pins, with PORT_0 typically handling pins 0-7 and
+ * Each register controls 8 pins, with PORT_0 handling pins 0-7 and
  * PORT_1 handling pins 8-15.
+ *
+ * @note Accessing Agile I/O registers on a standard PCA9555 will result in
+ *       I2C NACK. The driver auto-detects the chip variant and guards these
+ *       registers accordingly.
  */
 enum class PCAL95555_REG : uint8_t {
-  INPUT_PORT_0 = 0x00,
-  INPUT_PORT_1 = 0x01,
-  OUTPUT_PORT_0 = 0x02,
-  OUTPUT_PORT_1 = 0x03,
-  POLARITY_INV_0 = 0x04,
-  POLARITY_INV_1 = 0x05,
-  CONFIG_PORT_0 = 0x06,
-  CONFIG_PORT_1 = 0x07,
-  DRIVE_STRENGTH_0 = 0x40,
-  DRIVE_STRENGTH_1 = 0x41,
-  DRIVE_STRENGTH_2 = 0x42,
-  DRIVE_STRENGTH_3 = 0x43,
-  INPUT_LATCH_0 = 0x44,
-  INPUT_LATCH_1 = 0x45,
-  PULL_ENABLE_0 = 0x46,
-  PULL_ENABLE_1 = 0x47,
-  PULL_SELECT_0 = 0x48,
-  PULL_SELECT_1 = 0x49,
-  INT_MASK_0 = 0x4A,
-  INT_MASK_1 = 0x4B,
-  INT_STATUS_0 = 0x4C,
-  INT_STATUS_1 = 0x4D,
-  OUTPUT_CONF = 0x4F
+  // === Standard PCA9555 registers (0x00-0x07) — PCA9555 + PCAL9555A ===
+  INPUT_PORT_0 = 0x00,     ///< Input port 0 (read-only) [PCA9555 + PCAL9555A]
+  INPUT_PORT_1 = 0x01,     ///< Input port 1 (read-only) [PCA9555 + PCAL9555A]
+  OUTPUT_PORT_0 = 0x02,    ///< Output port 0 [PCA9555 + PCAL9555A]
+  OUTPUT_PORT_1 = 0x03,    ///< Output port 1 [PCA9555 + PCAL9555A]
+  POLARITY_INV_0 = 0x04,   ///< Polarity inversion port 0 [PCA9555 + PCAL9555A]
+  POLARITY_INV_1 = 0x05,   ///< Polarity inversion port 1 [PCA9555 + PCAL9555A]
+  CONFIG_PORT_0 = 0x06,    ///< Configuration (direction) port 0 [PCA9555 + PCAL9555A]
+  CONFIG_PORT_1 = 0x07,    ///< Configuration (direction) port 1 [PCA9555 + PCAL9555A]
+
+  // === PCAL9555A Agile I/O registers (0x40-0x4F) — PCAL9555A only ===
+  DRIVE_STRENGTH_0 = 0x40, ///< Output drive strength port 0 low nibble [PCAL9555A only]
+  DRIVE_STRENGTH_1 = 0x41, ///< Output drive strength port 0 high nibble [PCAL9555A only]
+  DRIVE_STRENGTH_2 = 0x42, ///< Output drive strength port 1 low nibble [PCAL9555A only]
+  DRIVE_STRENGTH_3 = 0x43, ///< Output drive strength port 1 high nibble [PCAL9555A only]
+  INPUT_LATCH_0 = 0x44,    ///< Input latch port 0 [PCAL9555A only]
+  INPUT_LATCH_1 = 0x45,    ///< Input latch port 1 [PCAL9555A only]
+  PULL_ENABLE_0 = 0x46,    ///< Pull-up/pull-down enable port 0 [PCAL9555A only]
+  PULL_ENABLE_1 = 0x47,    ///< Pull-up/pull-down enable port 1 [PCAL9555A only]
+  PULL_SELECT_0 = 0x48,    ///< Pull-up/pull-down selection port 0 [PCAL9555A only]
+  PULL_SELECT_1 = 0x49,    ///< Pull-up/pull-down selection port 1 [PCAL9555A only]
+  INT_MASK_0 = 0x4A,       ///< Interrupt mask port 0 [PCAL9555A only]
+  INT_MASK_1 = 0x4B,       ///< Interrupt mask port 1 [PCAL9555A only]
+  INT_STATUS_0 = 0x4C,     ///< Interrupt status port 0 (read-only) [PCAL9555A only]
+  INT_STATUS_1 = 0x4D,     ///< Interrupt status port 1 (read-only) [PCAL9555A only]
+  OUTPUT_CONF = 0x4F       ///< Output port configuration [PCAL9555A only]
 };
 
 /** GPIO direction (1=input, 0=output). */
@@ -401,10 +419,11 @@ enum class InterruptState : uint8_t {
 // NOLINTNEXTLINE(performance-enum-size) - uint16_t allows for future error code expansion
 enum class Error : uint16_t {
   None = 0,
-  InvalidPin = 1 << 0,  ///< Provided pin index out of range
-  InvalidMask = 1 << 1, ///< Mask contained bits outside 0-15
-  I2CReadFail = 1 << 2, ///< An I2C read operation failed
-  I2CWriteFail = 1 << 3 ///< An I2C write operation failed
+  InvalidPin = 1 << 0,          ///< Provided pin index out of range
+  InvalidMask = 1 << 1,         ///< Mask contained bits outside 0-15
+  I2CReadFail = 1 << 2,         ///< An I2C read operation failed
+  I2CWriteFail = 1 << 3,        ///< An I2C write operation failed
+  UnsupportedFeature = 1 << 4   ///< Feature requires PCAL9555A but chip is PCA9555
 };
 
 inline Error operator|(Error lhs, Error rhs) {
@@ -417,8 +436,39 @@ inline Error operator&(Error lhs, Error rhs) {
 namespace pcal95555 {
 
 /**
+ * @enum ChipVariant
+ * @brief Identifies the detected or user-specified chip variant.
+ *
+ * The driver supports both the standard PCA9555 and the enhanced PCAL9555A.
+ * The variant is auto-detected during initialization by probing an Agile I/O
+ * register. It can also be forced via the constructor to skip detection.
+ */
+enum class ChipVariant : uint8_t {
+  Unknown = 0,    ///< Not yet detected (pre-initialization)
+  PCA9555 = 1,    ///< Standard PCA9555 (registers 0x00-0x07 only)
+  PCAL9555A = 2   ///< NXP PCAL9555A with Agile I/O (registers 0x00-0x07 + 0x40-0x4F)
+};
+
+/**
  * @class PCAL95555
- * @brief Driver for the PCAL95555AHF / PCAL9555A I²C GPIO expander.
+ * @brief Driver for the PCA9555 / PCAL9555A / PCAL95555AHF I²C GPIO expander.
+ *
+ * This driver supports both the standard PCA9555 and the enhanced PCAL9555A.
+ * The chip variant is auto-detected during initialization by probing the
+ * Agile I/O register bank (0x40-0x4F). Features requiring the extended
+ * register set are gracefully disabled when a standard PCA9555 is detected.
+ *
+ * **Chip Compatibility:**
+ * | Feature                    | PCA9555 | PCAL9555A |
+ * |----------------------------|---------|-----------|
+ * | GPIO direction             | Yes     | Yes       |
+ * | Pin read/write/toggle      | Yes     | Yes       |
+ * | Polarity inversion         | Yes     | Yes       |
+ * | Pull-up/pull-down config   | No      | Yes       |
+ * | Drive strength             | No      | Yes       |
+ * | Input latch                | No      | Yes       |
+ * | Interrupt mask/status      | No      | Yes       |
+ * | Output mode (PP/OD)        | No      | Yes       |
  *
  * @tparam I2cType The I2C interface implementation type that inherits from
  * pcal95555::I2cInterface<I2cType>
@@ -427,7 +477,9 @@ namespace pcal95555 {
  * @note Address is calculated internally from A2-A0 pins. The base address is 0x20.
  * @note The driver uses lazy initialization - no initialization happens in the constructor.
  *       Call EnsureInitialized() explicitly or let it initialize automatically on first use.
- *       Initialization includes setting address pins and verifying I2C communication.
+ *       Initialization includes setting address pins, verifying I2C communication, and
+ *       auto-detecting the chip variant.
+ * @note Use HasAgileIO() or GetChipVariant() to query which features are available.
  */
 template <typename I2cType>
 class PCAL95555 {
@@ -440,23 +492,31 @@ public:
    * @param a0_level Initial state of A0 pin: true = HIGH (VDD), false = LOW (GND)
    * @param a1_level Initial state of A1 pin: true = HIGH (VDD), false = LOW (GND)
    * @param a2_level Initial state of A2 pin: true = HIGH (VDD), false = LOW (GND)
+   * @param variant Optional chip variant override. If ChipVariant::Unknown (default),
+   *                the driver auto-detects during initialization. Set to
+   *                ChipVariant::PCA9555 or ChipVariant::PCAL9555A to skip detection.
    *
-   * The constructor will:
-   * 1. Calculate the I2C address from A2-A0 levels (base 0x20 + bits)
-   * 2. Attempt to set address pins via SetAddressPins() if supported
-   * 3. Verify communication by reading a register
+   * The constructor uses lazy initialization:
+   * 1. Calculates the I2C address from A2-A0 levels (base 0x20 + bits)
+   * 2. Stores pin levels for later initialization
+   * 3. No I2C communication happens in constructor
+   *
+   * Initialization happens automatically on first method call, or explicitly
+   * via EnsureInitialized(). Initialization includes setting address pins,
+   * verifying I2C communication, and auto-detecting the chip variant.
    *
    * @example
-   *   // A2=LOW, A1=LOW, A0=LOW -> address 0x20
+   *   // Auto-detect chip variant (default)
    *   PCAL95555 driver(bus, false, false, false);
    *
-   *   // A2=LOW, A1=LOW, A0=HIGH -> address 0x21
-   *   PCAL95555 driver(bus, true, false, false);
+   *   // Force PCA9555 mode (skip Agile I/O detection)
+   *   PCAL95555 driver(bus, false, false, false, ChipVariant::PCA9555);
    *
-   *   // A2=HIGH, A1=LOW, A0=HIGH -> address 0x25
-   *   PCAL95555 driver(bus, true, false, true);
+   *   // Force PCAL9555A mode
+   *   PCAL95555 driver(bus, true, false, false, ChipVariant::PCAL9555A);
    */
-  PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level);
+  PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level,
+            ChipVariant variant = ChipVariant::Unknown);
 
   /**
    * @brief Construct a new PCAL95555 driver instance using I2C address directly.
@@ -465,6 +525,9 @@ public:
    * pcal95555::I2cInterface<I2cType>).
    * @param address 7-bit I2C address (0x20 to 0x27). Address bits are calculated
    *                automatically: address_bits = address - 0x20
+   * @param variant Optional chip variant override. If ChipVariant::Unknown (default),
+   *                the driver auto-detects during initialization. Set to
+   *                ChipVariant::PCA9555 or ChipVariant::PCAL9555A to skip detection.
    *
    * The constructor uses lazy initialization:
    * 1. Calculates A2-A0 pin levels from the address (address - 0x20)
@@ -472,22 +535,21 @@ public:
    * 3. No I2C communication happens in constructor
    * 
    * Initialization happens automatically on first method call, or explicitly via EnsureInitialized().
-   * Initialization includes setting address pins and verifying I2C communication.
+   * Initialization includes setting address pins, verifying I2C communication, and
+   * auto-detecting the chip variant.
    *
    * @note If address is out of range (not 0x20-0x27), the address will be clamped
    *       and an error flag may be set.
    *
    * @example
-   *   // Address 0x20 (default)
+   *   // Address 0x20, auto-detect variant (default)
    *   PCAL95555 driver(bus, 0x20);
    *
-   *   // Address 0x21
-   *   PCAL95555 driver(bus, 0x21);
-   *
-   *   // Address 0x25
-   *   PCAL95555 driver(bus, 0x25);
+   *   // Address 0x21, force PCA9555 mode
+   *   PCAL95555 driver(bus, 0x21, ChipVariant::PCA9555);
    */
-  explicit PCAL95555(I2cType* bus, uint8_t address);
+  explicit PCAL95555(I2cType* bus, uint8_t address,
+                     ChipVariant variant = ChipVariant::Unknown);
 
   /**
    * @brief Configure retry mechanism for I2C transactions.
@@ -628,6 +690,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @param enable true to enable; false to disable.
    * @return true on success; false on I2C failure.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetPullEnable(uint16_t pin, bool enable) noexcept;
 
@@ -644,6 +707,7 @@ public:
    *       {5, true},
    *       {3, false}
    *   });
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetPullEnables(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
 
@@ -653,6 +717,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @param pull_up true for pull-up; false for pull-down.
    * @return true on success; false on I2C failure.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetPullDirection(uint16_t pin, bool pull_up) noexcept;
 
@@ -669,6 +734,7 @@ public:
    *       {5, false},  // pull-down
    *       {10, true}   // pull-up
    *   });
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
 
@@ -678,6 +744,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @param level Drive strength level (Level0..Level3).
    * @return true on success; false on I2C failure.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetDriveStrength(uint16_t pin, DriveStrength level) noexcept;
 
@@ -694,6 +761,7 @@ public:
    *       {5, DriveStrength::Level1},
    *       {10, DriveStrength::Level2}
    *   });
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetDriveStrengths(std::initializer_list<std::pair<uint16_t, DriveStrength>> configs) noexcept;
 
@@ -710,6 +778,7 @@ public:
    *
    *   // Disable interrupt on pin 3
    *   driver.ConfigureInterrupt(3, InterruptState::Disabled);
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool ConfigureInterrupt(uint16_t pin, InterruptState state) noexcept;
 
@@ -733,6 +802,7 @@ public:
    *       {1, InterruptState::Disabled},
    *       {2, InterruptState::Enabled}
    *   });
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs) noexcept;
 
@@ -750,12 +820,15 @@ public:
    *   // Enable interrupts on pins 0, 2, and 5 (bits 0, 2, 5 = 0)
    *   // Mask: ~(1<<0 | 1<<2 | 1<<5) = 0xFFD9
    *   driver.ConfigureInterruptMask(0xFFD9);
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool ConfigureInterruptMask(uint16_t mask) noexcept;
   /**
    * @brief Retrieve and clear the interrupt status.
    *
    * @return 16-bit mask indicating which pins triggered an interrupt.
+   *         Returns 0 on PCA9555 (interrupt status registers not available).
+   * @note Requires PCAL9555A. Returns 0 with Error::UnsupportedFeature on PCA9555.
    */
   uint16_t GetInterruptStatus() noexcept;
 
@@ -765,6 +838,7 @@ public:
    * @param port_0_open_drain true for open-drain on port 0.
    * @param port_1_open_drain true for open-drain on port 1.
    * @return true on success; false on I2C failure.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain) noexcept;
 
@@ -811,6 +885,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @param enable true to enable latch; false to disable.
    * @return true on success; false on I2C failure.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool EnableInputLatch(uint16_t pin, bool enable) noexcept;
 
@@ -823,6 +898,7 @@ public:
    *
    * @note This is a low-level method. For easier use with individual pin settings,
    *       prefer EnableInputLatches() which works with pin numbers directly.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool EnableMultipleInputLatches(uint16_t mask, bool enable) noexcept;
 
@@ -839,6 +915,7 @@ public:
    *       {5, true},
    *       {3, false}
    *   });
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool EnableInputLatches(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
 
@@ -950,6 +1027,32 @@ public:
    * @return 3-bit value (0-7) representing A2, A1, A0 pin configuration.
    */
   [[nodiscard]] uint8_t GetAddressBits() const noexcept;
+
+  /**
+   * @brief Check if the detected chip supports Agile I/O (PCAL9555A features).
+   *
+   * @return true if chip is PCAL9555A with extended register support;
+   *         false if chip is standard PCA9555 or variant is not yet detected.
+   *
+   * @note Call after EnsureInitialized() for accurate results.
+   *
+   * @example
+   *   if (driver.HasAgileIO()) {
+   *       driver.SetDriveStrength(0, DriveStrength::Level2);
+   *       driver.SetPullEnable(5, true);
+   *   }
+   */
+  [[nodiscard]] bool HasAgileIO() const noexcept;
+
+  /**
+   * @brief Get the detected chip variant.
+   *
+   * @return ChipVariant::PCA9555, ChipVariant::PCAL9555A, or
+   *         ChipVariant::Unknown if not yet initialized.
+   *
+   * @note Call after EnsureInitialized() for accurate results.
+   */
+  [[nodiscard]] ChipVariant GetChipVariant() const noexcept;
 
   /**
    * @brief Change the I2C address by setting A2-A0 pins.
@@ -1076,6 +1179,8 @@ private:
   bool a0_level_;                              // Stored pin levels for lazy init
   bool a1_level_;
   bool a2_level_;
+  ChipVariant chip_variant_{ChipVariant::Unknown};  // Detected or user-specified chip variant
+  ChipVariant user_variant_{ChipVariant::Unknown};  // User-requested variant (for skipping detection)
 
   /**
    * @brief Calculate I2C address from A2-A0 bits.
@@ -1111,6 +1216,28 @@ private:
 
   void setError(Error error_code) noexcept;
   void clearError(Error error_code) noexcept;
+
+  /**
+   * @brief Check that the chip supports Agile I/O, setting error if not.
+   *
+   * @return true if chip is PCAL9555A; false if PCA9555 (sets Error::UnsupportedFeature).
+   */
+  bool requireAgileIO() noexcept;
+
+  /**
+   * @brief Detect the chip variant by probing an Agile I/O register.
+   *
+   * Detection sequence (3-step sandwich):
+   *   1. Read INPUT_PORT_0 (0x00) — verify basic I2C communication
+   *   2. Read OUTPUT_CONF (0x4F) — probe Agile I/O register
+   *   3. Read INPUT_PORT_0 (0x00) — verify bus recovered after potential NACK
+   *
+   * If step 1 fails the bus is broken and variant is left as Unknown.
+   * If step 2 succeeds the chip is PCAL9555A.
+   * If step 2 NACKs but step 3 succeeds the chip is a standard PCA9555.
+   * If step 3 also fails the detection is inconclusive (bus error).
+   */
+  void DetectChipVariant() noexcept;
 };
 
 // Include template implementation

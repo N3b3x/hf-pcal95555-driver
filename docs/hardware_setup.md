@@ -1,7 +1,7 @@
 ---
 layout: default
 title: "🔌 Hardware Setup"
-description: "Hardware wiring and connection guide for the PCAL9555A"
+description: "Hardware wiring and connection guide for the PCA9555 / PCAL9555A"
 nav_order: 3
 parent: "📚 Documentation"
 permalink: /docs/hardware_setup/
@@ -9,15 +9,15 @@ permalink: /docs/hardware_setup/
 
 # Hardware Setup
 
-This guide covers the physical connections and hardware requirements for the PCAL9555A chip.
+This guide covers the physical connections and hardware requirements for the **PCA9555** and **PCAL9555A** chips. Both are pin-compatible -- the same wiring works for either variant. The driver auto-detects which chip is connected.
 
 ## Pin Connections
 
 ### Basic I2C Connections
 
 ```
-MCU              PCAL9555A
-─────────────────────────
+MCU              PCA9555 / PCAL9555A
+──────────────────────────────────
 3.3V      ────── VDD
 GND       ────── GND
 SCL       ────── SCL (with 4.7kΩ pull-up to 3.3V)
@@ -38,16 +38,16 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 
 ### GPIO Pins
 
-The PCAL9555A provides 16 GPIO pins organized into two ports:
+The PCA9555 / PCAL9555A provides 16 GPIO pins organized into two ports:
 
 - **PORT_0**: Pins 0-7 (P0.0 through P0.7)
 - **PORT_1**: Pins 8-15 (P1.0 through P1.7)
 
 Each pin can be configured as:
-- Input or output
-- With or without pull-up/pull-down resistor
-- Push-pull or open-drain output (per port)
-- Interrupt enabled or disabled
+- Input or output (PCA9555 + PCAL9555A)
+- With or without pull-up/pull-down resistor (PCAL9555A only)
+- Push-pull or open-drain output per port (PCAL9555A only)
+- Interrupt enabled or disabled (PCAL9555A only; software callbacks work on both)
 
 ## Power Requirements
 
@@ -62,7 +62,7 @@ Each pin can be configured as:
 
 ### Address Configuration
 
-The PCAL9555A I2C address is determined by pins A0-A2:
+The I/O expander I2C address is determined by pins A0-A2:
 
 | A2 | A1 | A0 | I2C Address (7-bit) |
 |----|----|----|---------------------|
@@ -95,10 +95,10 @@ The PCAL9555A I2C address is determined by pins A0-A2:
 
 ## Example Wiring Diagram
 
-### Single PCAL9555A
+### Single Device
 
 ```
-                    PCAL9555A
+                PCA9555 / PCAL9555A
                     ┌─────────┐
         3.3V ───────┤ VDD     │
         GND  ───────┤ GND     │
@@ -110,17 +110,20 @@ The PCAL9555A I2C address is determined by pins A0-A2:
                     └─────────┘
 ```
 
-### Multiple PCAL9555A Devices
+### Multiple Devices
 
 ```
-MCU SCL ──┬─── PCAL9555A #1 (A0=0, Addr=0x20) SCL
+MCU SCL ──┬─── Device #1 (A0=0, Addr=0x20) SCL
           │
-          └─── PCAL9555A #2 (A0=1, Addr=0x21) SCL
+          └─── Device #2 (A0=1, Addr=0x21) SCL
 
-MCU SDA ──┬─── PCAL9555A #1 SDA
+MCU SDA ──┬─── Device #1 SDA
           │
-          └─── PCAL9555A #2 SDA
+          └─── Device #2 SDA
 ```
+
+> **Note**: You can mix PCA9555 and PCAL9555A devices on the same I2C bus. Each driver
+> instance auto-detects its chip variant independently.
 
 ## Interrupt Pin (Optional)
 

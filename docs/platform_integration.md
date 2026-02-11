@@ -308,10 +308,19 @@ After implementing the interface, test it:
 
 ```cpp
 MyPlatformI2c i2c;
-// Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default)
+// Constructor takes A0, A1, A2 pin levels (all LOW = address 0x20, default)
+// Optional: pass ChipVariant to skip auto-detection
 pcal95555::PCAL95555<MyPlatformI2c> gpio(&i2c, false, false, false);
 
 gpio.ResetToDefault();
+
+// Check which chip variant was detected
+if (gpio.HasAgileIO()) {
+    printf("PCAL9555A detected - full feature set\n");
+} else {
+    printf("PCA9555 detected - standard GPIO only\n");
+}
+
 gpio.SetPinDirection(0, pcal95555::PCAL95555<MyPlatformI2c>::GPIODir::Output);
 gpio.WritePin(0, true);
 bool value = gpio.ReadPin(1);

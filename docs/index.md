@@ -10,7 +10,9 @@ has_children: true
 
 # HF-PCAL95555 Documentation
 
-Welcome! This directory contains step-by-step guides for installing, building, and using the **HF-PCAL95555** library.
+Welcome! This directory contains step-by-step guides for installing, building, and using the **HF-PCAL95555** library -- a hardware-agnostic C++ driver for the **PCA9555** and **PCAL9555A** 16-bit I/O expanders.
+
+The driver auto-detects which chip variant is connected and enables features accordingly. Standard PCA9555 features work on both chips; PCAL9555A-only features (pull resistors, drive strength, input latch, interrupt mask/status, output mode) degrade gracefully on a PCA9555.
 
 ## 📚 Documentation Structure
 
@@ -27,8 +29,8 @@ Welcome! This directory contains step-by-step guides for installing, building, a
 
 ### **Reference**
 
-6. **[📖 API Reference](api_reference.md)** – Complete API documentation
-7. **[💡 Examples](examples.md)** – Detailed example walkthroughs
+6. **[📖 API Reference](api_reference.md)** – Complete API documentation (43 methods)
+7. **[💡 Examples](examples.md)** – Detailed example walkthroughs (comprehensive test + LED animation)
 
 ### **Troubleshooting**
 

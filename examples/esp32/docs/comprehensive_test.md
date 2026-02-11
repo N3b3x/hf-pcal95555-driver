@@ -2,7 +2,11 @@
 
 ## Overview
 
-The comprehensive test suite (`pcal95555_comprehensive_test`) provides thorough validation of all PCAL9555 GPIO expander functionality. This document describes each test, what it validates, and how to interpret the results.
+The comprehensive test suite (`pcal95555_comprehensive_test`) validates **all 43 public
+API methods** of the PCAL95555 driver across **20 test sections**. It supports both the
+standard **PCA9555** and the enhanced **PCAL9555A** -- the chip variant is auto-detected
+during initialization, and PCAL9555A-only tests are automatically **skipped** (not failed)
+when a standard PCA9555 is detected.
 
 ## Test Configuration
 
@@ -13,8 +17,8 @@ The comprehensive test suite (`pcal95555_comprehensive_test`) provides thorough 
 
 ### Pin Configuration
 
-| Signal | ESP32-S3 GPIO | PCAL9555 Pin | Function |
-|--------|---------------|--------------|----------|
+| Signal | ESP32-S3 GPIO | Chip Pin | Function |
+|--------|---------------|----------|----------|
 | SDA | GPIO4 | SDA | I2C Data Line |
 | SCL | GPIO5 | SCL | I2C Clock Line |
 | INT | GPIO7 | INT | Interrupt Output (open-drain) |
@@ -30,7 +34,33 @@ The test suite uses GPIO-controlled address pins, allowing dynamic address confi
 - **A1**: Controlled via GPIO48
 - **A2**: Controlled via GPIO47
 
-The driver automatically sets these pins during initialization based on the constructor parameters.
+The driver automatically sets these pins during initialization.
+
+---
+
+## Chip Variant Handling
+
+During the "Driver Init" test, the driver performs a 3-step sandwich detection:
+
+1. Read `INPUT_PORT_0` (0x00) to verify bus health
+2. Probe `OUTPUT_CONF` (0x4F) for Agile I/O support
+3. Read `INPUT_PORT_0` (0x00) again to confirm bus recovery
+
+The detected variant is logged:
+```
+Detected chip variant: PCA9555 (standard)
+Agile I/O support: NO
+```
+or
+```
+Detected chip variant: PCAL9555A (Agile I/O)
+Agile I/O support: YES
+```
+
+Tests requiring PCAL9555A log a skip message:
+```
+Skipping: Pull resistor config requires PCAL9555A (detected PCA9555)
+```
 
 ---
 
@@ -45,513 +75,304 @@ The driver automatically sets these pins during initialization based on the cons
 - I2C master bus creation
 - GPIO pin configuration for SDA/SCL
 - Address pin GPIO configuration (A0, A1, A2)
-- Bus initialization verification
 
 **Expected Result**: I2C bus successfully initialized with all pins configured.
 
-**Failure Indications**:
-- I2C bus creation failure
-- GPIO configuration errors
-- Missing address pin configuration
-
 #### `test_driver_initialization()`
-**Purpose**: Validates PCAL9555 driver initialization and default state.
+**Purpose**: Validates driver initialization, chip variant detection, and default state.
 
 **What it tests**:
-- Driver instance creation
+- Driver instance creation (address pin constructor)
 - I2C communication verification
+- Chip variant auto-detection (PCA9555 vs PCAL9555A)
+- `HasAgileIO()` and `GetChipVariant()` queries
 - Reset to default state
 - Error flag checking and clearing
 
-**Expected Result**: Driver successfully initialized, device responds to I2C commands.
-
-**Failure Indications**:
-- I2C communication failure
-- Device not responding
-- Persistent error flags
+**Expected Result**: Driver initialized, chip variant detected and logged.
 
 ---
 
 ### 2. GPIO Direction Tests
 
 #### `test_single_pin_direction()`
-**Purpose**: Validates individual pin direction configuration.
-
-**What it tests**:
-- Setting each pin (0-15) to output mode
-- Setting each pin (0-15) to input mode
-- Direction register read/write operations
-
-**Expected Result**: All pins can be configured as input or output individually.
-
-**Failure Indications**:
-- Pin direction not changing
-- Register write failures
-- Invalid pin handling
+**Tests**: `SetPinDirection()` for each pin (0-15), input and output modes.
 
 #### `test_multiple_pin_direction()`
-**Purpose**: Validates bulk pin direction configuration.
-
-**What it tests**:
-- Setting multiple pins simultaneously (port 0: pins 0-7)
-- Setting multiple pins simultaneously (port 1: pins 8-15)
-- Mask-based direction control
-
-**Expected Result**: Multiple pins can be configured simultaneously using bit masks.
-
-**Failure Indications**:
-- Mask operations failing
-- Incorrect pin states
-- Port-level operations not working
+**Tests**: `SetMultipleDirections()` using 16-bit mask for port-level direction control.
 
 ---
 
 ### 3. GPIO Read/Write Tests
 
 #### `test_pin_write()`
-**Purpose**: Validates pin output functionality.
-
-**What it tests**:
-- Writing HIGH to a pin
-- Writing LOW to a pin
-- Output state persistence
-- Pin 0 output operations
-
-**Expected Result**: Pin outputs can be set HIGH and LOW reliably.
-
-**Failure Indications**:
-- Output not changing state
-- Write operations failing
-- State not persisting
+**Tests**: `WritePin()` -- writing HIGH and LOW to individual pins.
 
 #### `test_pin_read()`
-**Purpose**: Validates pin input functionality.
-
-**What it tests**:
-- Reading pin state (HIGH/LOW)
-- Reading all 16 pins sequentially
-- Input register reading
-
-**Expected Result**: Pin states can be read correctly.
-
-**Failure Indications**:
-- Read operations failing
-- Incorrect pin states reported
-- Input register access issues
+**Tests**: `ReadPin()` -- reading all 16 pins sequentially.
 
 #### `test_pin_toggle()`
-**Purpose**: Validates pin toggle functionality.
-
-**What it tests**:
-- Toggling pin state multiple times
-- State transitions (HIGH→LOW→HIGH)
-- Toggle operation reliability
-
-**Expected Result**: Pin can be toggled reliably between states.
-
-**Failure Indications**:
-- Toggle operations failing
-- State not changing
-- Multiple toggle issues
+**Tests**: `TogglePin()` -- toggling pin state multiple times with verification.
 
 ---
 
-### 4. Pull Resistor Tests
+### 4. Pull Resistor Tests (PCAL9555A only)
 
 #### `test_pull_resistor_config()`
-**Purpose**: Validates internal pull-up/pull-down resistor configuration.
+**Tests**: `SetPullEnable()`, `SetPullDirection()` -- per-pin pull-up/pull-down configuration.
 
-**What it tests**:
-- Enabling pull-up resistor on a pin
-- Enabling pull-down resistor on a pin
-- Disabling pull resistors
-- Pull enable/disable register operations
-
-**Expected Result**: Pull resistors can be configured per pin.
-
-**Failure Indications**:
-- Pull configuration not working
-- Register write failures
-- Pull state not persisting
+**Auto-skip**: Returns `true` with skip message on PCA9555.
 
 ---
 
-### 5. Drive Strength Tests
+### 5. Drive Strength Tests (PCAL9555A only)
 
 #### `test_drive_strength()`
-**Purpose**: Validates programmable output drive strength.
+**Tests**: `SetDriveStrength()` -- all 4 levels (Level0-Level3) on individual pins.
 
-**What it tests**:
-- Setting drive strength Level 0 (lowest)
-- Setting drive strength Level 1
-- Setting drive strength Level 2
-- Setting drive strength Level 3 (highest)
-- Drive strength register configuration
-
-**Expected Result**: All drive strength levels can be configured.
-
-**Failure Indications**:
-- Drive strength not changing
-- Invalid level handling
-- Register access failures
+**Auto-skip**: Returns `true` with skip message on PCA9555.
 
 ---
 
-### 6. Output Mode Tests
+### 6. Output Mode Tests (PCAL9555A only)
 
 #### `test_output_mode()`
-**Purpose**: Validates output mode configuration (push-pull vs open-drain).
+**Tests**: `SetOutputMode()` -- push-pull and open-drain per port and both ports.
 
-**What it tests**:
-- Push-pull mode (default)
-- Open-drain mode for port 0
-- Open-drain mode for port 1
-- Open-drain mode for both ports
-- Output mode register configuration
-
-**Expected Result**: Output modes can be configured per port.
-
-**Failure Indications**:
-- Mode configuration not working
-- Port-level control issues
-- Register write failures
+**Auto-skip**: Returns `true` with skip message on PCA9555.
 
 ---
 
 ### 7. Polarity Tests
 
 #### `test_polarity_inversion()`
-**Purpose**: Validates input polarity inversion functionality.
-
-**What it tests**:
-- Normal polarity (non-inverted)
-- Inverted polarity
-- Single pin polarity configuration
-- Multiple pin polarity configuration (mask-based)
-
-**Expected Result**: Input polarity can be inverted per pin.
-
-**Failure Indications**:
-- Polarity not changing
-- Inversion not working correctly
-- Mask operations failing
+**Tests**: `SetPinPolarity()`, `SetMultiplePolarities()` -- normal and inverted polarity, single pin and mask-based.
 
 ---
 
-### 8. Input Latch Tests
+### 8. Input Latch Tests (PCAL9555A only)
 
 #### `test_input_latch()`
-**Purpose**: Validates input latch functionality.
+**Tests**: `EnableInputLatch()`, `EnableMultipleInputLatches()` -- per-pin and mask-based latch enable/disable.
 
-**What it tests**:
-- Enabling input latch on a pin
-- Disabling input latch on a pin
-- Multiple pin latch configuration
-- Latch register operations
-
-**Expected Result**: Input latch can be enabled/disabled per pin.
-
-**Failure Indications**:
-- Latch configuration not working
-- Latch state not persisting
-- Register access issues
+**Auto-skip**: Returns `true` with skip message on PCA9555.
 
 ---
 
-### 9. Interrupt Tests
+### 9. Interrupt Tests (partially PCAL9555A only)
 
-#### `test_interrupt_mask_config()`
-**Purpose**: Validates interrupt mask configuration.
+#### `test_interrupt_mask_config()` (PCAL9555A)
+**Tests**: `ConfigureInterruptMask()` -- 16-bit interrupt mask register.
 
-**What it tests**:
-- Enabling interrupts on specific pins (0, 2, 4, 6)
-- Enabling interrupts on all pins
-- Disabling interrupts on all pins (default state)
-- Interrupt mask register operations
-
-**Expected Result**: Interrupt mask can be configured to enable/disable interrupts per pin.
-
-**Failure Indications**:
-- Mask configuration not working
-- Interrupts not enabling/disabling correctly
-- Register write failures
-
-#### `test_interrupt_status()`
-**Purpose**: Validates interrupt status reading.
-
-**What it tests**:
-- Reading interrupt status register
-- Status register clearing behavior
-- Initial interrupt status (should be 0)
-
-**Expected Result**: Interrupt status can be read and clears after reading.
-
-**Failure Indications**:
-- Status register not readable
-- Status not clearing
-- Incorrect status values
+#### `test_interrupt_status()` (PCAL9555A)
+**Tests**: `GetInterruptStatus()` -- reading and clearing interrupt status.
 
 #### `test_pin_interrupt_callbacks()`
-**Purpose**: Validates per-pin interrupt callback registration.
-
-**What it tests**:
-- Registering rising edge callback on pin 0
-- Registering falling edge callback on pin 1
-- Registering both edges callback on pin 2
-- Registering rising edge callback on pin 3
-- Global interrupt callback registration
-- Callback invocation mechanism
-
-**Expected Result**: Per-pin callbacks can be registered with different edge conditions.
-
-**Failure Indications**:
-- Callback registration failing
-- Callbacks not being invoked
-- Edge detection not working
+**Tests**: `RegisterPinInterrupt()`, `SetInterruptCallback()` -- per-pin callbacks with edge detection (Rising, Falling, Both).
 
 #### `test_interrupt_handler_registration()`
-**Purpose**: Validates hardware interrupt handler setup.
-
-**What it tests**:
-- GPIO interrupt pin configuration (GPIO7)
-- Interrupt handler registration with I2C bus
-- FreeRTOS interrupt task setup
-- Interrupt queue creation
-
-**Expected Result**: Hardware interrupt handler successfully registered and ready to process interrupts.
-
-**Failure Indications**:
-- GPIO configuration failing
-- Handler registration failing
-- Interrupt infrastructure not set up
-
-**Note**: This test will pass even if the INT pin is not physically connected (graceful degradation).
+**Tests**: `RegisterInterruptHandler()` -- hardware INT pin setup. Passes even without INT pin connected.
 
 #### `test_interrupt_callback_unregistration()`
-**Purpose**: Validates interrupt callback removal.
+**Tests**: `UnregisterPinInterrupt()` -- callback removal and double-unregister safety.
 
-**What it tests**:
-- Registering a callback for pin 5
-- Unregistering the callback
-- Attempting to unregister already-unregistered callback
-- Invalid pin handling
-
-**Expected Result**: Callbacks can be registered and unregistered correctly.
-
-**Failure Indications**:
-- Unregistration failing
-- Callbacks still being invoked after unregistration
-- Invalid pin handling issues
-
-#### `test_interrupt_config()`
-**Purpose**: Legacy interrupt configuration test.
-
-**What it tests**:
-- Basic interrupt mask configuration
-- Interrupt status reading
-- Simple interrupt setup
-
-**Expected Result**: Basic interrupt functionality works.
+#### `test_interrupt_config()` (PCAL9555A)
+**Tests**: Combined interrupt mask + status reading.
 
 ---
 
 ### 10. Port Operation Tests
 
 #### `test_port_operations()`
-**Purpose**: Validates port-level operations.
-
-**What it tests**:
-- Configuring port 0 (pins 0-7) as output
-- Configuring port 1 (pins 8-15) as input
-- Writing to port 0 pins
-- Reading from port 1 pins
-- Port-level register operations
-
-**Expected Result**: Port-level operations work correctly.
-
-**Failure Indications**:
-- Port operations failing
-- Incorrect pin states
-- Port register access issues
+**Tests**: `SetMultipleDirections()`, `WritePin()`, `ReadPin()` -- port 0 as output, port 1 as input, mixed operations.
 
 ---
 
-### 11. Error Handling Tests
+### 11. Multi-Pin API Tests
+
+#### `test_write_pins_multi()`
+**Tests**: `WritePins()` -- writing multiple pins at once via initializer list.
+
+#### `test_read_pins_multi()`
+**Tests**: `ReadPins()` -- reading multiple pins at once, verifying result vector.
+
+#### `test_set_directions_multi()`
+**Tests**: `SetDirections()` -- mixed input/output per pin via initializer list.
+
+#### `test_set_polarities_multi()`
+**Tests**: `SetPolarities()` -- mixed polarity per pin via initializer list.
+
+---
+
+### 12. Address Management Tests
+
+#### `test_address_management()`
+**Tests**:
+- `GetAddress()`, `GetAddressBits()` -- reading current address
+- `ChangeAddress(bool, bool, bool)` -- changing address via pin levels
+- `ChangeAddress(uint8_t)` -- changing address via direct value
+- Address-based constructor `PCAL95555(bus, address)` -- creating a temporary driver
+
+**Note**: Address change to a non-existent device handles NACK gracefully. Original address is always restored.
+
+---
+
+### 13. Configuration Tests
+
+#### `test_config_and_init()`
+**Tests**:
+- `SetRetries()` -- setting 0, 3, and restoring to 1
+- `EnsureInitialized()` -- on already-initialized and fresh driver instances
+
+---
+
+### 14. Multi-Pin PCAL9555A API Tests (PCAL9555A only)
+
+#### `test_multi_pin_pcal_apis()`
+**Tests**:
+- `SetPullEnables()` -- multi-pin pull enable via initializer list
+- `SetPullDirections()` -- multi-pin pull direction via initializer list
+- `SetDriveStrengths()` -- multi-pin drive strength via initializer list
+- `ConfigureInterrupt()` -- single-pin interrupt enable/disable
+- `ConfigureInterrupts()` -- multi-pin interrupt config via initializer list
+- `EnableInputLatches()` -- multi-pin input latch via initializer list
+
+**Auto-skip**: Returns `true` with skip message on PCA9555.
+
+---
+
+### 15. Interactive Input Tests (disabled by default)
+
+#### `test_interactive_input()`
+
+**Requires**: Momentary push-button between PCA9555 pin 0 and GND.
+
+**Tests**:
+- `ReadPin()` -- detecting physical button press
+- Pull-up configuration (internal on PCAL9555A, external on PCA9555)
+- `HandleInterrupt()` -- explicit manual call
+
+**Behavior**:
+1. Displays a banner explaining hardware requirements
+2. Configures pin 0 as input with pull-up
+3. Waits 10 seconds for button press with countdown
+4. If button detected: verifies press and release
+5. If no button: logs warning and continues (does not fail)
+6. Calls `HandleInterrupt()` explicitly to verify no crash
+
+**To enable**: Set `ENABLE_INTERACTIVE_INPUT_TESTS = true` in the test file.
+
+---
+
+### 16. Error Handling Tests
 
 #### `test_error_handling()`
-**Purpose**: Validates error handling and recovery mechanisms.
-
-**What it tests**:
-- Invalid pin number handling (pin 16)
-- Error flag reading
-- Error flag clearing
-- Graceful error recovery
-
-**Expected Result**: Invalid operations are handled gracefully without crashing.
-
-**Failure Indications**:
-- Invalid pin operations succeeding (should fail)
-- Error flags not being set
-- Error recovery not working
+**Tests**:
+- Invalid pin (16, 17, 18) for `SetPinDirection()`, `ReadPin()`, `WritePin()`, `TogglePin()`
+- `GetErrorFlags()` -- verifying error flags are set
+- `ClearErrorFlags(mask)` -- selective flag clearing (specific mask vs all)
+- `Error::UnsupportedFeature` -- calling `SetDriveStrength()` on PCA9555
+- `HandleInterrupt()` -- explicit call on clean state (no crash)
 
 ---
 
-### 12. Stress Tests
+### 17. Stress Tests
 
 #### `test_rapid_operations()`
-**Purpose**: Validates system stability under rapid operations.
-
-**What it tests**:
-- Rapid pin toggle operations (100 cycles)
-- Continuous read/write cycles
-- System stability under load
-- Timing and performance
-
-**Expected Result**: System remains stable under rapid operations.
-
-**Failure Indications**:
-- Operations failing under load
-- System instability
-- Timing issues
-- I2C communication errors
+**Tests**: Rapid `WritePin()` toggle (100 cycles at 1ms intervals) to verify I2C stability under load.
 
 ---
 
 ## Test Execution Flow
 
-1. **Initialization Phase**
-   - I2C bus setup
-   - Driver creation
-   - Device reset
+1. **Initialization Phase**: I2C bus setup, driver creation, chip variant detection
+2. **Core GPIO Tests**: Direction, read/write, toggle
+3. **PCAL9555A Feature Tests**: Pull resistors, drive strength, output mode, input latch, interrupts (auto-skip on PCA9555)
+4. **Advanced API Tests**: Multi-pin operations, address management, configuration
+5. **Robustness Tests**: Error handling, stress testing
+6. **Cleanup Phase**: Resource cleanup, test summary reporting
 
-2. **Configuration Phase**
-   - GPIO direction setup
-   - Feature configuration (pull, drive strength, etc.)
+---
 
-3. **Functional Testing Phase**
-   - Read/write operations
-   - Feature-specific tests
-   - Interrupt setup
+## Enabling/Disabling Test Sections
 
-4. **Validation Phase**
-   - Error handling
-   - Stress testing
-   - Port operations
-
-5. **Cleanup Phase**
-   - Resource cleanup
-   - Test summary reporting
+```cpp
+static constexpr bool ENABLE_INITIALIZATION_TESTS    = true;
+static constexpr bool ENABLE_GPIO_DIRECTION_TESTS    = true;
+static constexpr bool ENABLE_GPIO_READ_WRITE_TESTS   = true;
+static constexpr bool ENABLE_PULL_RESISTOR_TESTS     = true;
+static constexpr bool ENABLE_DRIVE_STRENGTH_TESTS    = true;
+static constexpr bool ENABLE_OUTPUT_MODE_TESTS       = true;
+static constexpr bool ENABLE_POLARITY_TESTS          = true;
+static constexpr bool ENABLE_INPUT_LATCH_TESTS       = true;
+static constexpr bool ENABLE_INTERRUPT_TESTS         = true;
+static constexpr bool ENABLE_PORT_OPERATION_TESTS    = true;
+static constexpr bool ENABLE_MULTI_PIN_TESTS         = true;
+static constexpr bool ENABLE_MULTI_PIN_API_TESTS     = true;
+static constexpr bool ENABLE_ADDRESS_TESTS           = true;
+static constexpr bool ENABLE_CONFIG_TESTS            = true;
+static constexpr bool ENABLE_MULTI_PIN_PCAL_TESTS    = true;
+static constexpr bool ENABLE_INTERACTIVE_INPUT_TESTS = false; // Requires button on pin 0
+static constexpr bool ENABLE_ERROR_HANDLING_TESTS    = true;
+static constexpr bool ENABLE_STRESS_TESTS            = true;
+```
 
 ---
 
 ## Test Results Interpretation
 
 ### Success Indicators
-- ✅ Test name: Test passed successfully
-- All operations completed without errors
-- Expected behavior observed
+- `[SUCCESS] PASSED` -- test passed
+- `Skipping: ... requires PCAL9555A (detected PCA9555)` -- expected skip, counts as pass
 
 ### Warning Indicators
-- ⚠️ Warning messages: Non-critical issues (e.g., INT pin not connected)
-- Tests may still pass with warnings
+- `Driver has error flags: 0xNNNN` -- I2C errors during init (may be expected on PCA9555)
+- `No button press detected within 10 seconds` -- interactive test timeout (OK)
 
 ### Failure Indicators
-- ❌ Error messages: Critical failures
-- Test execution stopped
-- Error flags set
+- `[FAILED] FAILED` -- test failed, check error messages above it
+- `Error flags: 0xNNNN` -- see Error Flags table below
 
-### Test Summary
-At the end of execution, a summary is printed showing:
-- Total tests run
-- Tests passed
-- Tests failed
-- Success percentage
-- Execution time
+### Error Flags Reference
 
----
-
-## Enabling/Disabling Tests
-
-Individual test sections can be enabled or disabled by modifying the test configuration flags:
-
-```cpp
-static constexpr bool ENABLE_INITIALIZATION_TESTS = true;
-static constexpr bool ENABLE_GPIO_DIRECTION_TESTS = true;
-static constexpr bool ENABLE_GPIO_READ_WRITE_TESTS = true;
-static constexpr bool ENABLE_PULL_RESISTOR_TESTS = true;
-static constexpr bool ENABLE_DRIVE_STRENGTH_TESTS = true;
-static constexpr bool ENABLE_OUTPUT_MODE_TESTS = true;
-static constexpr bool ENABLE_POLARITY_TESTS = true;
-static constexpr bool ENABLE_INPUT_LATCH_TESTS = true;
-static constexpr bool ENABLE_INTERRUPT_TESTS = true;
-static constexpr bool ENABLE_PORT_OPERATION_TESTS = true;
-static constexpr bool ENABLE_ERROR_HANDLING_TESTS = true;
-static constexpr bool ENABLE_STRESS_TESTS = true;
-```
-
-Set to `false` to skip a test section.
+| Flag | Value | Meaning |
+|------|-------|---------|
+| `InvalidPin` | 0x0001 | Pin index >= 16 |
+| `InvalidMask` | 0x0002 | Mask bits outside valid range |
+| `I2CReadFail` | 0x0004 | I2C read transaction failed |
+| `I2CWriteFail` | 0x0008 | I2C write transaction failed |
+| `UnsupportedFeature` | 0x0010 | PCAL9555A feature called on PCA9555 |
 
 ---
 
 ## Hardware Requirements
 
-### Minimum Requirements
-- PCAL9555 GPIO expander board
+### Minimum
+- PCA9555 or PCAL9555A I/O expander
 - ESP32-S3 development board
-- I2C connections (SDA, SCL)
+- I2C connections (SDA, SCL) with 4.7k pull-ups
 - Power connections (3.3V, GND)
 
-### Optional for Full Testing
-- INT pin connection (for interrupt tests)
-- LEDs on output pins (for visual verification)
-- Switches/buttons on input pins (for input testing)
-- Logic analyzer (for protocol verification)
+### For Full Test Coverage
+- Address pins connected to GPIOs (A0=GPIO45, A1=GPIO48, A2=GPIO47)
+- INT pin connected to GPIO7 (for interrupt handler test)
+- LED on GPIO14 (test progress indicator)
+
+### For Interactive Input Test
+- Momentary push-button between pin 0 and GND
+- 10k pull-up to VDD (PCA9555) or use internal pull-up (PCAL9555A)
 
 ---
 
-## Troubleshooting
+## Expected Test Count
 
-### Common Issues
-
-1. **I2C Communication Failures**
-   - Check SDA/SCL connections
-   - Verify pull-up resistors (4.7kΩ recommended)
-   - Check I2C address configuration
-   - Verify power supply stability
-
-2. **Interrupt Tests Failing**
-   - Verify INT pin connection (GPIO7)
-   - Check pull-up resistor on INT pin
-   - Ensure interrupt mask is configured correctly
-
-3. **Address Pin Issues**
-   - Verify GPIO connections (A0=GPIO45, A1=GPIO48, A2=GPIO47)
-   - Check address pin levels match expected address
-   - Verify GPIO configuration as outputs
-
-4. **Test Timeouts**
-   - Check I2C bus speed (may need to reduce frequency)
-   - Verify device is responding
-   - Check for I2C bus conflicts
+| Chip Variant | Enabled Sections | Expected Tests | Expected Pass |
+|-------------|-----------------|----------------|---------------|
+| PCA9555 | All (default) | ~31 | 31 (PCAL tests skip as pass) |
+| PCAL9555A | All (default) | ~31 | 31 |
+| Either + Interactive | All + Interactive | ~32 | 32 |
 
 ---
 
-## Test Duration
-
-Typical test execution time: **2-5 minutes**
-
-The duration depends on:
-- Number of enabled test sections
-- I2C communication speed
-- System load
-- Hardware response time
-
----
-
-## Additional Notes
-
-- **GPIO14 Test Indicator**: Toggles on each completed test for visual progress tracking
-- **Serial Output**: Detailed test results are printed to serial console
-- **Error Recovery**: Tests attempt to recover from errors and continue
-- **Graceful Degradation**: Some tests (e.g., interrupt handler) will pass even if optional hardware is not connected
-
+**Navigation**
+[Back to Examples README](../README.md) | [Main README](../../../README.md)

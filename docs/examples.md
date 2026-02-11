@@ -151,27 +151,35 @@ gpio.SetInterruptCallback([](uint16_t status) {
 
 ---
 
-## Example 4: Pull Resistors
+## Example 4: Pull Resistors (PCAL9555A only)
 
-This example demonstrates pull resistor configuration.
+This example demonstrates pull resistor configuration. These methods require the PCAL9555A
+and return `false` with `Error::UnsupportedFeature` on a standard PCA9555.
 
 ```cpp
-// Configure pin as input with pull-down
-gpio.SetPinDirection(5, pcal95555::PCAL95555<MyI2c>::GPIODir::Input);
-gpio.SetPullEnable(5, true);
-gpio.SetPullDirection(5, false); // Pull-down
+// Check chip variant first
+if (!gpio.HasAgileIO()) {
+    printf("PCA9555 detected -- pull resistors require external components\n");
+} else {
+    // Configure pin as input with pull-down
+    gpio.SetPinDirection(5, pcal95555::PCAL95555<MyI2c>::GPIODir::Input);
+    gpio.SetPullEnable(5, true);
+    gpio.SetPullDirection(5, false); // Pull-down
+}
 ```
 
 ---
 
-## Example 5: Drive Strength
+## Example 5: Drive Strength (PCAL9555A only)
 
-This example shows drive strength configuration.
+This example shows drive strength configuration. Requires PCAL9555A.
 
 ```cpp
-// Set pin as output with reduced drive strength
-gpio.SetPinDirection(0, pcal95555::PCAL95555<MyI2c>::GPIODir::Output);
-gpio.SetDriveStrength(0, pcal95555::PCAL95555<MyI2c>::DriveStrength::Level1); // 50% strength
+if (gpio.HasAgileIO()) {
+    // Set pin as output with reduced drive strength
+    gpio.SetPinDirection(0, pcal95555::PCAL95555<MyI2c>::GPIODir::Output);
+    gpio.SetDriveStrength(0, pcal95555::PCAL95555<MyI2c>::DriveStrength::Level1); // 50% strength
+}
 ```
 
 ---
@@ -204,7 +212,7 @@ if (gpio.ChangeAddress(false, false, false)) {
 
 ## Example 7: Error Handling
 
-This example shows error handling and retry configuration.
+This example shows error handling, retry configuration, and `UnsupportedFeature` detection.
 
 ```cpp
 // Configure retry mechanism
@@ -226,9 +234,50 @@ if (errors != 0) {
     if (errors & static_cast<uint16_t>(Error::InvalidPin)) {
         printf("Invalid pin number\n");
     }
+    if (errors & static_cast<uint16_t>(Error::UnsupportedFeature)) {
+        printf("Feature requires PCAL9555A (this is a PCA9555)\n");
+    }
     
-    // Clear errors
+    // Clear all errors
     gpio.ClearErrorFlags();
+    
+    // Or clear only specific flags
+    // gpio.ClearErrorFlags(static_cast<uint16_t>(Error::InvalidPin));
+}
+```
+
+---
+
+## Example 8: Chip Variant Detection
+
+This example shows how to check which chip is connected and conditionally use features.
+
+```cpp
+// After initialization (auto or explicit)
+gpio.EnsureInitialized();
+
+// Method 1: Boolean check
+if (gpio.HasAgileIO()) {
+    printf("PCAL9555A detected -- full feature set available\n");
+    gpio.SetPullEnable(0, true);
+    gpio.SetDriveStrength(0, DriveStrength::Level3);
+} else {
+    printf("PCA9555 detected -- standard GPIO only\n");
+    // Use external pull-up resistors instead
+}
+
+// Method 2: Variant enum
+auto variant = gpio.GetChipVariant();
+switch (variant) {
+    case pcal95555::ChipVariant::PCA9555:
+        printf("Standard PCA9555\n");
+        break;
+    case pcal95555::ChipVariant::PCAL9555A:
+        printf("Enhanced PCAL9555A with Agile I/O\n");
+        break;
+    default:
+        printf("Unknown variant (detection may have failed)\n");
+        break;
 }
 ```
 
@@ -236,11 +285,18 @@ if (errors != 0) {
 
 ### ESP32
 
-The examples are available in the [`examples/esp32`](../examples/esp32/) directory.
+Two example applications are available in [`examples/esp32`](../examples/esp32/):
 
 ```bash
 cd examples/esp32
-idf.py build flash monitor
+
+# Comprehensive test suite (tests all 43 API methods)
+./scripts/build_app.sh pcal95555_comprehensive_test Debug
+./scripts/flash_app.sh flash_monitor pcal95555_comprehensive_test Debug
+
+# LED animation demo (16-LED patterns)
+./scripts/build_app.sh pcal95555_led_animation Debug
+./scripts/flash_app.sh flash_monitor pcal95555_led_animation Debug
 ```
 
 ### Other Platforms

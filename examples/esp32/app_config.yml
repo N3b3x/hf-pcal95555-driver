@@ -40,25 +40,56 @@ apps:
       - "INPUT_LATCH_TESTS"
       - "INTERRUPT_TESTS"
       - "PORT_OPERATION_TESTS"
+      - "MULTI_PIN_API_TESTS"
+      - "ADDRESS_MANAGEMENT_TESTS"
+      - "CONFIGURATION_TESTS"
+      - "MULTI_PIN_PCAL_API_TESTS"
+      - "INTERACTIVE_INPUT_TESTS"
       - "ERROR_HANDLING_TESTS"
       - "STRESS_TESTS"
     features:
-      - "Complete driver API validation (12+ test sections)"
-      - "GPIO pin direction configuration (input/output)"
-      - "Pin read/write operations"
-      - "Pull-up/pull-down resistor configuration"
-      - "Drive strength configuration"
-      - "Output mode configuration (push-pull/open-drain)"
-      - "Input polarity inversion"
-      - "Input latch functionality"
-      - "Interrupt configuration and handling"
+      - "Complete driver API validation (17 test sections, 43 methods)"
+      - "Auto-detects PCA9555 vs PCAL9555A chip variant"
+      - "PCAL9555A-only tests auto-skip on PCA9555"
+      - "GPIO pin direction (single, mask, initializer_list)"
+      - "Pin read/write/toggle (single + multi-pin)"
+      - "Pull-up/pull-down resistor configuration (PCAL9555A)"
+      - "Drive strength configuration (PCAL9555A)"
+      - "Output mode configuration (PCAL9555A)"
+      - "Input polarity inversion (single, mask, initializer_list)"
+      - "Input latch functionality (PCAL9555A)"
+      - "Interrupt mask/status/callbacks (PCAL9555A)"
       - "Port-level operations"
-      - "Error handling and recovery"
-      - "Multi-pin operations"
-      - "Edge cases and stress testing"
+      - "Address management (ChangeAddress, address-based constructor)"
+      - "Configuration (SetRetries, EnsureInitialized)"
+      - "Interactive button-press input test (optional)"
+      - "Error handling (invalid pins, UnsupportedFeature)"
+      - "Stress testing (rapid pin toggling)"
       - "FreeRTOS task-based test execution"
       - "GPIO14 progress indicator"
       - "Automatic pass/fail tracking"
+
+  # --------------------------------------------------------------------------
+  # LED Animation Demo
+  # --------------------------------------------------------------------------
+  pcal95555_led_animation:
+    description: "LED animation demo driving 16 LEDs through PCA9555/PCAL9555A with visual patterns"
+    source_file: "pcal95555_led_animation.cpp"
+    category: "demo"
+    idf_versions: ["release/v5.5"]
+    build_types: ["Debug", "Release"]
+    ci_enabled: true
+    featured: true
+    features:
+      - "10 animation patterns exercising all GPIO output capabilities"
+      - "Sequential chase, bounce, binary counter, breathing PWM"
+      - "Wave/comet tail, random sparkle, build-up/teardown"
+      - "Accelerating scan (slow-to-fast I2C stress test)"
+      - "Center expand/contract, alternating flash"
+      - "Active-LOW or active-HIGH LED configuration"
+      - "Auto-detects PCA9555 vs PCAL9555A chip variant"
+      - "Continuous loop with error health monitoring"
+      - "Uses only standard PCA9555 registers (works on both chips)"
 
 # ============================================================================
 # BUILD CONFIGURATION (ESP-IDF Standard Build Types)

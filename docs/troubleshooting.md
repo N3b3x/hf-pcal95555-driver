@@ -199,6 +199,67 @@ void i2c_scanner() {
 
 ---
 
+### Error: PCAL9555A Features Fail (UnsupportedFeature)
+
+**Symptoms:**
+- `SetPullEnable()`, `SetDriveStrength()`, `SetOutputMode()`, `EnableInputLatch()`, `ConfigureInterrupt()`, or `GetInterruptStatus()` return `false`
+- Error flags show `0x0010` (`UnsupportedFeature`)
+
+**Cause:**
+The connected chip is a **PCA9555** (standard variant), not a PCAL9555A. These methods
+require the Agile I/O register bank (0x40-0x4F) that only exists on the PCAL9555A.
+
+**Solutions:**
+1. **Check chip variant**: Use `HasAgileIO()` before calling PCAL9555A features:
+   ```cpp
+   if (gpio.HasAgileIO()) {
+       gpio.SetDriveStrength(0, DriveStrength::Level2);
+   } else {
+       // Use external components or skip this feature
+   }
+   ```
+2. **Verify hardware**: Confirm your chip is actually a PCAL9555A (check part number marking)
+3. **Use external components**: For PCA9555, use external pull-up resistors instead of internal ones
+
+---
+
+### Error: ChipVariant Shows "Unknown"
+
+**Symptoms:**
+- `GetChipVariant()` returns `ChipVariant::Unknown`
+- `HasAgileIO()` returns `false`
+
+**Cause:**
+The 3-step chip detection probe could not confirm the chip type. This usually means
+the bus was unhealthy during initialization.
+
+**Solutions:**
+1. Check I2C pull-up resistors (4.7kΩ on SDA and SCL)
+2. Verify power supply is stable
+3. Ensure no other I2C master is on the bus
+4. Force the variant in the constructor to skip detection:
+   ```cpp
+   PCAL95555 driver(bus, 0x20, pcal95555::ChipVariant::PCA9555);
+   ```
+
+---
+
+### Error: I2C NACKs on Registers 0x40-0x4F During Init
+
+**Symptoms:**
+- Log shows "I2C transaction unexpected nack detected" for registers 0x40-0x4F
+- Driver still initializes successfully
+
+**Cause:**
+This is **expected behavior** when a PCA9555 is connected. The auto-detection probe
+tries to access an Agile I/O register (0x4F). A NACK means the chip is a standard PCA9555.
+The driver detects this and sets `ChipVariant::PCA9555`.
+
+**Resolution:** No action needed. This is normal. The NACK errors come from the ESP-IDF
+I2C driver and can be safely ignored.
+
+---
+
 ## FAQ
 
 ### Q: Why do my pin writes not work?
@@ -241,15 +302,17 @@ gpio.SetInterruptCallback([](uint16_t status) {
 });
 ```
 
-### Q: Can I use multiple PCAL9555A devices?
+### Q: Can I use multiple devices?
 
-**A:** Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances:
+**A:** Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances. You can even mix PCA9555 and PCAL9555A on the same bus:
 ```cpp
-// First device: A0=LOW, A1=LOW, A2=LOW -> address 0x20
+// First device: PCA9555 at 0x20
 pcal95555::PCAL95555<MyI2c> gpio1(&i2c, false, false, false);
 
-// Second device: A0=HIGH, A1=LOW, A2=LOW -> address 0x21
+// Second device: PCAL9555A at 0x21
 pcal95555::PCAL95555<MyI2c> gpio2(&i2c, true, false, false);
+
+// Each auto-detects its own chip variant
 ```
 
 You can also change the address dynamically if your I2C interface supports GPIO control:
@@ -258,6 +321,19 @@ if (gpio1.ChangeAddress(true, false, false)) {
     printf("Address changed to 0x%02X\n", gpio1.GetAddress()); // Now 0x21
 }
 ```
+
+### Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?
+
+**A:** The driver auto-detects during initialization:
+```cpp
+gpio.EnsureInitialized();
+if (gpio.HasAgileIO()) {
+    printf("PCAL9555A (extended features available)\n");
+} else {
+    printf("PCA9555 (standard GPIO only)\n");
+}
+```
+You can also check the chip marking. PCA9555 has part number "PCA9555"; PCAL9555A has "PCAL9555A".
 
 ### Q: What's the difference between pull-up and pull-down?
 
@@ -288,10 +364,17 @@ uint16_t errors = gpio.GetErrorFlags();
 if (errors & static_cast<uint16_t>(Error::I2CReadFail)) {
     // I2C read failed
 }
+if (errors & static_cast<uint16_t>(Error::I2CWriteFail)) {
+    // I2C write failed
+}
 if (errors & static_cast<uint16_t>(Error::InvalidPin)) {
-    // Invalid pin number
+    // Invalid pin number (>= 16)
+}
+if (errors & static_cast<uint16_t>(Error::UnsupportedFeature)) {
+    // PCAL9555A feature called on PCA9555
 }
 gpio.ClearErrorFlags(); // Clear all errors
+// Or clear selectively: gpio.ClearErrorFlags(0x0001); // Clear only InvalidPin
 ```
 
 ---

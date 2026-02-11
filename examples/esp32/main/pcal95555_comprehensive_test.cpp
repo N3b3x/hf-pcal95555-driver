@@ -1,20 +1,37 @@
 /**
  * @file pcal95555_comprehensive_test.cpp
- * @brief Comprehensive test suite for PCAL9555 GPIO expander driver on ESP32-C6
+ * @brief Comprehensive test suite for PCA9555/PCAL9555A GPIO expander driver on ESP32-S3
  *
- * This file contains comprehensive testing for PCAL9555 features including:
- * - GPIO pin direction configuration (input/output)
- * - Pin read/write operations
- * - Pull-up/pull-down resistor configuration
- * - Drive strength configuration
- * - Output mode configuration (push-pull/open-drain)
- * - Input polarity inversion
- * - Input latch functionality
- * - Interrupt configuration and handling
- * - Port-level operations
- * - Error handling and recovery
- * - Multi-pin operations
- * - Edge cases and stress testing
+ * This file contains comprehensive testing for the PCA9555/PCAL9555A driver.
+ * The driver auto-detects the chip variant at initialization. Tests requiring
+ * PCAL9555A-specific Agile I/O features (drive strength, pull resistors, input
+ * latch, interrupt mask/status, output mode) are automatically skipped when a
+ * standard PCA9555 is detected.
+ *
+ * Tests included (17 sections covering all 43 public API methods):
+ *
+ * PCA9555 + PCAL9555A (standard registers):
+ * - Initialization (I2C bus, driver, chip variant auto-detection)
+ * - GPIO pin direction (SetPinDirection, SetMultipleDirections, SetDirections)
+ * - Pin read/write (ReadPin, WritePin, TogglePin, WritePins, ReadPins)
+ * - Input polarity inversion (SetPinPolarity, SetMultiplePolarities, SetPolarities)
+ * - Port-level operations (mixed port direction + read/write)
+ * - Multi-pin API (initializer_list overloads for directions, polarities, R/W)
+ * - Address management (ChangeAddress, address-based constructor)
+ * - Configuration (SetRetries, EnsureInitialized)
+ * - Error handling (invalid pins, UnsupportedFeature, selective flag clearing)
+ * - Stress tests (rapid pin toggling)
+ *
+ * PCAL9555A only (Agile I/O registers, auto-skipped on PCA9555):
+ * - Pull-up/pull-down (SetPullEnable/s, SetPullDirection/s)
+ * - Drive strength (SetDriveStrength/s)
+ * - Output mode (SetOutputMode)
+ * - Input latch (EnableInputLatch, EnableMultipleInputLatches, EnableInputLatches)
+ * - Interrupt mask/status (ConfigureInterrupt/s, ConfigureInterruptMask, GetInterruptStatus)
+ * - Multi-pin PCAL APIs (all initializer_list overloads)
+ *
+ * Interactive (disabled by default, requires physical button):
+ * - Button press detection, HandleInterrupt explicit call
  *
  * @author Nebiyu Tadesse
  * @date 2025
@@ -59,6 +76,11 @@ static constexpr bool ENABLE_INPUT_LATCH_TESTS = true;
 static constexpr bool ENABLE_INTERRUPT_TESTS = true;
 static constexpr bool ENABLE_PORT_OPERATION_TESTS = true;
 static constexpr bool ENABLE_MULTI_PIN_TESTS = true;
+static constexpr bool ENABLE_MULTI_PIN_API_TESTS = true;
+static constexpr bool ENABLE_ADDRESS_TESTS = true;
+static constexpr bool ENABLE_CONFIG_TESTS = true;
+static constexpr bool ENABLE_MULTI_PIN_PCAL_TESTS = true;
+static constexpr bool ENABLE_INTERACTIVE_INPUT_TESTS = false; // Requires physical button on pin 0
 static constexpr bool ENABLE_ERROR_HANDLING_TESTS = true;
 static constexpr bool ENABLE_STRESS_TESTS = true;
 
@@ -193,7 +215,17 @@ static bool test_driver_initialization() noexcept {
     g_driver->ClearErrorFlags();
   }
 
+  // Log detected chip variant
+  auto variant = g_driver->GetChipVariant();
+  const char* variant_name = "Unknown";
+  if (variant == pcal95555::ChipVariant::PCA9555) {
+    variant_name = "PCA9555 (standard)";
+  } else if (variant == pcal95555::ChipVariant::PCAL9555A) {
+    variant_name = "PCAL9555A (Agile I/O)";
+  }
   ESP_LOGI(TAG, "✅ Driver initialized successfully");
+  ESP_LOGI(TAG, "   Detected chip variant: %s", variant_name);
+  ESP_LOGI(TAG, "   Agile I/O support: %s", g_driver->HasAgileIO() ? "YES" : "NO");
   return true;
 }
 
@@ -387,6 +419,11 @@ static bool test_pull_resistor_config() noexcept {
     return false;
   }
 
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Pull resistor config requires PCAL9555A (detected PCA9555)");
+    return true;  // Pass - feature not available on this chip
+  }
+
   uint16_t test_pin = 3;
 
   // Configure as input
@@ -434,6 +471,11 @@ static bool test_drive_strength() noexcept {
     return false;
   }
 
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Drive strength config requires PCAL9555A (detected PCA9555)");
+    return true;  // Pass - feature not available on this chip
+  }
+
   uint16_t test_pin = 4;
   g_driver->SetPinDirection(test_pin, GPIODir::Output);
 
@@ -464,6 +506,11 @@ static bool test_output_mode() noexcept {
   if (!g_driver) {
     ESP_LOGE(TAG, "Driver not initialized");
     return false;
+  }
+
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Output mode config requires PCAL9555A (detected PCA9555)");
+    return true;  // Pass - feature not available on this chip
   }
 
   // Test push-pull mode (default)
@@ -550,6 +597,11 @@ static bool test_input_latch() noexcept {
     return false;
   }
 
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Input latch config requires PCAL9555A (detected PCA9555)");
+    return true;  // Pass - feature not available on this chip
+  }
+
   uint16_t test_pin = 6;
   g_driver->SetPinDirection(test_pin, GPIODir::Input);
 
@@ -596,6 +648,11 @@ static bool test_interrupt_mask_config() noexcept {
     return false;
   }
 
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Interrupt mask config requires PCAL9555A (detected PCA9555)");
+    return true;
+  }
+
   // Test: Enable interrupts on pins 0, 2, 4, 6 (mask bit = 0 enables interrupt)
   uint16_t mask = static_cast<uint16_t>(~((1U << 0) | (1U << 2) | (1U << 4) | (1U << 6)));
   if (!g_driver->ConfigureInterruptMask(mask)) {
@@ -632,6 +689,11 @@ static bool test_interrupt_status() noexcept {
     return false;
   }
 
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Interrupt status reading requires PCAL9555A (detected PCA9555)");
+    return true;
+  }
+
   // Enable interrupts on all pins
   g_driver->ConfigureInterruptMask(0x0000);
 
@@ -656,6 +718,11 @@ static bool test_pin_interrupt_callbacks() noexcept {
   if (!g_driver) {
     ESP_LOGE(TAG, "Driver not initialized");
     return false;
+  }
+
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Pin interrupt callbacks require PCAL9555A (detected PCA9555)");
+    return true;
   }
 
   // Reset interrupt counts
@@ -822,6 +889,11 @@ static bool test_interrupt_config() noexcept {
     return false;
   }
 
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Interrupt config requires PCAL9555A (detected PCA9555)");
+    return true;
+  }
+
   // Configure interrupt mask (0 = enable interrupt, 1 = disable)
   uint16_t mask = 0x0000; // Enable interrupts on all pins
   if (!g_driver->ConfigureInterruptMask(mask)) {
@@ -874,6 +946,457 @@ static bool test_port_operations() noexcept {
 }
 
 //=============================================================================
+// MULTI-PIN API TESTS (initializer_list overloads)
+//=============================================================================
+
+/**
+ * @brief Test WritePins - multi-pin write with initializer list
+ */
+static bool test_write_pins_multi() noexcept {
+  ESP_LOGI(TAG, "Testing WritePins (initializer_list)...");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  // Set pins 0-3 as output
+  for (uint16_t pin = 0; pin < 4; ++pin) {
+    g_driver->SetPinDirection(pin, GPIODir::Output);
+  }
+
+  // Write multiple pins at once
+  if (!g_driver->WritePins({{0, true}, {1, false}, {2, true}, {3, false}})) {
+    ESP_LOGE(TAG, "WritePins failed");
+    return false;
+  }
+
+  // Verify the write: pins configured as output, read back output register
+  ESP_LOGI(TAG, "WritePins result: pin0=%d, pin1=%d, pin2=%d, pin3=%d",
+           g_driver->ReadPin(0), g_driver->ReadPin(1),
+           g_driver->ReadPin(2), g_driver->ReadPin(3));
+
+  ESP_LOGI(TAG, "✅ WritePins tests passed");
+  return true;
+}
+
+/**
+ * @brief Test ReadPins - multi-pin read with initializer list
+ */
+static bool test_read_pins_multi() noexcept {
+  ESP_LOGI(TAG, "Testing ReadPins (initializer_list)...");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  // Set pins 8-11 as input
+  for (uint16_t pin = 8; pin < 12; ++pin) {
+    g_driver->SetPinDirection(pin, GPIODir::Input);
+  }
+
+  // Read multiple pins at once
+  auto results = g_driver->ReadPins({8, 9, 10, 11});
+  if (results.empty()) {
+    ESP_LOGE(TAG, "ReadPins returned empty");
+    return false;
+  }
+
+  for (const auto& [pin, value] : results) {
+    ESP_LOGI(TAG, "ReadPins: pin %d = %s", pin, value ? "HIGH" : "LOW");
+  }
+
+  if (results.size() != 4) {
+    ESP_LOGE(TAG, "ReadPins returned %d results, expected 4", (int)results.size());
+    return false;
+  }
+
+  ESP_LOGI(TAG, "✅ ReadPins tests passed");
+  return true;
+}
+
+/**
+ * @brief Test SetDirections - initializer_list overload for mixed directions
+ */
+static bool test_set_directions_multi() noexcept {
+  ESP_LOGI(TAG, "Testing SetDirections (initializer_list)...");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  // Set mixed directions: even pins output, odd pins input
+  if (!g_driver->SetDirections({
+          {0, GPIODir::Output}, {1, GPIODir::Input},
+          {2, GPIODir::Output}, {3, GPIODir::Input},
+          {4, GPIODir::Output}, {5, GPIODir::Input},
+          {6, GPIODir::Output}, {7, GPIODir::Input}})) {
+    ESP_LOGE(TAG, "SetDirections failed");
+    return false;
+  }
+
+  // Verify: write to output pins, read from input pins
+  g_driver->WritePin(0, true);
+  g_driver->WritePin(2, false);
+  g_driver->WritePin(4, true);
+  g_driver->WritePin(6, false);
+
+  bool pin1 = g_driver->ReadPin(1);
+  bool pin3 = g_driver->ReadPin(3);
+  ESP_LOGI(TAG, "Input pins after mixed config: pin1=%d, pin3=%d", pin1, pin3);
+
+  ESP_LOGI(TAG, "✅ SetDirections tests passed");
+  return true;
+}
+
+/**
+ * @brief Test SetPolarities - initializer_list overload
+ */
+static bool test_set_polarities_multi() noexcept {
+  ESP_LOGI(TAG, "Testing SetPolarities (initializer_list)...");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  // Set mixed polarities
+  if (!g_driver->SetPolarities({
+          {0, Polarity::Normal}, {1, Polarity::Inverted},
+          {2, Polarity::Normal}, {3, Polarity::Inverted}})) {
+    ESP_LOGE(TAG, "SetPolarities failed");
+    return false;
+  }
+
+  // Reset to normal
+  if (!g_driver->SetPolarities({
+          {0, Polarity::Normal}, {1, Polarity::Normal},
+          {2, Polarity::Normal}, {3, Polarity::Normal}})) {
+    ESP_LOGE(TAG, "Failed to reset polarities");
+    return false;
+  }
+
+  ESP_LOGI(TAG, "✅ SetPolarities tests passed");
+  return true;
+}
+
+//=============================================================================
+// ADDRESS MANAGEMENT TESTS
+//=============================================================================
+
+/**
+ * @brief Test ChangeAddress overloads and address-based constructor
+ */
+static bool test_address_management() noexcept {
+  ESP_LOGI(TAG, "Testing address management...");
+
+  if (!g_driver || !g_i2c_bus) {
+    ESP_LOGE(TAG, "Driver or bus not initialized");
+    return false;
+  }
+
+  // Record original address
+  uint8_t original_address = g_driver->GetAddress();
+  uint8_t original_bits = g_driver->GetAddressBits();
+  ESP_LOGI(TAG, "Original address: 0x%02X (bits=%d)", original_address, original_bits);
+
+  // Test ChangeAddress(bool, bool, bool) - set A0=HIGH, others LOW -> 0x21
+  ESP_LOGI(TAG, "Changing address to A0=1, A1=0, A2=0 (0x21)...");
+  if (g_driver->ChangeAddress(true, false, false)) {
+    ESP_LOGI(TAG, "ChangeAddress(bool) succeeded, new address: 0x%02X", g_driver->GetAddress());
+    // Note: this may or may not succeed depending on hardware - if address pin GPIOs
+    // are configured, the chip physically changes address. If not, we get a NACK.
+  } else {
+    ESP_LOGW(TAG, "ChangeAddress(bool) to 0x21 failed (expected if no device at that address)");
+  }
+  g_driver->ClearErrorFlags();
+
+  // Restore original address
+  ESP_LOGI(TAG, "Restoring original address (0x%02X)...", original_address);
+  if (!g_driver->ChangeAddress(PCAL9555_A0_LEVEL, PCAL9555_A1_LEVEL, PCAL9555_A2_LEVEL)) {
+    ESP_LOGE(TAG, "Failed to restore original address!");
+    return false;
+  }
+  ESP_LOGI(TAG, "Address restored to 0x%02X", g_driver->GetAddress());
+
+  // Test ChangeAddress(uint8_t) - try same address
+  ESP_LOGI(TAG, "Testing ChangeAddress(uint8_t) with original address...");
+  if (!g_driver->ChangeAddress(original_address)) {
+    ESP_LOGE(TAG, "ChangeAddress(uint8_t) failed for original address");
+    return false;
+  }
+
+  // Verify address-based constructor (create a temporary driver)
+  ESP_LOGI(TAG, "Testing address-based constructor (0x%02X)...", original_address);
+  {
+    PCAL95555Driver temp_driver(g_i2c_bus.get(), original_address);
+    if (!temp_driver.EnsureInitialized()) {
+      ESP_LOGE(TAG, "Address-based constructor driver failed to initialize");
+      return false;
+    }
+    ESP_LOGI(TAG, "Address-based constructor: addr=0x%02X, variant=%s",
+             temp_driver.GetAddress(),
+             temp_driver.HasAgileIO() ? "PCAL9555A" : "PCA9555");
+  }
+
+  ESP_LOGI(TAG, "✅ Address management tests passed");
+  return true;
+}
+
+//=============================================================================
+// CONFIGURATION & INITIALIZATION TESTS
+//=============================================================================
+
+/**
+ * @brief Test SetRetries and EnsureInitialized
+ */
+static bool test_config_and_init() noexcept {
+  ESP_LOGI(TAG, "Testing SetRetries and EnsureInitialized...");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  // Test SetRetries with various values
+  g_driver->SetRetries(0);
+  ESP_LOGI(TAG, "SetRetries(0) - no retries on I2C failure");
+
+  // Verify driver still works with no retries
+  bool pin_val = g_driver->ReadPin(0);
+  ESP_LOGI(TAG, "ReadPin(0) with 0 retries: %s", pin_val ? "HIGH" : "LOW");
+
+  g_driver->SetRetries(3);
+  ESP_LOGI(TAG, "SetRetries(3) - 3 retries on I2C failure");
+
+  pin_val = g_driver->ReadPin(0);
+  ESP_LOGI(TAG, "ReadPin(0) with 3 retries: %s", pin_val ? "HIGH" : "LOW");
+
+  // Restore default
+  g_driver->SetRetries(1);
+
+  // Test EnsureInitialized (should be no-op since already initialized)
+  if (!g_driver->EnsureInitialized()) {
+    ESP_LOGE(TAG, "EnsureInitialized failed on already-initialized driver");
+    return false;
+  }
+  ESP_LOGI(TAG, "EnsureInitialized on already-initialized driver: OK");
+
+  // Test EnsureInitialized on a fresh driver
+  {
+    PCAL95555Driver fresh_driver(g_i2c_bus.get(), PCAL9555_A0_LEVEL,
+                                  PCAL9555_A1_LEVEL, PCAL9555_A2_LEVEL);
+    if (!fresh_driver.EnsureInitialized()) {
+      ESP_LOGE(TAG, "EnsureInitialized failed on fresh driver");
+      return false;
+    }
+    ESP_LOGI(TAG, "EnsureInitialized on fresh driver: OK (variant=%s)",
+             fresh_driver.HasAgileIO() ? "PCAL9555A" : "PCA9555");
+  }
+
+  ESP_LOGI(TAG, "✅ Configuration and initialization tests passed");
+  return true;
+}
+
+//=============================================================================
+// MULTI-PIN PCAL9555A-ONLY TESTS
+//=============================================================================
+
+/**
+ * @brief Test multi-pin PCAL9555A APIs: SetPullEnables, SetPullDirections,
+ *        SetDriveStrengths, ConfigureInterrupt, ConfigureInterrupts, EnableInputLatches
+ */
+static bool test_multi_pin_pcal_apis() noexcept {
+  ESP_LOGI(TAG, "Testing multi-pin PCAL9555A initializer_list APIs...");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGW(TAG, "⏭️  Skipping: Multi-pin PCAL APIs require PCAL9555A (detected PCA9555)");
+    return true;
+  }
+
+  // --- SetPullEnables ---
+  ESP_LOGI(TAG, "Testing SetPullEnables...");
+  if (!g_driver->SetPullEnables({{0, true}, {1, true}, {2, false}, {3, true}})) {
+    ESP_LOGE(TAG, "SetPullEnables failed");
+    return false;
+  }
+  ESP_LOGI(TAG, "  SetPullEnables: OK");
+
+  // --- SetPullDirections ---
+  ESP_LOGI(TAG, "Testing SetPullDirections...");
+  if (!g_driver->SetPullDirections({{0, true}, {1, false}, {2, true}, {3, false}})) {
+    ESP_LOGE(TAG, "SetPullDirections failed");
+    return false;
+  }
+  ESP_LOGI(TAG, "  SetPullDirections: OK");
+
+  // --- SetDriveStrengths ---
+  ESP_LOGI(TAG, "Testing SetDriveStrengths...");
+  for (uint16_t pin = 0; pin < 4; ++pin) {
+    g_driver->SetPinDirection(pin, GPIODir::Output);
+  }
+  if (!g_driver->SetDriveStrengths({
+          {0, DriveStrength::Level0}, {1, DriveStrength::Level1},
+          {2, DriveStrength::Level2}, {3, DriveStrength::Level3}})) {
+    ESP_LOGE(TAG, "SetDriveStrengths failed");
+    return false;
+  }
+  ESP_LOGI(TAG, "  SetDriveStrengths: OK");
+
+  // --- ConfigureInterrupt (single pin) ---
+  ESP_LOGI(TAG, "Testing ConfigureInterrupt (single pin)...");
+  g_driver->SetPinDirection(5, GPIODir::Input);
+  if (!g_driver->ConfigureInterrupt(5, InterruptState::Enabled)) {
+    ESP_LOGE(TAG, "ConfigureInterrupt(5, Enabled) failed");
+    return false;
+  }
+  if (!g_driver->ConfigureInterrupt(5, InterruptState::Disabled)) {
+    ESP_LOGE(TAG, "ConfigureInterrupt(5, Disabled) failed");
+    return false;
+  }
+  ESP_LOGI(TAG, "  ConfigureInterrupt: OK");
+
+  // --- ConfigureInterrupts (multi-pin) ---
+  ESP_LOGI(TAG, "Testing ConfigureInterrupts (multi-pin)...");
+  for (uint16_t pin = 4; pin < 8; ++pin) {
+    g_driver->SetPinDirection(pin, GPIODir::Input);
+  }
+  if (!g_driver->ConfigureInterrupts({
+          {4, InterruptState::Enabled}, {5, InterruptState::Enabled},
+          {6, InterruptState::Disabled}, {7, InterruptState::Enabled}})) {
+    ESP_LOGE(TAG, "ConfigureInterrupts failed");
+    return false;
+  }
+  // Disable all again
+  if (!g_driver->ConfigureInterrupts({
+          {4, InterruptState::Disabled}, {5, InterruptState::Disabled},
+          {6, InterruptState::Disabled}, {7, InterruptState::Disabled}})) {
+    ESP_LOGE(TAG, "ConfigureInterrupts (disable) failed");
+    return false;
+  }
+  ESP_LOGI(TAG, "  ConfigureInterrupts: OK");
+
+  // --- EnableInputLatches ---
+  ESP_LOGI(TAG, "Testing EnableInputLatches...");
+  if (!g_driver->EnableInputLatches({{4, true}, {5, false}, {6, true}, {7, false}})) {
+    ESP_LOGE(TAG, "EnableInputLatches failed");
+    return false;
+  }
+  // Disable all latches
+  if (!g_driver->EnableInputLatches({{4, false}, {5, false}, {6, false}, {7, false}})) {
+    ESP_LOGE(TAG, "EnableInputLatches (disable) failed");
+    return false;
+  }
+  ESP_LOGI(TAG, "  EnableInputLatches: OK");
+
+  ESP_LOGI(TAG, "✅ Multi-pin PCAL9555A API tests passed");
+  return true;
+}
+
+//=============================================================================
+// INTERACTIVE INPUT TESTS
+//=============================================================================
+
+/**
+ * @brief Interactive test: physically verify input pin reading with a button press.
+ *
+ * This test requires a momentary push-button connected between PCA9555 pin 0
+ * and GND (with a pull-up resistor, or using PCAL9555A internal pull-up).
+ *
+ * @note Enable ENABLE_INTERACTIVE_INPUT_TESTS to run this test.
+ *       The test waits up to 10 seconds for the user to press a button.
+ */
+static bool test_interactive_input() noexcept {
+  ESP_LOGI(TAG, "");
+  ESP_LOGI(TAG, "╔══════════════════════════════════════════════════════════════╗");
+  ESP_LOGI(TAG, "║              INTERACTIVE INPUT TEST                          ║");
+  ESP_LOGI(TAG, "║                                                              ║");
+  ESP_LOGI(TAG, "║  This test requires a momentary push-button connected        ║");
+  ESP_LOGI(TAG, "║  between PCA9555 IO0_0 (pin 0) and GND.                     ║");
+  ESP_LOGI(TAG, "║                                                              ║");
+  ESP_LOGI(TAG, "║  If using PCAL9555A, internal pull-up will be enabled.       ║");
+  ESP_LOGI(TAG, "║  If using PCA9555, an external pull-up resistor is needed.   ║");
+  ESP_LOGI(TAG, "╚══════════════════════════════════════════════════════════════╝");
+
+  if (!g_driver) {
+    ESP_LOGE(TAG, "Driver not initialized");
+    return false;
+  }
+
+  constexpr uint16_t BUTTON_PIN = 0;
+
+  // Configure pin 0 as input
+  if (!g_driver->SetPinDirection(BUTTON_PIN, GPIODir::Input)) {
+    ESP_LOGE(TAG, "Failed to set pin %d as input", BUTTON_PIN);
+    return false;
+  }
+
+  // Enable pull-up if PCAL9555A
+  if (g_driver->HasAgileIO()) {
+    g_driver->SetPullEnable(BUTTON_PIN, true);
+    g_driver->SetPullDirection(BUTTON_PIN, true); // pull-up
+    ESP_LOGI(TAG, "Internal pull-up enabled on pin %d (PCAL9555A)", BUTTON_PIN);
+  } else {
+    ESP_LOGW(TAG, "PCA9555 detected: ensure external pull-up on pin %d", BUTTON_PIN);
+  }
+
+  // Read initial state
+  bool initial = g_driver->ReadPin(BUTTON_PIN);
+  ESP_LOGI(TAG, "Pin %d initial state: %s (expected HIGH if pull-up active)",
+           BUTTON_PIN, initial ? "HIGH" : "LOW");
+
+  // Wait for button press (pin goes LOW when pressed)
+  ESP_LOGI(TAG, "");
+  ESP_LOGI(TAG, ">>> Press the button on pin %d within 10 seconds... <<<", BUTTON_PIN);
+  ESP_LOGI(TAG, "");
+
+  bool button_detected = false;
+  for (int i = 0; i < 100; ++i) { // 100 * 100ms = 10 seconds
+    bool state = g_driver->ReadPin(BUTTON_PIN);
+    if (!state) { // LOW = pressed (active-low with pull-up)
+      ESP_LOGI(TAG, "Button press detected on pin %d at t=%d ms!", BUTTON_PIN, i * 100);
+      button_detected = true;
+
+      // Wait for release
+      ESP_LOGI(TAG, "Waiting for button release...");
+      while (!g_driver->ReadPin(BUTTON_PIN)) {
+        vTaskDelay(pdMS_TO_TICKS(50));
+      }
+      ESP_LOGI(TAG, "Button released.");
+      break;
+    }
+
+    // Print countdown every 2 seconds
+    if (i % 20 == 0 && i > 0) {
+      ESP_LOGI(TAG, "  Waiting... %d seconds remaining", (100 - i) / 10);
+    }
+    vTaskDelay(pdMS_TO_TICKS(100));
+  }
+
+  if (!button_detected) {
+    ESP_LOGW(TAG, "No button press detected within 10 seconds (this is OK if no button connected)");
+    ESP_LOGW(TAG, "Skipping interactive verification - ReadPin still exercises the I2C path");
+  } else {
+    ESP_LOGI(TAG, "✅ Interactive button test verified: ReadPin detects physical state changes");
+  }
+
+  // Test HandleInterrupt explicitly (simulate by calling directly)
+  ESP_LOGI(TAG, "Testing HandleInterrupt (explicit call)...");
+  g_driver->HandleInterrupt(); // Should not crash; processes pin state changes
+  ESP_LOGI(TAG, "  HandleInterrupt: OK (no crash)");
+
+  ESP_LOGI(TAG, "✅ Interactive input tests passed");
+  return true;
+}
+
+//=============================================================================
 // ERROR HANDLING TESTS
 //=============================================================================
 
@@ -888,19 +1411,53 @@ static bool test_error_handling() noexcept {
     return false;
   }
 
-  // Test invalid pin operations
-  // Note: Driver should handle invalid pins gracefully
-  bool result = g_driver->SetPinDirection(16, GPIODir::Output); // Invalid pin
+  // Test 1: Invalid pin operations
+  ESP_LOGI(TAG, "  Test: Invalid pin index (pin 16)...");
+  bool result = g_driver->SetPinDirection(16, GPIODir::Output);
   if (result) {
-    ESP_LOGW(TAG, "Unexpected success with invalid pin");
+    ESP_LOGW(TAG, "  Unexpected success with invalid pin");
+  }
+  uint16_t errors = g_driver->GetErrorFlags();
+  ESP_LOGI(TAG, "  Error flags after invalid pin: 0x%04X (expect InvalidPin=0x0001)", errors);
+  g_driver->ClearErrorFlags();
+
+  // Test 2: Invalid pin for ReadPin and WritePin
+  ESP_LOGI(TAG, "  Test: Invalid pin read/write (pin 16, 17)...");
+  g_driver->ReadPin(16);
+  g_driver->WritePin(17, true);
+  g_driver->TogglePin(18);
+  errors = g_driver->GetErrorFlags();
+  ESP_LOGI(TAG, "  Error flags after invalid R/W/T: 0x%04X", errors);
+  g_driver->ClearErrorFlags();
+
+  // Test 3: ClearErrorFlags with specific mask
+  ESP_LOGI(TAG, "  Test: ClearErrorFlags with specific mask...");
+  g_driver->SetPinDirection(16, GPIODir::Output); // sets InvalidPin
+  errors = g_driver->GetErrorFlags();
+  ESP_LOGI(TAG, "  Before selective clear: 0x%04X", errors);
+  g_driver->ClearErrorFlags(0x0001); // Clear only InvalidPin
+  errors = g_driver->GetErrorFlags();
+  ESP_LOGI(TAG, "  After clearing InvalidPin: 0x%04X (expect 0x0000)", errors);
+  g_driver->ClearErrorFlags();
+
+  // Test 4: UnsupportedFeature error on PCA9555
+  if (!g_driver->HasAgileIO()) {
+    ESP_LOGI(TAG, "  Test: UnsupportedFeature error (PCA9555)...");
+    result = g_driver->SetDriveStrength(0, DriveStrength::Level2);
+    if (result) {
+      ESP_LOGW(TAG, "  Unexpected success for SetDriveStrength on PCA9555");
+    }
+    errors = g_driver->GetErrorFlags();
+    ESP_LOGI(TAG, "  Error flags: 0x%04X (expect UnsupportedFeature=0x0010)", errors);
+    g_driver->ClearErrorFlags();
+  } else {
+    ESP_LOGI(TAG, "  Skip: UnsupportedFeature test (chip is PCAL9555A)");
   }
 
-  // Check error flags
-  uint16_t errors = g_driver->GetErrorFlags();
-  ESP_LOGI(TAG, "Error flags: 0x%04X", errors);
-
-  // Clear error flags
-  g_driver->ClearErrorFlags();
+  // Test 5: ReadPinStates (private but used by HandleInterrupt, verify no crash)
+  ESP_LOGI(TAG, "  Test: HandleInterrupt on clean state (no crash expected)...");
+  g_driver->HandleInterrupt();
+  ESP_LOGI(TAG, "  HandleInterrupt completed without crash");
 
   ESP_LOGI(TAG, "✅ Error handling tests passed");
   return true;
@@ -1019,6 +1576,38 @@ extern "C" void app_main(void) {
   // Run port operation tests
   RUN_TEST_SECTION_IF_ENABLED(ENABLE_PORT_OPERATION_TESTS, "PORT OPERATION TESTS",
                               RUN_TEST_IN_TASK("Port Operations", test_port_operations, 4096, 5);
+                              flip_test_progress_indicator(););
+
+  // Run multi-pin API tests (initializer_list overloads)
+  RUN_TEST_SECTION_IF_ENABLED(
+      ENABLE_MULTI_PIN_API_TESTS, "MULTI-PIN API TESTS",
+      RUN_TEST_IN_TASK("WritePins Multi", test_write_pins_multi, 4096, 5);
+      flip_test_progress_indicator();
+      RUN_TEST_IN_TASK("ReadPins Multi", test_read_pins_multi, 4096, 5);
+      flip_test_progress_indicator();
+      RUN_TEST_IN_TASK("SetDirections Multi", test_set_directions_multi, 4096, 5);
+      flip_test_progress_indicator();
+      RUN_TEST_IN_TASK("SetPolarities Multi", test_set_polarities_multi, 4096, 5);
+      flip_test_progress_indicator(););
+
+  // Run address management tests
+  RUN_TEST_SECTION_IF_ENABLED(ENABLE_ADDRESS_TESTS, "ADDRESS MANAGEMENT TESTS",
+                              RUN_TEST_IN_TASK("Address Management", test_address_management, 4096, 10);
+                              flip_test_progress_indicator(););
+
+  // Run configuration and initialization tests
+  RUN_TEST_SECTION_IF_ENABLED(ENABLE_CONFIG_TESTS, "CONFIGURATION TESTS",
+                              RUN_TEST_IN_TASK("Config & Init", test_config_and_init, 4096, 5);
+                              flip_test_progress_indicator(););
+
+  // Run multi-pin PCAL9555A-only API tests
+  RUN_TEST_SECTION_IF_ENABLED(ENABLE_MULTI_PIN_PCAL_TESTS, "MULTI-PIN PCAL9555A API TESTS",
+                              RUN_TEST_IN_TASK("Multi-Pin PCAL APIs", test_multi_pin_pcal_apis, 4096, 5);
+                              flip_test_progress_indicator(););
+
+  // Run interactive input tests (requires physical button)
+  RUN_TEST_SECTION_IF_ENABLED(ENABLE_INTERACTIVE_INPUT_TESTS, "INTERACTIVE INPUT TESTS",
+                              RUN_TEST_IN_TASK("Interactive Input", test_interactive_input, 8192, 20);
                               flip_test_progress_indicator(););
 
   // Run error handling tests

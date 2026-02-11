@@ -10,9 +10,11 @@
 
 // Constructor: store I2C bus and pin levels (lazy initialization)
 template <typename I2cType>
-pcal95555::PCAL95555<I2cType>::PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level)
+pcal95555::PCAL95555<I2cType>::PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level,
+                                          ChipVariant variant)
     : i2c_(bus), previous_pin_states_(0), initialized_(false),
-      a0_level_(a0_level), a1_level_(a1_level), a2_level_(a2_level) {
+      a0_level_(a0_level), a1_level_(a1_level), a2_level_(a2_level),
+      chip_variant_(ChipVariant::Unknown), user_variant_(variant) {
   // Calculate address bits from pin levels (A0=bit0, A1=bit1, A2=bit2)
   address_bits_ = (a0_level ? 1 : 0) | ((a1_level ? 1 : 0) << 1) | ((a2_level ? 1 : 0) << 2);
   dev_addr_ = CalculateAddress(address_bits_);
@@ -28,8 +30,9 @@ pcal95555::PCAL95555<I2cType>::PCAL95555(I2cType* bus, bool a0_level, bool a1_le
 
 // Constructor: store I2C bus and calculate pin levels from address (lazy initialization)
 template <typename I2cType>
-pcal95555::PCAL95555<I2cType>::PCAL95555(I2cType* bus, uint8_t address)
-    : i2c_(bus), previous_pin_states_(0), initialized_(false) {
+pcal95555::PCAL95555<I2cType>::PCAL95555(I2cType* bus, uint8_t address, ChipVariant variant)
+    : i2c_(bus), previous_pin_states_(0), initialized_(false),
+      chip_variant_(ChipVariant::Unknown), user_variant_(variant) {
   // Validate address range (0x20 to 0x27)
   constexpr uint8_t BASE_ADDRESS = 0x20;
   constexpr uint8_t MAX_ADDRESS = 0x27;
@@ -99,6 +102,15 @@ bool pcal95555::PCAL95555<I2cType>::Initialize() noexcept {
 
   // Communication successful - clear any previous errors
   clearError(Error::I2CReadFail);
+
+  // Detect chip variant (PCA9555 vs PCAL9555A)
+  if (user_variant_ != ChipVariant::Unknown) {
+    // User specified variant - skip auto-detection
+    chip_variant_ = user_variant_;
+  } else {
+    // Auto-detect by probing an Agile I/O register
+    DetectChipVariant();
+  }
   
   // Initialize previous pin states for edge detection
   previous_pin_states_ = ReadPinStates();
@@ -145,30 +157,34 @@ void pcal95555::PCAL95555<I2cType>::ResetToDefault() noexcept {
   if (!EnsureInitialized()) {
     return;
   }
-  // All defaults taken from datasheet tables.
+  // Standard PCA9555 registers (always available)
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_0), 0xFF);
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_1), 0xFF);
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::POLARITY_INV_0), 0x00);
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::POLARITY_INV_1), 0x00);
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::CONFIG_PORT_0), 0xFF);
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::CONFIG_PORT_1), 0xFF);
-  // Drive strength = full (all bits 1)
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_0), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_1), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_2), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_3), 0xFF);
-  // Latch disabled (default 0x00)
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_LATCH_0), 0x00);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_LATCH_1), 0x00);
-  // Pull-up/down enabled (1), pull-up selected (1), interrupt masked (1)
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_0), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_1), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_0), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_1), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::INT_MASK_0), 0xFF);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::INT_MASK_1), 0xFF);
-  // Output mode = push-pull (0)
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_CONF), 0x00);
+
+  // PCAL9555A Agile I/O registers (only if chip supports them)
+  if (chip_variant_ == ChipVariant::PCAL9555A) {
+    // Drive strength = full (all bits 1)
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_0), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_1), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_2), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::DRIVE_STRENGTH_3), 0xFF);
+    // Latch disabled (default 0x00)
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_LATCH_0), 0x00);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_LATCH_1), 0x00);
+    // Pull-up/down enabled (1), pull-up selected (1), interrupt masked (1)
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_0), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_1), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_0), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_1), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::INT_MASK_0), 0xFF);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::INT_MASK_1), 0xFF);
+    // Output mode = push-pull (0)
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_CONF), 0x00);
+  }
 }
 
 // Initialize using compile-time configuration
@@ -178,6 +194,7 @@ void pcal95555::PCAL95555<I2cType>::InitFromConfig() noexcept {
     return;
   }
 #if CONFIG_PCAL95555_INIT_FROM_KCONFIG
+  // Standard PCA9555 registers (always available)
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_0), uint8_t(CONFIG_PCAL95555_INIT_OUTPUT & 0xFF));
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_1), uint8_t((CONFIG_PCAL95555_INIT_OUTPUT >> 8) & 0xFF));
 
@@ -185,16 +202,19 @@ void pcal95555::PCAL95555<I2cType>::InitFromConfig() noexcept {
   writeRegister(static_cast<uint8_t>(PCAL95555_REG::CONFIG_PORT_1),
                 uint8_t((CONFIG_PCAL95555_INIT_DIRECTION >> 8) & 0xFF));
 
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_0), uint8_t(CONFIG_PCAL95555_INIT_PULL_ENABLE & 0xFF));
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_1),
-                uint8_t((CONFIG_PCAL95555_INIT_PULL_ENABLE >> 8) & 0xFF));
+  // PCAL9555A Agile I/O registers (only if chip supports them)
+  if (chip_variant_ == ChipVariant::PCAL9555A) {
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_0), uint8_t(CONFIG_PCAL95555_INIT_PULL_ENABLE & 0xFF));
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_1),
+                  uint8_t((CONFIG_PCAL95555_INIT_PULL_ENABLE >> 8) & 0xFF));
 
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_0), uint8_t(CONFIG_PCAL95555_INIT_PULL_UP & 0xFF));
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_1), uint8_t((CONFIG_PCAL95555_INIT_PULL_UP >> 8) & 0xFF));
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_0), uint8_t(CONFIG_PCAL95555_INIT_PULL_UP & 0xFF));
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_1), uint8_t((CONFIG_PCAL95555_INIT_PULL_UP >> 8) & 0xFF));
 
-  uint8_t open_drain_config =
-      (CONFIG_PCAL95555_INIT_OD_PORT1 ? 1 : 0) << 1 | (CONFIG_PCAL95555_INIT_OD_PORT0 ? 1 : 0);
-  writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_CONF), open_drain_config);
+    uint8_t open_drain_config =
+        (CONFIG_PCAL95555_INIT_OD_PORT1 ? 1 : 0) << 1 | (CONFIG_PCAL95555_INIT_OD_PORT0 ? 1 : 0);
+    writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_CONF), open_drain_config);
+  }
 #endif
 }
 
@@ -450,6 +470,9 @@ bool pcal95555::PCAL95555<I2cType>::SetPullEnable(uint16_t pin, bool enable) noe
   if (!EnsureInitialized()) {
     return false;
   }
+  if (!requireAgileIO()) {
+    return false;
+  }
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -467,6 +490,9 @@ bool pcal95555::PCAL95555<I2cType>::SetPullEnable(uint16_t pin, bool enable) noe
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::SetPullDirection(uint16_t pin, bool pull_up) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   if (pin >= 16) {
@@ -488,6 +514,9 @@ bool pcal95555::PCAL95555<I2cType>::SetPullDirection(uint16_t pin, bool pull_up)
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::SetPullEnables(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   // Read current pull enable registers
@@ -533,6 +562,9 @@ bool pcal95555::PCAL95555<I2cType>::SetPullDirections(std::initializer_list<std:
   if (!EnsureInitialized()) {
     return false;
   }
+  if (!requireAgileIO()) {
+    return false;
+  }
   // Read current pull select registers
   uint8_t port0 = 0;
   uint8_t port1 = 0;
@@ -576,6 +608,9 @@ bool pcal95555::PCAL95555<I2cType>::SetDriveStrength(uint16_t pin, DriveStrength
   if (!EnsureInitialized()) {
     return false;
   }
+  if (!requireAgileIO()) {
+    return false;
+  }
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -599,6 +634,9 @@ bool pcal95555::PCAL95555<I2cType>::SetDriveStrength(uint16_t pin, DriveStrength
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::SetDriveStrengths(std::initializer_list<std::pair<uint16_t, DriveStrength>> configs) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   // Read all drive strength registers (4 registers total)
@@ -663,6 +701,9 @@ bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupt(uint16_t pin, InterruptSt
   if (!EnsureInitialized()) {
     return false;
   }
+  if (!requireAgileIO()) {
+    return false;
+  }
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -697,6 +738,9 @@ bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupt(uint16_t pin, InterruptSt
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   // Read current mask
@@ -742,6 +786,9 @@ bool pcal95555::PCAL95555<I2cType>::ConfigureInterruptMask(uint16_t mask) noexce
   if (!EnsureInitialized()) {
     return false;
   }
+  if (!requireAgileIO()) {
+    return false;
+  }
   if (!writeRegister(static_cast<uint8_t>(PCAL95555_REG::INT_MASK_0), uint8_t(mask & 0xFF))) {
     return false;
   }
@@ -752,6 +799,9 @@ bool pcal95555::PCAL95555<I2cType>::ConfigureInterruptMask(uint16_t mask) noexce
 template <typename I2cType>
 uint16_t pcal95555::PCAL95555<I2cType>::GetInterruptStatus() noexcept {
   if (!EnsureInitialized()) {
+    return 0;
+  }
+  if (!requireAgileIO()) {
     return 0;
   }
   uint8_t low_byte = 0;
@@ -765,6 +815,9 @@ uint16_t pcal95555::PCAL95555<I2cType>::GetInterruptStatus() noexcept {
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::SetOutputMode(bool port_0_open_drain, bool port_1_open_drain) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   uint8_t val = (port_1_open_drain ? 1 : 0) << 1 | (port_0_open_drain ? 1 : 0);
@@ -855,8 +908,19 @@ void pcal95555::PCAL95555<I2cType>::HandleInterrupt() noexcept {
   if (!EnsureInitialized()) {
     return;
   }
-  // Read interrupt status registers (which pins triggered interrupts)
-  uint16_t interrupt_status = GetInterruptStatus();
+
+  uint16_t interrupt_status = 0;
+
+  if (chip_variant_ == ChipVariant::PCAL9555A) {
+    // PCAL9555A: read hardware interrupt status register
+    interrupt_status = GetInterruptStatus();
+  } else {
+    // PCA9555: No hardware interrupt status registers.
+    // Fall back to change-detection by comparing current vs previous pin states.
+    uint16_t current_states = ReadPinStates();
+    interrupt_status = current_states ^ previous_pin_states_;
+    // Note: previous_pin_states_ is updated at the end of this method
+  }
 
   // Read current pin states
   uint16_t current_states = ReadPinStates();
@@ -1004,6 +1068,9 @@ bool pcal95555::PCAL95555<I2cType>::EnableInputLatch(uint16_t pin, bool enable) 
   if (!EnsureInitialized()) {
     return false;
   }
+  if (!requireAgileIO()) {
+    return false;
+  }
   if (pin >= 16) {
     setError(Error::InvalidPin);
     return false;
@@ -1021,6 +1088,9 @@ bool pcal95555::PCAL95555<I2cType>::EnableInputLatch(uint16_t pin, bool enable) 
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::EnableMultipleInputLatches(uint16_t mask, bool enable) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   clearError(Error::InvalidMask);
@@ -1052,6 +1122,9 @@ bool pcal95555::PCAL95555<I2cType>::EnableMultipleInputLatches(uint16_t mask, bo
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::EnableInputLatches(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept {
   if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
     return false;
   }
   // Read current latch registers
@@ -1111,6 +1184,79 @@ void pcal95555::PCAL95555<I2cType>::clearError(Error error_code) noexcept {
   error_flags_ &= ~static_cast<uint16_t>(error_code);
 }
 
+// Check if chip supports Agile I/O (PCAL9555A features)
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::HasAgileIO() const noexcept {
+  return chip_variant_ == ChipVariant::PCAL9555A;
+}
+
+// Get detected chip variant
+template <typename I2cType>
+ChipVariant pcal95555::PCAL95555<I2cType>::GetChipVariant() const noexcept {
+  return chip_variant_;
+}
+
+// Guard helper: require Agile I/O support
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::requireAgileIO() noexcept {
+  if (chip_variant_ != ChipVariant::PCAL9555A) {
+    setError(Error::UnsupportedFeature);
+    return false;
+  }
+  return true;
+}
+
+// Detect chip variant by probing OUTPUT_CONF register (0x4F)
+// Uses a 3-step sandwich: standard read -> probe -> standard read
+template <typename I2cType>
+void pcal95555::PCAL95555<I2cType>::DetectChipVariant() noexcept {
+  // Use single-shot (no retries) for the probe to avoid spamming the bus
+  int saved_retries = retries_;
+  retries_ = 0;
+
+  uint8_t dummy = 0;
+
+  // Step 1: Verify basic I2C communication with a standard register
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_PORT_0), dummy)) {
+    // Bus is not working at all - leave variant as Unknown
+    retries_ = saved_retries;
+    return;
+  }
+  clearError(Error::I2CReadFail);
+
+  // Step 2: Probe an Agile I/O register (OUTPUT_CONF = 0x4F)
+  // PCAL9555A will ACK; PCA9555 will NACK
+  uint8_t probe_value = 0;
+  if (readRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_CONF), probe_value)) {
+    // Probe succeeded - chip has Agile I/O registers
+
+    // Step 3a: Confirm bus is still healthy after successful read
+    if (readRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_PORT_0), dummy)) {
+      chip_variant_ = ChipVariant::PCAL9555A;
+      clearError(Error::I2CReadFail);
+    } else {
+      // Bus broke after successful probe - inconclusive, leave as Unknown
+      clearError(Error::I2CReadFail);
+    }
+  } else {
+    // Probe NACKed - expected for standard PCA9555
+    clearError(Error::I2CReadFail);
+
+    // Step 3b: Verify the bus recovered after the NACK
+    if (readRegister(static_cast<uint8_t>(PCAL95555_REG::INPUT_PORT_0), dummy)) {
+      // Bus healthy after NACK - confidently a PCA9555
+      chip_variant_ = ChipVariant::PCA9555;
+      clearError(Error::I2CReadFail);
+    } else {
+      // Bus did not recover - detection inconclusive, leave as Unknown
+      clearError(Error::I2CReadFail);
+    }
+  }
+
+  // Restore retries
+  retries_ = saved_retries;
+}
+
 // Get current I2C address
 template <typename I2cType>
 uint8_t pcal95555::PCAL95555<I2cType>::GetAddress() const noexcept {
@@ -1162,6 +1308,14 @@ bool pcal95555::PCAL95555<I2cType>::ChangeAddress(bool a0_level, bool a1_level, 
 
   // Communication successful - mark as initialized
   clearError(Error::I2CReadFail);
+
+  // Re-detect chip variant at new address
+  if (user_variant_ != ChipVariant::Unknown) {
+    chip_variant_ = user_variant_;
+  } else {
+    DetectChipVariant();
+  }
+
   initialized_ = true;
   return true;
 }
@@ -1221,6 +1375,14 @@ bool pcal95555::PCAL95555<I2cType>::ChangeAddress(uint8_t address) noexcept {
   // Communication successful - mark as initialized
   clearError(Error::I2CReadFail);
   clearError(Error::InvalidPin);
+
+  // Re-detect chip variant at new address
+  if (user_variant_ != ChipVariant::Unknown) {
+    chip_variant_ = user_variant_;
+  } else {
+    DetectChipVariant();
+  }
+
   initialized_ = true;
   return true;
 }

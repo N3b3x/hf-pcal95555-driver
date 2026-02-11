@@ -20,7 +20,10 @@ Complete reference documentation for all public methods and types in the PCAL955
 
 ### `PCAL95555<I2cType>`
 
-Main driver class for interfacing with the PCAL9555A I/O expander.
+Main driver class for interfacing with the **PCA9555** and **PCAL9555A** I/O expanders.
+The chip variant is auto-detected during initialization. PCAL9555A-specific features
+(pull resistors, drive strength, input latch, interrupt mask/status, output mode)
+return `false` and set `Error::UnsupportedFeature` when a standard PCA9555 is detected.
 
 **Template Parameter**: `I2cType` - Your I2C interface implementation (must inherit from `pcal95555::I2cInterface<I2cType>`)
 
@@ -30,7 +33,8 @@ Main driver class for interfacing with the PCAL9555A I/O expander.
 
 **Constructor 1: Using address pin levels**
 ```cpp
-PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level);
+PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level,
+          ChipVariant variant = ChipVariant::Unknown);
 ```
 
 **Parameters:**
@@ -38,35 +42,38 @@ PCAL95555(I2cType* bus, bool a0_level, bool a1_level, bool a2_level);
 - `a0_level`: Initial state of A0 pin (true = HIGH/VDD, false = LOW/GND)
 - `a1_level`: Initial state of A1 pin (true = HIGH/VDD, false = LOW/GND)
 - `a2_level`: Initial state of A2 pin (true = HIGH/VDD, false = LOW/GND)
+- `variant`: Optional chip variant override. Default `ChipVariant::Unknown` enables auto-detection. Set to `ChipVariant::PCA9555` or `ChipVariant::PCAL9555A` to skip detection.
 
 **Constructor 2: Using I2C address directly**
 ```cpp
-PCAL95555(I2cType* bus, uint8_t address);
+explicit PCAL95555(I2cType* bus, uint8_t address,
+                   ChipVariant variant = ChipVariant::Unknown);
 ```
 
 **Parameters:**
 - `bus`: Pointer to your I2C interface implementation
 - `address`: 7-bit I2C address (0x20 to 0x27). Address bits are calculated automatically.
+- `variant`: Optional chip variant override (same as above).
 
 **Description:**
-Both constructors calculate the I2C address and attempt to set address pins via `SetAddressPins()` if supported by the I2C interface, then verify communication afterward.
+Both constructors use lazy initialization -- no I2C traffic occurs in the constructor.
+Initialization (including chip variant detection) happens on first method call or
+explicit `EnsureInitialized()`. The address is calculated from A0-A2 levels or used
+directly. `SetAddressPins()` is called if supported by the I2C interface.
 
 **Examples:**
 ```cpp
-// Using pin levels - A2=LOW, A1=LOW, A0=LOW -> address 0x20 (default)
+// Using pin levels - auto-detect chip variant (default)
 PCAL95555 driver1(bus, false, false, false);
 
-// Using pin levels - A2=LOW, A1=LOW, A0=HIGH -> address 0x21
-PCAL95555 driver2(bus, true, false, false);
+// Using address directly - auto-detect
+PCAL95555 driver2(bus, 0x20);
 
-// Using address directly - address 0x20 (default)
-PCAL95555 driver3(bus, 0x20);
+// Force PCA9555 mode (skip Agile I/O detection probe)
+PCAL95555 driver3(bus, 0x20, ChipVariant::PCA9555);
 
-// Using address directly - address 0x21
-PCAL95555 driver4(bus, 0x21);
-
-// Using address directly - address 0x25
-PCAL95555 driver5(bus, 0x25);
+// Force PCAL9555A mode
+PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 ```
 
 **Location**: [`inc/pcal95555.hpp`](../inc/pcal95555.hpp)
@@ -99,7 +106,9 @@ PCAL95555 driver5(bus, 0x25);
 | `WritePins()` | `bool WritePins(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 | `TogglePin()` | `bool TogglePin(uint16_t pin)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 
-### Pull-up/Pull-down
+### Pull-up/Pull-down (PCAL9555A only)
+
+> **Note**: These methods return `false` and set `Error::UnsupportedFeature` on PCA9555.
 
 | Method | Signature | Location |
 |--------|-----------|----------|
@@ -108,7 +117,9 @@ PCAL95555 driver5(bus, 0x25);
 | `SetPullDirection()` | `bool SetPullDirection(uint16_t pin, bool pull_up)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 | `SetPullDirections()` | `bool SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 
-### Drive Strength
+### Drive Strength (PCAL9555A only)
+
+> **Note**: These methods return `false` and set `Error::UnsupportedFeature` on PCA9555.
 
 | Method | Signature | Location |
 |--------|-----------|----------|
@@ -117,23 +128,27 @@ PCAL95555 driver5(bus, 0x25);
 
 ### Interrupts
 
+> **Note**: `ConfigureInterrupt`, `ConfigureInterrupts`, `ConfigureInterruptMask`, and `GetInterruptStatus` require PCAL9555A and return `false`/`0` with `Error::UnsupportedFeature` on PCA9555. The remaining interrupt methods (callbacks, handler) work on both variants -- on PCA9555, `HandleInterrupt()` uses change-detection (comparing current vs. previous pin states) instead of the hardware interrupt status register.
+
+| Method | Signature | PCAL9555A? | Location |
+|--------|-----------|------------|----------|
+| `ConfigureInterrupt()` | `bool ConfigureInterrupt(uint16_t pin, InterruptState state)` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `ConfigureInterrupts()` | `bool ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs)` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `ConfigureInterruptMask()` | `bool ConfigureInterruptMask(uint16_t mask)` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `GetInterruptStatus()` | `uint16_t GetInterruptStatus()` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `RegisterPinInterrupt()` | `bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function<void(uint16_t, bool)> callback)` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `UnregisterPinInterrupt()` | `bool UnregisterPinInterrupt(uint16_t pin)` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetInterruptCallback()` | `void SetInterruptCallback(const std::function<void(uint16_t)>& callback)` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `RegisterInterruptHandler()` | `bool RegisterInterruptHandler()` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `HandleInterrupt()` | `void HandleInterrupt()` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+
+### Output Mode (PCAL9555A only)
+
+> **Note**: Returns `false` and sets `Error::UnsupportedFeature` on PCA9555.
+
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `ConfigureInterrupt()` | `bool ConfigureInterrupt(uint16_t pin, InterruptState state)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ConfigureInterrupts()` | `bool ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ConfigureInterruptMask()` | `bool ConfigureInterruptMask(uint16_t mask)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `GetInterruptStatus()` | `uint16_t GetInterruptStatus()` | [`src/pcal95555.cpp#L300`](../src/pcal95555.cpp#L300) |
-| `RegisterPinInterrupt()` | `bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function<void(uint16_t, bool)> callback)` | [`src/pcal95555.cpp#L317`](../src/pcal95555.cpp#L317) |
-| `UnregisterPinInterrupt()` | `bool UnregisterPinInterrupt(uint16_t pin)` | [`src/pcal95555.cpp#L342`](../src/pcal95555.cpp#L342) |
-| `SetInterruptCallback()` | `void SetInterruptCallback(const std::function<void(uint16_t)>& callback)` | [`src/pcal95555.cpp#L360`](../src/pcal95555.cpp#L360) |
-| `RegisterInterruptHandler()` | `bool RegisterInterruptHandler()` | [`src/pcal95555.cpp#L366`](../src/pcal95555.cpp#L366) |
-| `HandleInterrupt()` | `void HandleInterrupt()` | [`src/pcal95555.cpp#L385`](../src/pcal95555.cpp#L385) |
-
-### Output Mode
-
-| Method | Signature | Location |
-|--------|-----------|----------|
-| `SetOutputMode()` | `bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)` | [`src/pcal95555.cpp#L626`](../src/pcal95555.cpp#L626) |
+| `SetOutputMode()` | `bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 
 ### Polarity
 
@@ -143,7 +158,9 @@ PCAL95555 driver5(bus, 0x25);
 | `SetPolarities()` | `bool SetPolarities(std::initializer_list<std::pair<uint16_t, Polarity>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 | `SetMultiplePolarities()` | `bool SetMultiplePolarities(uint16_t mask, Polarity polarity)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
 
-### Input Latch
+### Input Latch (PCAL9555A only)
+
+> **Note**: These methods return `false` and set `Error::UnsupportedFeature` on PCA9555.
 
 | Method | Signature | Location |
 |--------|-----------|----------|
@@ -164,9 +181,29 @@ PCAL95555 driver5(bus, 0x25);
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetRetries()` | `void SetRetries(int retries)` | [`src/pcal95555.cpp#L46`](../src/pcal95555.cpp#L46) |
-| `GetErrorFlags()` | `uint16_t GetErrorFlags() const` | [`src/pcal95555.cpp#L525`](../src/pcal95555.cpp#L525) |
-| `ClearErrorFlags()` | `void ClearErrorFlags(uint16_t mask = 0xFFFF)` | [`src/pcal95555.cpp#L530`](../src/pcal95555.cpp#L530) |
+| `SetRetries()` | `void SetRetries(int retries) noexcept` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `GetErrorFlags()` | `[[nodiscard]] uint16_t GetErrorFlags() const noexcept` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `ClearErrorFlags()` | `void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+
+### Chip Variant Detection
+
+| Method | Signature | Description | Location |
+|--------|-----------|-------------|----------|
+| `HasAgileIO()` | `[[nodiscard]] bool HasAgileIO() const noexcept` | Returns `true` if PCAL9555A detected (Agile I/O available) | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `GetChipVariant()` | `[[nodiscard]] ChipVariant GetChipVariant() const noexcept` | Returns the detected `ChipVariant` enum value | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+
+**Usage:**
+```cpp
+if (driver.HasAgileIO()) {
+    // PCAL9555A features available
+    driver.SetDriveStrength(0, DriveStrength::Level2);
+} else {
+    // PCA9555 -- only standard registers
+}
+
+auto variant = driver.GetChipVariant();
+// ChipVariant::Unknown, ChipVariant::PCA9555, or ChipVariant::PCAL9555A
+```
 
 ## Types
 
@@ -175,12 +212,13 @@ PCAL95555 driver5(bus, 0x25);
 | Type | Values | Description | Location |
 |------|--------|-------------|----------|
 | `GPIODir` | `Input`, `Output` | GPIO pin direction | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
-| `DriveStrength` | `Level0`, `Level1`, `Level2`, `Level3` | Output drive strength (Level0=25%, Level1=50%, Level2=75%, Level3=100%) | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `DriveStrength` | `Level0`, `Level1`, `Level2`, `Level3` | Output drive strength (Level0=25%, Level1=50%, Level2=75%, Level3=100%). **PCAL9555A only.** | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
 | `Polarity` | `Normal`, `Inverted` | Input polarity inversion | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
-| `OutputMode` | `PushPull`, `OpenDrain` | Output mode (per port) | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
-| `InterruptState` | `Enabled`, `Disabled` | Interrupt enable/disable state | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
-| `InterruptEdge` | `Rising`, `Falling`, `Both` | Interrupt edge trigger type | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
-| `Error` | `None`, `InvalidPin`, `InvalidMask`, `I2CReadFail`, `I2CWriteFail` | Error conditions (bitmask) | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `OutputMode` | `PushPull`, `OpenDrain` | Output mode (per port). **PCAL9555A only.** | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `InterruptState` | `Enabled`, `Disabled` | Interrupt enable/disable state. **PCAL9555A only.** | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `InterruptEdge` | `Rising`, `Falling`, `Both` | Interrupt edge trigger type (works on both variants via software) | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `ChipVariant` | `Unknown`, `PCA9555`, `PCAL9555A` | Detected or user-specified chip variant | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `Error` | `None`, `InvalidPin`, `InvalidMask`, `I2CReadFail`, `I2CWriteFail`, `UnsupportedFeature` | Error conditions (bitmask). `UnsupportedFeature` (0x0010) is set when a PCAL9555A-only method is called on a PCA9555. | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
 
 ---
 

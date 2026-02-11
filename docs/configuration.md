@@ -13,7 +13,7 @@ This guide covers all configuration options available for the PCAL95555 driver.
 
 ## I2C Address Configuration
 
-The PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field.
+The PCA9555 / PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field. Both chip variants use the same address scheme.
 
 | Pin | Address Bit | Description |
 |-----|-------------|-------------|
@@ -112,23 +112,26 @@ gpio.SetPinDirection(1, pcal95555::PCAL95555<MyI2c>::GPIODir::Input);
 gpio.SetMultipleDirections(0x000F, pcal95555::PCAL95555<MyI2c>::GPIODir::Output); // Pins 0-3
 ```
 
-### Pull Resistors
+### Pull Resistors (PCAL9555A only)
 
-Configure pull-up/pull-down resistors:
+> **Note**: These features require the PCAL9555A. On a standard PCA9555, these methods
+> return `false` and set `Error::UnsupportedFeature`. Check with `HasAgileIO()` first.
 
 ```cpp
-// Enable pull-up on pin 0
-gpio.SetPullEnable(0, true);
-gpio.SetPullDirection(0, true); // true = pull-up, false = pull-down
+if (gpio.HasAgileIO()) {
+    // Enable pull-up on pin 0
+    gpio.SetPullEnable(0, true);
+    gpio.SetPullDirection(0, true); // true = pull-up, false = pull-down
 
-// Enable pull-down on pin 1
-gpio.SetPullEnable(1, true);
-gpio.SetPullDirection(1, false);
+    // Enable pull-down on pin 1
+    gpio.SetPullEnable(1, true);
+    gpio.SetPullDirection(1, false);
+}
 ```
 
-### Drive Strength
+### Drive Strength (PCAL9555A only)
 
-Set output drive strength:
+> **Note**: Requires PCAL9555A. Returns `false` with `Error::UnsupportedFeature` on PCA9555.
 
 ```cpp
 gpio.SetDriveStrength(0, pcal95555::PCAL95555<MyI2c>::DriveStrength::Level3); // Full strength
@@ -140,9 +143,9 @@ gpio.SetDriveStrength(0, pcal95555::PCAL95555<MyI2c>::DriveStrength::Level3); //
 - `Level2`: 75% drive strength (¾)
 - `Level3`: 100% drive strength (full)
 
-### Output Mode
+### Output Mode (PCAL9555A only)
 
-Configure port output mode (push-pull or open-drain):
+> **Note**: Requires PCAL9555A. Returns `false` with `Error::UnsupportedFeature` on PCA9555.
 
 ```cpp
 // Set PORT_0 to open-drain, PORT_1 to push-pull
@@ -179,6 +182,31 @@ gpio.ResetToDefault();
 - Polarity: Normal (not inverted)
 
 **Location**: [`src/pcal95555.cpp#L49`](../src/pcal95555.cpp#L49)
+
+## Chip Variant Configuration
+
+The driver auto-detects the chip variant (PCA9555 vs PCAL9555A) during initialization.
+You can also force a specific variant via the constructor to skip the detection probe:
+
+```cpp
+// Auto-detect (default)
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20);
+
+// Force PCA9555 mode (skips Agile I/O probe -- avoids NACK on known PCA9555)
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20, pcal95555::ChipVariant::PCA9555);
+
+// Force PCAL9555A mode
+pcal95555::PCAL95555<MyI2c> gpio(&i2c, 0x20, pcal95555::ChipVariant::PCAL9555A);
+```
+
+Query the detected variant at runtime:
+```cpp
+if (gpio.HasAgileIO()) {
+    // PCAL9555A features available
+}
+auto variant = gpio.GetChipVariant();
+// ChipVariant::Unknown, ChipVariant::PCA9555, or ChipVariant::PCAL9555A
+```
 
 ## Interrupt Configuration
 

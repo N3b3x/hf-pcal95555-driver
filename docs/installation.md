@@ -15,8 +15,9 @@ This guide covers how to integrate the PCAL95555 driver into your project.
 
 Before installing the driver, ensure you have:
 
-- **C++11 Compiler**: GCC 4.8+, Clang 3.3+, or MSVC 2013+
+- **C++17 Compiler**: GCC 7+, Clang 5+, or MSVC 2017+
 - **I2C Interface**: Your platform's I2C driver (ESP-IDF, STM32 HAL, Arduino Wire, etc.)
+- **Compatible chip**: PCA9555 or PCAL9555A (the driver auto-detects which variant is connected)
 
 ## Integration
 
