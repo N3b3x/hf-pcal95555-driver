@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="📚 Documentation submenu" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCA9555 / PCAL9555A ESP32-S3 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -589,6 +589,95 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
+<h3 id="error-pcal9555a-features-fail-unsupportedfeature">
+  
+  
+    <a href="#error-pcal9555a-features-fail-unsupportedfeature" class="anchor-heading" aria-labelledby="error-pcal9555a-features-fail-unsupportedfeature"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Error: PCAL9555A Features Fail (UnsupportedFeature)
+  
+  
+</h3>
+    
+
+<p><strong>Symptoms:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SetPullEnable()</code>, <code class="language-plaintext highlighter-rouge">SetDriveStrength()</code>, <code class="language-plaintext highlighter-rouge">SetOutputMode()</code>, <code class="language-plaintext highlighter-rouge">EnableInputLatch()</code>, <code class="language-plaintext highlighter-rouge">ConfigureInterrupt()</code>, or <code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code> return <code class="language-plaintext highlighter-rouge">false</code></li>
+  <li>Error flags show <code class="language-plaintext highlighter-rouge">0x0010</code> (<code class="language-plaintext highlighter-rouge">UnsupportedFeature</code>)</li>
+</ul>
+
+<p><strong>Cause:</strong>
+The connected chip is a <strong>PCA9555</strong> (standard variant), not a PCAL9555A. These methods
+require the Agile I/O register bank (0x40-0x4F) that only exists on the PCAL9555A.</p>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+  <li><strong>Check chip variant</strong>: Use <code class="language-plaintext highlighter-rouge">HasAgileIO()</code> before calling PCAL9555A features:
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">HasAgileIO</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level2</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// Use external components or skip this feature</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div>    </div>
+  </li>
+  <li><strong>Verify hardware</strong>: Confirm your chip is actually a PCAL9555A (check part number marking)</li>
+  <li><strong>Use external components</strong>: For PCA9555, use external pull-up resistors instead of internal ones</li>
+</ol><hr />
+<h3 id="error-chipvariant-shows-unknown">
+  
+  
+    <a href="#error-chipvariant-shows-unknown" class="anchor-heading" aria-labelledby="error-chipvariant-shows-unknown"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Error: ChipVariant Shows “Unknown”
+  
+  
+</h3>
+    
+
+<p><strong>Symptoms:</strong></p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">GetChipVariant()</code> returns <code class="language-plaintext highlighter-rouge">ChipVariant::Unknown</code></li>
+  <li><code class="language-plaintext highlighter-rouge">HasAgileIO()</code> returns <code class="language-plaintext highlighter-rouge">false</code></li>
+</ul>
+
+<p><strong>Cause:</strong>
+The 3-step chip detection probe could not confirm the chip type. This usually means
+the bus was unhealthy during initialization.</p>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+  <li>Check I2C pull-up resistors (4.7kΩ on SDA and SCL)</li>
+  <li>Verify power supply is stable</li>
+  <li>Ensure no other I2C master is on the bus</li>
+  <li>Force the variant in the constructor to skip detection:
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span> <span class="nf">driver</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">ChipVariant</span><span class="o">::</span><span class="n">PCA9555</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div>    </div>
+  </li>
+</ol><hr />
+<h3 id="error-i2c-nacks-on-registers-0x40-0x4f-during-init">
+  
+  
+    <a href="#error-i2c-nacks-on-registers-0x40-0x4f-during-init" class="anchor-heading" aria-labelledby="error-i2c-nacks-on-registers-0x40-0x4f-during-init"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Error: I2C NACKs on Registers 0x40-0x4F During Init
+  
+  
+</h3>
+    
+
+<p><strong>Symptoms:</strong></p>
+<ul>
+  <li>Log shows “I2C transaction unexpected nack detected” for registers 0x40-0x4F</li>
+  <li>Driver still initializes successfully</li>
+</ul>
+
+<p><strong>Cause:</strong>
+This is <strong>expected behavior</strong> when a PCA9555 is connected. The auto-detection probe
+tries to access an Agile I/O register (0x4F). A NACK means the chip is a standard PCA9555.
+The driver detects this and sets <code class="language-plaintext highlighter-rouge">ChipVariant::PCA9555</code>.</p>
+
+<p><strong>Resolution:</strong> No action needed. This is normal. The NACK errors come from the ESP-IDF
+I2C driver and can be safely ignored.</p><hr />
 <h2 id="faq">
   
   
@@ -670,26 +759,30 @@
     <span class="n">printf</span><span class="p">(</span><span class="s">"Interrupt on pins: 0x%04X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">status</span><span class="p">);</span>
 <span class="p">});</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
-<h3 id="q-can-i-use-multiple-pcal9555a-devices">
+<h3 id="q-can-i-use-multiple-devices">
   
   
-    <a href="#q-can-i-use-multiple-pcal9555a-devices" class="anchor-heading" aria-labelledby="q-can-i-use-multiple-pcal9555a-devices"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Q: Can I use multiple PCAL9555A devices?
+    <a href="#q-can-i-use-multiple-devices" class="anchor-heading" aria-labelledby="q-can-i-use-multiple-devices"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Q: Can I use multiple devices?
   
   
 </h3>
     
 
-<p><strong>A:</strong> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances:</p>
+<p><strong>A:</strong> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances. You can even mix PCA9555 and PCAL9555A on the same bus:</p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
 3
 4
 5
-</pre></td><td class="rouge-code"><pre><span class="c1">// First device: A0=LOW, A1=LOW, A2=LOW -&gt; address 0x20</span>
+6
+7
+</pre></td><td class="rouge-code"><pre><span class="c1">// First device: PCA9555 at 0x20</span>
 <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio1</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
-<span class="c1">// Second device: A0=HIGH, A1=LOW, A2=LOW -&gt; address 0x21</span>
+<span class="c1">// Second device: PCAL9555A at 0x21</span>
 <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio2</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+
+<span class="c1">// Each auto-detects its own chip variant</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p>You can also change the address dynamically if your I2C interface supports GPIO control:</p>
@@ -700,6 +793,30 @@
     <span class="n">printf</span><span class="p">(</span><span class="s">"Address changed to 0x%02X</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">gpio1</span><span class="p">.</span><span class="n">GetAddress</span><span class="p">());</span> <span class="c1">// Now 0x21</span>
 <span class="p">}</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
+<h3 id="q-how-do-i-know-which-chip-i-have-pca9555-vs-pcal9555a">
+  
+  
+    <a href="#q-how-do-i-know-which-chip-i-have-pca9555-vs-pcal9555a" class="anchor-heading" aria-labelledby="q-how-do-i-know-which-chip-i-have-pca9555-vs-pcal9555a"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?
+  
+  
+</h3>
+    
+
+<p><strong>A:</strong> The driver auto-detects during initialization:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+</pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">EnsureInitialized</span><span class="p">();</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">HasAgileIO</span><span class="p">())</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"PCAL9555A (extended features available)</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"PCA9555 (standard GPIO only)</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<p>You can also check the chip marking. PCA9555 has part number “PCA9555”; PCAL9555A has “PCAL9555A”.</p>
 <h3 id="q-whats-the-difference-between-pull-up-and-pull-down">
   
   
@@ -755,14 +872,28 @@
 6
 7
 8
+9
+10
+11
+12
+13
+14
+15
 </pre></td><td class="rouge-code"><pre><span class="kt">uint16_t</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetErrorFlags</span><span class="p">();</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CReadFail</span><span class="p">))</span> <span class="p">{</span>
     <span class="c1">// I2C read failed</span>
 <span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CWriteFail</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// I2C write failed</span>
+<span class="p">}</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">InvalidPin</span><span class="p">))</span> <span class="p">{</span>
-    <span class="c1">// Invalid pin number</span>
+    <span class="c1">// Invalid pin number (&gt;= 16)</span>
+<span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">UnsupportedFeature</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// PCAL9555A feature called on PCA9555</span>
 <span class="p">}</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">ClearErrorFlags</span><span class="p">();</span> <span class="c1">// Clear all errors</span>
+<span class="c1">// Or clear selectively: gpio.ClearErrorFlags(0x0001); // Clear only InvalidPin</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
 <h2 id="getting-more-help">
   

@@ -1,10 +1,17 @@
 var searchData=
 [
-  ['q_3a_20can_20i_20use_20multiple_20pcal9555a_20devices_0',['Q: Can I use multiple PCAL9555A devices?',['../md_docs_2troubleshooting.html#autotoc_md134',1,'']]],
-  ['q_3a_20how_20do_20i_20check_20for_20errors_1',['Q: How do I check for errors?',['../md_docs_2troubleshooting.html#autotoc_md137',1,'']]],
-  ['q_3a_20how_20do_20i_20use_20interrupts_2',['Q: How do I use interrupts?',['../md_docs_2troubleshooting.html#autotoc_md133',1,'']]],
-  ['q_3a_20what_20drive_20strength_20levels_20are_20available_3',['Q: What drive strength levels are available?',['../md_docs_2troubleshooting.html#autotoc_md136',1,'']]],
-  ['q_3a_20what_20s_20the_20difference_20between_20pull_20up_20and_20pull_20down_4',['Q: What&apos;s the difference between pull-up and pull-down?',['../md_docs_2troubleshooting.html#autotoc_md135',1,'']]],
-  ['q_3a_20why_20do_20my_20pin_20writes_20not_20work_5',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md132',1,'']]],
-  ['quick_20start_6',['Quick Start',['../index.html#autotoc_md4',1,'🚀 Quick Start'],['../md_docs_2quickstart.html',1,'Quick Start']]]
+  ['o_0',['Pin I/O',['../md_docs_2api__reference.html#autotoc_md25',1,'']]],
+  ['of_20virtual_20functions_1',['Why CRTP Instead of Virtual Functions?',['../md_docs_2platform__integration.html#autotoc_md106',1,'']]],
+  ['on_20registers_200x40_200x4f_20during_20init_2',['Error: I2C NACKs on Registers 0x40-0x4F During Init',['../md_docs_2troubleshooting.html#autotoc_md146',1,'']]],
+  ['only_3',['Only',['../md_docs_2api__reference.html#autotoc_md27',1,'Drive Strength (PCAL9555A only)'],['../md_docs_2configuration.html#autotoc_md47',1,'Drive Strength (PCAL9555A only)'],['../md_docs_2examples.html#autotoc_md68',1,'Example 5: Drive Strength (PCAL9555A only)'],['../md_docs_2api__reference.html#autotoc_md31',1,'Input Latch (PCAL9555A only)'],['../md_docs_2api__reference.html#autotoc_md29',1,'Output Mode (PCAL9555A only)'],['../md_docs_2configuration.html#autotoc_md48',1,'Output Mode (PCAL9555A only)'],['../md_docs_2configuration.html#autotoc_md46',1,'Pull Resistors (PCAL9555A only)'],['../md_docs_2api__reference.html#autotoc_md26',1,'Pull-up/Pull-down (PCAL9555A only)']]],
+  ['option_201_3a_20copy_20files_4',['Option 1: Copy Files',['../md_docs_2installation.html#autotoc_md100',1,'']]],
+  ['option_202_3a_20git_20submodule_5',['Option 2: Git Submodule',['../md_docs_2installation.html#autotoc_md101',1,'']]],
+  ['optional_6',['Optional',['../md_docs_2hardware__setup.html#autotoc_md87',1,'Interrupt Pin (Optional)'],['../md_docs_2configuration.html#autotoc_md41',1,'Kconfig Configuration (Optional)'],['../md_docs_2hardware__setup.html#autotoc_md88',1,'Reset Pin (Optional)']]],
+  ['options_7',['Configuration Options',['../md_docs_2configuration.html#autotoc_md42',1,'']]],
+  ['other_20platforms_8',['Other Platforms',['../md_docs_2examples.html#autotoc_md72',1,'']]],
+  ['output_9',['Expected Output',['../md_docs_2quickstart.html#autotoc_md136',1,'']]],
+  ['output_20mode_20pcal9555a_20only_10',['Output Mode PCAL9555A only',['../md_docs_2api__reference.html#autotoc_md29',1,'Output Mode (PCAL9555A only)'],['../md_docs_2configuration.html#autotoc_md48',1,'Output Mode (PCAL9555A only)']]],
+  ['output_20pins_11',['For Output Pins',['../md_docs_2configuration.html#autotoc_md59',1,'']]],
+  ['overhead_20strong_12',['1. &lt;strong&gt;Zero Runtime Overhead&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md107',1,'']]],
+  ['overview_13',['Overview',['../index.html#autotoc_md1',1,'']]]
 ];

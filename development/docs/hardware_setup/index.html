@@ -61,8 +61,8 @@
 <meta property="og:title" content="🔌 Hardware Setup" />
 <meta name="author" content="N3b3x" />
 <meta property="og:locale" content="en" />
-<meta name="description" content="Hardware wiring and connection guide for the PCAL9555A" />
-<meta property="og:description" content="Hardware wiring and connection guide for the PCAL9555A" />
+<meta name="description" content="Hardware wiring and connection guide for the PCA9555 / PCAL9555A" />
+<meta property="og:description" content="Hardware wiring and connection guide for the PCA9555 / PCAL9555A" />
 <link rel="canonical" href="https://n3b3x.github.io/hf-pcal95555-driver/development/docs/hardware_setup/" />
 <meta property="og:url" content="https://n3b3x.github.io/hf-pcal95555-driver/development/docs/hardware_setup/" />
 <meta property="og:site_name" content="HardFOC PCAL95555 Driver - development" />
@@ -70,7 +70,7 @@
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title" content="🔌 Hardware Setup" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"N3b3x","url":"https://github.com/n3b3x"},"description":"Hardware wiring and connection guide for the PCAL9555A","headline":"🔌 Hardware Setup","url":"https://n3b3x.github.io/hf-pcal95555-driver/development/docs/hardware_setup/"}</script>
+{"@context":"https://schema.org","@type":"WebPage","author":{"@type":"Person","name":"N3b3x","url":"https://github.com/n3b3x"},"description":"Hardware wiring and connection guide for the PCA9555 / PCAL9555A","headline":"🔌 Hardware Setup","url":"https://n3b3x.github.io/hf-pcal95555-driver/development/docs/hardware_setup/"}</script>
 <!-- End Jekyll SEO tag -->
 
 
@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="📚 Documentation submenu" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCA9555 / PCAL9555A ESP32-S3 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -272,7 +272,7 @@
 </h1>
     
 
-<p>This guide covers the physical connections and hardware requirements for the PCAL9555A chip.</p>
+<p>This guide covers the physical connections and hardware requirements for the <strong>PCA9555</strong> and <strong>PCAL9555A</strong> chips. Both are pin-compatible – the same wiring works for either variant. The driver auto-detects which chip is connected.</p>
 <h2 id="pin-connections">
   
   
@@ -296,8 +296,8 @@
 4
 5
 6
-</pre></td><td class="rouge-code"><pre>MCU              PCAL9555A
-─────────────────────────
+</pre></td><td class="rouge-code"><pre>MCU              PCA9555 / PCAL9555A
+──────────────────────────────────
 3.3V      ────── VDD
 GND       ────── GND
 SCL       ────── SCL (with 4.7kΩ pull-up to 3.3V)
@@ -375,7 +375,7 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 </h3>
     
 
-<p>The PCAL9555A provides 16 GPIO pins organized into two ports:</p>
+<p>The PCA9555 / PCAL9555A provides 16 GPIO pins organized into two ports:</p>
 
 <ul>
   <li><strong>PORT_0</strong>: Pins 0-7 (P0.0 through P0.7)</li>
@@ -384,10 +384,10 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 
 <p>Each pin can be configured as:</p>
 <ul>
-  <li>Input or output</li>
-  <li>With or without pull-up/pull-down resistor</li>
-  <li>Push-pull or open-drain output (per port)</li>
-  <li>Interrupt enabled or disabled</li>
+  <li>Input or output (PCA9555 + PCAL9555A)</li>
+  <li>With or without pull-up/pull-down resistor (PCAL9555A only)</li>
+  <li>Push-pull or open-drain output per port (PCAL9555A only)</li>
+  <li>Interrupt enabled or disabled (PCAL9555A only; software callbacks work on both)</li>
 </ul>
 <h2 id="power-requirements">
   
@@ -426,7 +426,7 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 </h3>
     
 
-<p>The PCAL9555A I2C address is determined by pins A0-A2:</p>
+<p>The I/O expander I2C address is determined by pins A0-A2:</p>
 
 <div class="table-wrapper"><table>
   <thead>
@@ -533,10 +533,10 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
   
 </h2>
     
-<h3 id="single-pcal9555a">
+<h3 id="single-device">
   
   
-    <a href="#single-pcal9555a" class="anchor-heading" aria-labelledby="single-pcal9555a"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Single PCAL9555A
+    <a href="#single-device" class="anchor-heading" aria-labelledby="single-device"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Single Device
   
   
 </h3>
@@ -552,7 +552,7 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 8
 9
 10
-</pre></td><td class="rouge-code"><pre>                    PCAL9555A
+</pre></td><td class="rouge-code"><pre>                PCA9555 / PCAL9555A
                     ┌─────────┐
         3.3V ───────┤ VDD     │
         GND  ───────┤ GND     │
@@ -563,10 +563,10 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
                     │ P1.0-7  │─── GPIO pins (PORT_1)
                     └─────────┘
 </pre></td></tr></tbody></table></div></code></pre></div></div>
-<h3 id="multiple-pcal9555a-devices">
+<h3 id="multiple-devices">
   
   
-    <a href="#multiple-pcal9555a-devices" class="anchor-heading" aria-labelledby="multiple-pcal9555a-devices"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Multiple PCAL9555A Devices
+    <a href="#multiple-devices" class="anchor-heading" aria-labelledby="multiple-devices"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Multiple Devices
   
   
 </h3>
@@ -579,14 +579,19 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 5
 6
 7
-</pre></td><td class="rouge-code"><pre>MCU SCL ──┬─── PCAL9555A #1 (A0=0, Addr=0x20) SCL
+</pre></td><td class="rouge-code"><pre>MCU SCL ──┬─── Device #1 (A0=0, Addr=0x20) SCL
           │
-          └─── PCAL9555A #2 (A0=1, Addr=0x21) SCL
+          └─── Device #2 (A0=1, Addr=0x21) SCL
 
-MCU SDA ──┬─── PCAL9555A #1 SDA
+MCU SDA ──┬─── Device #1 SDA
           │
-          └─── PCAL9555A #2 SDA
+          └─── Device #2 SDA
 </pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<blockquote>
+  <p><strong>Note</strong>: You can mix PCA9555 and PCAL9555A devices on the same I2C bus. Each driver
+instance auto-detects its chip variant independently.</p>
+</blockquote>
 <h2 id="interrupt-pin-optional">
   
   

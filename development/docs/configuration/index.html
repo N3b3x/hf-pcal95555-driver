@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="📚 Documentation submenu" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCA9555 / PCAL9555A ESP32-S3 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -282,7 +282,7 @@
 </h2>
     
 
-<p>The PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field.</p>
+<p>The PCA9555 / PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field. Both chip variants use the same address scheme.</p>
 
 <div class="table-wrapper"><table>
   <thead>
@@ -525,16 +525,19 @@
 <span class="c1">// Set multiple pins at once</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetMultipleDirections</span><span class="p">(</span><span class="mh">0x000F</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">);</span> <span class="c1">// Pins 0-3</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
-<h3 id="pull-resistors">
+<h3 id="pull-resistors-pcal9555a-only">
   
   
-    <a href="#pull-resistors" class="anchor-heading" aria-labelledby="pull-resistors"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Pull Resistors
+    <a href="#pull-resistors-pcal9555a-only" class="anchor-heading" aria-labelledby="pull-resistors-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Pull Resistors (PCAL9555A only)
   
   
 </h3>
     
 
-<p>Configure pull-up/pull-down resistors:</p>
+<blockquote>
+  <p><strong>Note</strong>: These features require the PCAL9555A. On a standard PCA9555, these methods
+return <code class="language-plaintext highlighter-rouge">false</code> and set <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code>. Check with <code class="language-plaintext highlighter-rouge">HasAgileIO()</code> first.</p>
+</blockquote>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
@@ -543,24 +546,30 @@
 5
 6
 7
-</pre></td><td class="rouge-code"><pre><span class="c1">// Enable pull-up on pin 0</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">// true = pull-up, false = pull-down</span>
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">HasAgileIO</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// Enable pull-up on pin 0</span>
+    <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+    <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span> <span class="c1">// true = pull-up, false = pull-down</span>
 
-<span class="c1">// Enable pull-down on pin 1</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
-<span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+    <span class="c1">// Enable pull-down on pin 1</span>
+    <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullEnable</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">true</span><span class="p">);</span>
+    <span class="n">gpio</span><span class="p">.</span><span class="n">SetPullDirection</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+<span class="p">}</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
-<h3 id="drive-strength">
+<h3 id="drive-strength-pcal9555a-only">
   
   
-    <a href="#drive-strength" class="anchor-heading" aria-labelledby="drive-strength"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Drive Strength
+    <a href="#drive-strength-pcal9555a-only" class="anchor-heading" aria-labelledby="drive-strength-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Drive Strength (PCAL9555A only)
   
   
 </h3>
     
 
-<p>Set output drive strength:</p>
+<blockquote>
+  <p><strong>Note</strong>: Requires PCAL9555A. Returns <code class="language-plaintext highlighter-rouge">false</code> with <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555.</p>
+</blockquote>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 </pre></td><td class="rouge-code"><pre><span class="n">gpio</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;::</span><span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level3</span><span class="p">);</span> <span class="c1">// Full strength</span>
@@ -573,16 +582,18 @@
   <li><code class="language-plaintext highlighter-rouge">Level2</code>: 75% drive strength (¾)</li>
   <li><code class="language-plaintext highlighter-rouge">Level3</code>: 100% drive strength (full)</li>
 </ul>
-<h3 id="output-mode">
+<h3 id="output-mode-pcal9555a-only">
   
   
-    <a href="#output-mode" class="anchor-heading" aria-labelledby="output-mode"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Mode
+    <a href="#output-mode-pcal9555a-only" class="anchor-heading" aria-labelledby="output-mode-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Mode (PCAL9555A only)
   
   
 </h3>
     
 
-<p>Configure port output mode (push-pull or open-drain):</p>
+<blockquote>
+  <p><strong>Note</strong>: Requires PCAL9555A. Returns <code class="language-plaintext highlighter-rouge">false</code> with <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555.</p>
+</blockquote>
 
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
 2
@@ -644,6 +655,48 @@
 </ul>
 
 <p><strong>Location</strong>: <a href="../src/pcal95555.cpp#L49"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L49</code></a></p>
+<h2 id="chip-variant-configuration">
+  
+  
+    <a href="#chip-variant-configuration" class="anchor-heading" aria-labelledby="chip-variant-configuration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Chip Variant Configuration
+  
+  
+</h2>
+    
+
+<p>The driver auto-detects the chip variant (PCA9555 vs PCAL9555A) during initialization.
+You can also force a specific variant via the constructor to skip the detection probe:</p>
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+</pre></td><td class="rouge-code"><pre><span class="c1">// Auto-detect (default)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+
+<span class="c1">// Force PCA9555 mode (skips Agile I/O probe -- avoids NACK on known PCA9555)</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">ChipVariant</span><span class="o">::</span><span class="n">PCA9555</span><span class="p">);</span>
+
+<span class="c1">// Force PCAL9555A mode</span>
+<span class="n">pcal95555</span><span class="o">::</span><span class="n">PCAL95555</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="n">gpio</span><span class="p">(</span><span class="o">&amp;</span><span class="n">i2c</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">ChipVariant</span><span class="o">::</span><span class="n">PCAL9555A</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p>Query the detected variant at runtime:</p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="p">(</span><span class="n">gpio</span><span class="p">.</span><span class="n">HasAgileIO</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// PCAL9555A features available</span>
+<span class="p">}</span>
+<span class="k">auto</span> <span class="n">variant</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetChipVariant</span><span class="p">();</span>
+<span class="c1">// ChipVariant::Unknown, ChipVariant::PCA9555, or ChipVariant::PCAL9555A</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
 <h2 id="interrupt-configuration">
   
   

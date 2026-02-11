@@ -1,10 +1,25 @@
 var searchData=
 [
-  ['get_20interrupt_20status_0',['Get Interrupt Status',['../md_docs_2configuration.html#autotoc_md47',1,'']]],
-  ['getting_20started_20strong_1',['&lt;strong&gt;Getting Started&lt;/strong&gt;',['../md_docs_2index.html#autotoc_md78',1,'']]],
-  ['git_20submodule_2',['Option 2: Git Submodule',['../md_docs_2installation.html#autotoc_md87',1,'']]],
-  ['global_20interrupt_20callback_3',['Global Interrupt Callback',['../md_docs_2examples.html#autotoc_md58',1,'']]],
-  ['gpio_20control_4',['Example 1: Basic GPIO Control',['../md_docs_2examples.html#autotoc_md54',1,'']]],
-  ['gpio_20pins_5',['GPIO Pins',['../md_docs_2hardware__setup.html#autotoc_md64',1,'']]],
-  ['guide_6',['Platform Integration Guide',['../md_docs_2platform__integration.html',1,'']]]
+  ['efficiency_20strong_0',['3. &lt;strong&gt;Memory Efficiency&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md109',1,'']]],
+  ['enumerations_1',['Enumerations',['../md_docs_2api__reference.html#autotoc_md36',1,'']]],
+  ['error_20handling_2',['Error Handling',['../md_docs_2api__reference.html#autotoc_md33',1,'']]],
+  ['error_20messages_3',['Common Error Messages',['../md_docs_2troubleshooting.html#autotoc_md140',1,'']]],
+  ['error_3a_20device_20not_20detected_4',['Error: Device Not Detected',['../md_docs_2troubleshooting.html#autotoc_md141',1,'']]],
+  ['error_3a_20i2c_20communication_20failures_5',['Error: I2C Communication Failures',['../md_docs_2troubleshooting.html#autotoc_md142',1,'']]],
+  ['error_3a_20i2c_20nacks_20on_20registers_200x40_200x4f_20during_20init_6',['Error: I2C NACKs on Registers 0x40-0x4F During Init',['../md_docs_2troubleshooting.html#autotoc_md146',1,'']]],
+  ['error_3a_20pcal9555a_20features_20fail_20unsupportedfeature_7',['Error: PCAL9555A Features Fail (UnsupportedFeature)',['../md_docs_2troubleshooting.html#autotoc_md145',1,'']]],
+  ['errors_8',['Runtime Errors',['../md_docs_2troubleshooting.html#autotoc_md144',1,'']]],
+  ['esp_20idf_9',['ESP32 (ESP-IDF)',['../md_docs_2platform__integration.html#autotoc_md117',1,'']]],
+  ['esp32_10',['ESP32',['../index.html#autotoc_md6',1,'Building and Flashing (ESP32)'],['../md_docs_2examples.html#autotoc_md71',1,'ESP32']]],
+  ['esp32_20esp_20idf_11',['ESP32 (ESP-IDF)',['../md_docs_2platform__integration.html#autotoc_md117',1,'']]],
+  ['esp32_20s3_20pca9555_20pcal9555a_12',['Minimal wiring (ESP32-S3 + PCA9555/PCAL9555A)',['../index.html#autotoc_md14',1,'']]],
+  ['example_13',['Minimal Example',['../md_docs_2quickstart.html#autotoc_md129',1,'']]],
+  ['example_201_3a_20basic_20gpio_20control_14',['Example 1: Basic GPIO Control',['../md_docs_2examples.html#autotoc_md63',1,'']]],
+  ['example_203_3a_20interrupt_20handling_15',['Example 3: Interrupt Handling',['../md_docs_2examples.html#autotoc_md65',1,'']]],
+  ['example_205_3a_20drive_20strength_20pcal9555a_20only_16',['Example 5: Drive Strength (PCAL9555A only)',['../md_docs_2examples.html#autotoc_md68',1,'']]],
+  ['example_208_3a_20chip_20variant_20detection_17',['Example 8: Chip Variant Detection',['../md_docs_2examples.html#autotoc_md69',1,'']]],
+  ['example_20wiring_20diagram_18',['Example Wiring Diagram',['../md_docs_2hardware__setup.html#autotoc_md84',1,'']]],
+  ['examples_19',['Examples',['../md_docs_2examples.html',1,'Examples'],['../index.html#autotoc_md10',1,'Examples'],['../md_docs_2examples.html#autotoc_md70',1,'Running the Examples'],['../md_docs_2platform__integration.html#autotoc_md116',1,'Step 2: Platform-Specific Examples']]],
+  ['expected_20output_20',['Expected Output',['../md_docs_2quickstart.html#autotoc_md136',1,'']]],
+  ['explanation_21',['Explanation',['../md_docs_2examples.html#autotoc_md64',1,'Explanation'],['../md_docs_2quickstart.html#autotoc_md130',1,'Step-by-Step Explanation']]]
 ];

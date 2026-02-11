@@ -170,7 +170,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="📚 Documentation submenu" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCA9555 / PCAL9555A ESP32-S3 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -266,7 +266,11 @@
 </h2>
     
 
-<p>The comprehensive test suite (<code class="language-plaintext highlighter-rouge">pcal95555_comprehensive_test</code>) provides thorough validation of all PCAL9555 GPIO expander functionality. This document describes each test, what it validates, and how to interpret the results.</p>
+<p>The comprehensive test suite (<code class="language-plaintext highlighter-rouge">pcal95555_comprehensive_test</code>) validates <strong>all 43 public
+API methods</strong> of the PCAL95555 driver across <strong>20 test sections</strong>. It supports both the
+standard <strong>PCA9555</strong> and the enhanced <strong>PCAL9555A</strong> – the chip variant is auto-detected
+during initialization, and PCAL9555A-only tests are automatically <strong>skipped</strong> (not failed)
+when a standard PCA9555 is detected.</p>
 <h2 id="test-configuration">
   
   
@@ -302,7 +306,7 @@
     <tr>
       <th>Signal</th>
       <th>ESP32-S3 GPIO</th>
-      <th>PCAL9555 Pin</th>
+      <th>Chip Pin</th>
       <th>Function</th>
     </tr>
   </thead>
@@ -367,7 +371,41 @@
   <li><strong>A2</strong>: Controlled via GPIO47</li>
 </ul>
 
-<p>The driver automatically sets these pins during initialization based on the constructor parameters.</p><hr />
+<p>The driver automatically sets these pins during initialization.</p><hr />
+<h2 id="chip-variant-handling">
+  
+  
+    <a href="#chip-variant-handling" class="anchor-heading" aria-labelledby="chip-variant-handling"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Chip Variant Handling
+  
+  
+</h2>
+    
+
+<p>During the “Driver Init” test, the driver performs a 3-step sandwich detection:</p>
+
+<ol>
+  <li>Read <code class="language-plaintext highlighter-rouge">INPUT_PORT_0</code> (0x00) to verify bus health</li>
+  <li>Probe <code class="language-plaintext highlighter-rouge">OUTPUT_CONF</code> (0x4F) for Agile I/O support</li>
+  <li>Read <code class="language-plaintext highlighter-rouge">INPUT_PORT_0</code> (0x00) again to confirm bus recovery</li>
+</ol>
+
+<p>The detected variant is logged:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>Detected chip variant: PCA9555 (standard)
+Agile I/O support: NO
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+<p>or</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+</pre></td><td class="rouge-code"><pre>Detected chip variant: PCAL9555A (Agile I/O)
+Agile I/O support: YES
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<p>Tests requiring PCAL9555A log a skip message:</p>
+<div class="language-plaintext highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre>Skipping: Pull resistor config requires PCAL9555A (detected PCA9555)
+</pre></td></tr></tbody></table></div></code></pre></div></div><hr />
 <h2 id="test-sections">
   
   
@@ -399,17 +437,9 @@
   <li>I2C master bus creation</li>
   <li>GPIO pin configuration for SDA/SCL</li>
   <li>Address pin GPIO configuration (A0, A1, A2)</li>
-  <li>Bus initialization verification</li>
 </ul>
 
 <p><strong>Expected Result</strong>: I2C bus successfully initialized with all pins configured.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>I2C bus creation failure</li>
-  <li>GPIO configuration errors</li>
-  <li>Missing address pin configuration</li>
-</ul>
 <h4 id="test_driver_initialization">
   
   
@@ -418,24 +448,19 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates PCAL9555 driver initialization and default state.</p>
+<p><strong>Purpose</strong>: Validates driver initialization, chip variant detection, and default state.</p>
 
 <p><strong>What it tests</strong>:</p>
 <ul>
-  <li>Driver instance creation</li>
+  <li>Driver instance creation (address pin constructor)</li>
   <li>I2C communication verification</li>
+  <li>Chip variant auto-detection (PCA9555 vs PCAL9555A)</li>
+  <li><code class="language-plaintext highlighter-rouge">HasAgileIO()</code> and <code class="language-plaintext highlighter-rouge">GetChipVariant()</code> queries</li>
   <li>Reset to default state</li>
   <li>Error flag checking and clearing</li>
 </ul>
 
-<p><strong>Expected Result</strong>: Driver successfully initialized, device responds to I2C commands.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>I2C communication failure</li>
-  <li>Device not responding</li>
-  <li>Persistent error flags</li>
-</ul><hr />
+<p><strong>Expected Result</strong>: Driver initialized, chip variant detected and logged.</p><hr />
 <h3 id="2-gpio-direction-tests">
   
   
@@ -452,23 +477,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates individual pin direction configuration.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Setting each pin (0-15) to output mode</li>
-  <li>Setting each pin (0-15) to input mode</li>
-  <li>Direction register read/write operations</li>
-</ul>
-
-<p><strong>Expected Result</strong>: All pins can be configured as input or output individually.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Pin direction not changing</li>
-  <li>Register write failures</li>
-  <li>Invalid pin handling</li>
-</ul>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetPinDirection()</code> for each pin (0-15), input and output modes.</p>
 <h4 id="test_multiple_pin_direction">
   
   
@@ -477,23 +486,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates bulk pin direction configuration.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Setting multiple pins simultaneously (port 0: pins 0-7)</li>
-  <li>Setting multiple pins simultaneously (port 1: pins 8-15)</li>
-  <li>Mask-based direction control</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Multiple pins can be configured simultaneously using bit masks.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Mask operations failing</li>
-  <li>Incorrect pin states</li>
-  <li>Port-level operations not working</li>
-</ul><hr />
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetMultipleDirections()</code> using 16-bit mask for port-level direction control.</p><hr />
 <h3 id="3-gpio-readwrite-tests">
   
   
@@ -510,24 +503,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates pin output functionality.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Writing HIGH to a pin</li>
-  <li>Writing LOW to a pin</li>
-  <li>Output state persistence</li>
-  <li>Pin 0 output operations</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Pin outputs can be set HIGH and LOW reliably.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Output not changing state</li>
-  <li>Write operations failing</li>
-  <li>State not persisting</li>
-</ul>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">WritePin()</code> – writing HIGH and LOW to individual pins.</p>
 <h4 id="test_pin_read">
   
   
@@ -536,23 +512,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates pin input functionality.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Reading pin state (HIGH/LOW)</li>
-  <li>Reading all 16 pins sequentially</li>
-  <li>Input register reading</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Pin states can be read correctly.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Read operations failing</li>
-  <li>Incorrect pin states reported</li>
-  <li>Input register access issues</li>
-</ul>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">ReadPin()</code> – reading all 16 pins sequentially.</p>
 <h4 id="test_pin_toggle">
   
   
@@ -561,27 +521,11 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates pin toggle functionality.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Toggling pin state multiple times</li>
-  <li>State transitions (HIGH→LOW→HIGH)</li>
-  <li>Toggle operation reliability</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Pin can be toggled reliably between states.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Toggle operations failing</li>
-  <li>State not changing</li>
-  <li>Multiple toggle issues</li>
-</ul><hr />
-<h3 id="4-pull-resistor-tests">
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">TogglePin()</code> – toggling pin state multiple times with verification.</p><hr />
+<h3 id="4-pull-resistor-tests-pcal9555a-only">
   
   
-    <a href="#4-pull-resistor-tests" class="anchor-heading" aria-labelledby="4-pull-resistor-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 4. Pull Resistor Tests
+    <a href="#4-pull-resistor-tests-pcal9555a-only" class="anchor-heading" aria-labelledby="4-pull-resistor-tests-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 4. Pull Resistor Tests (PCAL9555A only)
   
   
 </h3>
@@ -594,28 +538,13 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates internal pull-up/pull-down resistor configuration.</p>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetPullEnable()</code>, <code class="language-plaintext highlighter-rouge">SetPullDirection()</code> – per-pin pull-up/pull-down configuration.</p>
 
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Enabling pull-up resistor on a pin</li>
-  <li>Enabling pull-down resistor on a pin</li>
-  <li>Disabling pull resistors</li>
-  <li>Pull enable/disable register operations</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Pull resistors can be configured per pin.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Pull configuration not working</li>
-  <li>Register write failures</li>
-  <li>Pull state not persisting</li>
-</ul><hr />
-<h3 id="5-drive-strength-tests">
+<p><strong>Auto-skip</strong>: Returns <code class="language-plaintext highlighter-rouge">true</code> with skip message on PCA9555.</p><hr />
+<h3 id="5-drive-strength-tests-pcal9555a-only">
   
   
-    <a href="#5-drive-strength-tests" class="anchor-heading" aria-labelledby="5-drive-strength-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 5. Drive Strength Tests
+    <a href="#5-drive-strength-tests-pcal9555a-only" class="anchor-heading" aria-labelledby="5-drive-strength-tests-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 5. Drive Strength Tests (PCAL9555A only)
   
   
 </h3>
@@ -628,29 +557,13 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates programmable output drive strength.</p>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetDriveStrength()</code> – all 4 levels (Level0-Level3) on individual pins.</p>
 
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Setting drive strength Level 0 (lowest)</li>
-  <li>Setting drive strength Level 1</li>
-  <li>Setting drive strength Level 2</li>
-  <li>Setting drive strength Level 3 (highest)</li>
-  <li>Drive strength register configuration</li>
-</ul>
-
-<p><strong>Expected Result</strong>: All drive strength levels can be configured.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Drive strength not changing</li>
-  <li>Invalid level handling</li>
-  <li>Register access failures</li>
-</ul><hr />
-<h3 id="6-output-mode-tests">
+<p><strong>Auto-skip</strong>: Returns <code class="language-plaintext highlighter-rouge">true</code> with skip message on PCA9555.</p><hr />
+<h3 id="6-output-mode-tests-pcal9555a-only">
   
   
-    <a href="#6-output-mode-tests" class="anchor-heading" aria-labelledby="6-output-mode-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 6. Output Mode Tests
+    <a href="#6-output-mode-tests-pcal9555a-only" class="anchor-heading" aria-labelledby="6-output-mode-tests-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 6. Output Mode Tests (PCAL9555A only)
   
   
 </h3>
@@ -663,25 +576,9 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates output mode configuration (push-pull vs open-drain).</p>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetOutputMode()</code> – push-pull and open-drain per port and both ports.</p>
 
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Push-pull mode (default)</li>
-  <li>Open-drain mode for port 0</li>
-  <li>Open-drain mode for port 1</li>
-  <li>Open-drain mode for both ports</li>
-  <li>Output mode register configuration</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Output modes can be configured per port.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Mode configuration not working</li>
-  <li>Port-level control issues</li>
-  <li>Register write failures</li>
-</ul><hr />
+<p><strong>Auto-skip</strong>: Returns <code class="language-plaintext highlighter-rouge">true</code> with skip message on PCA9555.</p><hr />
 <h3 id="7-polarity-tests">
   
   
@@ -698,28 +595,11 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates input polarity inversion functionality.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Normal polarity (non-inverted)</li>
-  <li>Inverted polarity</li>
-  <li>Single pin polarity configuration</li>
-  <li>Multiple pin polarity configuration (mask-based)</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Input polarity can be inverted per pin.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Polarity not changing</li>
-  <li>Inversion not working correctly</li>
-  <li>Mask operations failing</li>
-</ul><hr />
-<h3 id="8-input-latch-tests">
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetPinPolarity()</code>, <code class="language-plaintext highlighter-rouge">SetMultiplePolarities()</code> – normal and inverted polarity, single pin and mask-based.</p><hr />
+<h3 id="8-input-latch-tests-pcal9555a-only">
   
   
-    <a href="#8-input-latch-tests" class="anchor-heading" aria-labelledby="8-input-latch-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 8. Input Latch Tests
+    <a href="#8-input-latch-tests-pcal9555a-only" class="anchor-heading" aria-labelledby="8-input-latch-tests-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 8. Input Latch Tests (PCAL9555A only)
   
   
 </h3>
@@ -732,83 +612,35 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates input latch functionality.</p>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">EnableInputLatch()</code>, <code class="language-plaintext highlighter-rouge">EnableMultipleInputLatches()</code> – per-pin and mask-based latch enable/disable.</p>
 
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Enabling input latch on a pin</li>
-  <li>Disabling input latch on a pin</li>
-  <li>Multiple pin latch configuration</li>
-  <li>Latch register operations</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Input latch can be enabled/disabled per pin.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Latch configuration not working</li>
-  <li>Latch state not persisting</li>
-  <li>Register access issues</li>
-</ul><hr />
-<h3 id="9-interrupt-tests">
+<p><strong>Auto-skip</strong>: Returns <code class="language-plaintext highlighter-rouge">true</code> with skip message on PCA9555.</p><hr />
+<h3 id="9-interrupt-tests-partially-pcal9555a-only">
   
   
-    <a href="#9-interrupt-tests" class="anchor-heading" aria-labelledby="9-interrupt-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 9. Interrupt Tests
+    <a href="#9-interrupt-tests-partially-pcal9555a-only" class="anchor-heading" aria-labelledby="9-interrupt-tests-partially-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 9. Interrupt Tests (partially PCAL9555A only)
   
   
 </h3>
     
-<h4 id="test_interrupt_mask_config">
+<h4 id="test_interrupt_mask_config-pcal9555a">
   
   
-    <a href="#test_interrupt_mask_config" class="anchor-heading" aria-labelledby="test_interrupt_mask_config"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interrupt_mask_config()</code>
-  
-  
-</h4>
-    
-<p><strong>Purpose</strong>: Validates interrupt mask configuration.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Enabling interrupts on specific pins (0, 2, 4, 6)</li>
-  <li>Enabling interrupts on all pins</li>
-  <li>Disabling interrupts on all pins (default state)</li>
-  <li>Interrupt mask register operations</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Interrupt mask can be configured to enable/disable interrupts per pin.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Mask configuration not working</li>
-  <li>Interrupts not enabling/disabling correctly</li>
-  <li>Register write failures</li>
-</ul>
-<h4 id="test_interrupt_status">
-  
-  
-    <a href="#test_interrupt_status" class="anchor-heading" aria-labelledby="test_interrupt_status"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interrupt_status()</code>
+    <a href="#test_interrupt_mask_config-pcal9555a" class="anchor-heading" aria-labelledby="test_interrupt_mask_config-pcal9555a"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interrupt_mask_config()</code> (PCAL9555A)
   
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates interrupt status reading.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Reading interrupt status register</li>
-  <li>Status register clearing behavior</li>
-  <li>Initial interrupt status (should be 0)</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Interrupt status can be read and clears after reading.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Status register not readable</li>
-  <li>Status not clearing</li>
-  <li>Incorrect status values</li>
-</ul>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">ConfigureInterruptMask()</code> – 16-bit interrupt mask register.</p>
+<h4 id="test_interrupt_status-pcal9555a">
+  
+  
+    <a href="#test_interrupt_status-pcal9555a" class="anchor-heading" aria-labelledby="test_interrupt_status-pcal9555a"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interrupt_status()</code> (PCAL9555A)
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code> – reading and clearing interrupt status.</p>
 <h4 id="test_pin_interrupt_callbacks">
   
   
@@ -817,26 +649,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates per-pin interrupt callback registration.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Registering rising edge callback on pin 0</li>
-  <li>Registering falling edge callback on pin 1</li>
-  <li>Registering both edges callback on pin 2</li>
-  <li>Registering rising edge callback on pin 3</li>
-  <li>Global interrupt callback registration</li>
-  <li>Callback invocation mechanism</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Per-pin callbacks can be registered with different edge conditions.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Callback registration failing</li>
-  <li>Callbacks not being invoked</li>
-  <li>Edge detection not working</li>
-</ul>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">RegisterPinInterrupt()</code>, <code class="language-plaintext highlighter-rouge">SetInterruptCallback()</code> – per-pin callbacks with edge detection (Rising, Falling, Both).</p>
 <h4 id="test_interrupt_handler_registration">
   
   
@@ -845,26 +658,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates hardware interrupt handler setup.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>GPIO interrupt pin configuration (GPIO7)</li>
-  <li>Interrupt handler registration with I2C bus</li>
-  <li>FreeRTOS interrupt task setup</li>
-  <li>Interrupt queue creation</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Hardware interrupt handler successfully registered and ready to process interrupts.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>GPIO configuration failing</li>
-  <li>Handler registration failing</li>
-  <li>Interrupt infrastructure not set up</li>
-</ul>
-
-<p><strong>Note</strong>: This test will pass even if the INT pin is not physically connected (graceful degradation).</p>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">RegisterInterruptHandler()</code> – hardware INT pin setup. Passes even without INT pin connected.</p>
 <h4 id="test_interrupt_callback_unregistration">
   
   
@@ -873,42 +667,16 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates interrupt callback removal.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Registering a callback for pin 5</li>
-  <li>Unregistering the callback</li>
-  <li>Attempting to unregister already-unregistered callback</li>
-  <li>Invalid pin handling</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Callbacks can be registered and unregistered correctly.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Unregistration failing</li>
-  <li>Callbacks still being invoked after unregistration</li>
-  <li>Invalid pin handling issues</li>
-</ul>
-<h4 id="test_interrupt_config">
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">UnregisterPinInterrupt()</code> – callback removal and double-unregister safety.</p>
+<h4 id="test_interrupt_config-pcal9555a">
   
   
-    <a href="#test_interrupt_config" class="anchor-heading" aria-labelledby="test_interrupt_config"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interrupt_config()</code>
+    <a href="#test_interrupt_config-pcal9555a" class="anchor-heading" aria-labelledby="test_interrupt_config-pcal9555a"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interrupt_config()</code> (PCAL9555A)
   
   
 </h4>
     
-<p><strong>Purpose</strong>: Legacy interrupt configuration test.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Basic interrupt mask configuration</li>
-  <li>Interrupt status reading</li>
-  <li>Simple interrupt setup</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Basic interrupt functionality works.</p><hr />
+<p><strong>Tests</strong>: Combined interrupt mask + status reading.</p><hr />
 <h3 id="10-port-operation-tests">
   
   
@@ -925,29 +693,165 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates port-level operations.</p>
-
-<p><strong>What it tests</strong>:</p>
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetMultipleDirections()</code>, <code class="language-plaintext highlighter-rouge">WritePin()</code>, <code class="language-plaintext highlighter-rouge">ReadPin()</code> – port 0 as output, port 1 as input, mixed operations.</p><hr />
+<h3 id="11-multi-pin-api-tests">
+  
+  
+    <a href="#11-multi-pin-api-tests" class="anchor-heading" aria-labelledby="11-multi-pin-api-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 11. Multi-Pin API Tests
+  
+  
+</h3>
+    
+<h4 id="test_write_pins_multi">
+  
+  
+    <a href="#test_write_pins_multi" class="anchor-heading" aria-labelledby="test_write_pins_multi"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_write_pins_multi()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">WritePins()</code> – writing multiple pins at once via initializer list.</p>
+<h4 id="test_read_pins_multi">
+  
+  
+    <a href="#test_read_pins_multi" class="anchor-heading" aria-labelledby="test_read_pins_multi"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_read_pins_multi()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">ReadPins()</code> – reading multiple pins at once, verifying result vector.</p>
+<h4 id="test_set_directions_multi">
+  
+  
+    <a href="#test_set_directions_multi" class="anchor-heading" aria-labelledby="test_set_directions_multi"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_set_directions_multi()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetDirections()</code> – mixed input/output per pin via initializer list.</p>
+<h4 id="test_set_polarities_multi">
+  
+  
+    <a href="#test_set_polarities_multi" class="anchor-heading" aria-labelledby="test_set_polarities_multi"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_set_polarities_multi()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>: <code class="language-plaintext highlighter-rouge">SetPolarities()</code> – mixed polarity per pin via initializer list.</p><hr />
+<h3 id="12-address-management-tests">
+  
+  
+    <a href="#12-address-management-tests" class="anchor-heading" aria-labelledby="12-address-management-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 12. Address Management Tests
+  
+  
+</h3>
+    
+<h4 id="test_address_management">
+  
+  
+    <a href="#test_address_management" class="anchor-heading" aria-labelledby="test_address_management"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_address_management()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>:</p>
 <ul>
-  <li>Configuring port 0 (pins 0-7) as output</li>
-  <li>Configuring port 1 (pins 8-15) as input</li>
-  <li>Writing to port 0 pins</li>
-  <li>Reading from port 1 pins</li>
-  <li>Port-level register operations</li>
+  <li><code class="language-plaintext highlighter-rouge">GetAddress()</code>, <code class="language-plaintext highlighter-rouge">GetAddressBits()</code> – reading current address</li>
+  <li><code class="language-plaintext highlighter-rouge">ChangeAddress(bool, bool, bool)</code> – changing address via pin levels</li>
+  <li><code class="language-plaintext highlighter-rouge">ChangeAddress(uint8_t)</code> – changing address via direct value</li>
+  <li>Address-based constructor <code class="language-plaintext highlighter-rouge">PCAL95555(bus, address)</code> – creating a temporary driver</li>
 </ul>
 
-<p><strong>Expected Result</strong>: Port-level operations work correctly.</p>
-
-<p><strong>Failure Indications</strong>:</p>
+<p><strong>Note</strong>: Address change to a non-existent device handles NACK gracefully. Original address is always restored.</p><hr />
+<h3 id="13-configuration-tests">
+  
+  
+    <a href="#13-configuration-tests" class="anchor-heading" aria-labelledby="13-configuration-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 13. Configuration Tests
+  
+  
+</h3>
+    
+<h4 id="test_config_and_init">
+  
+  
+    <a href="#test_config_and_init" class="anchor-heading" aria-labelledby="test_config_and_init"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_config_and_init()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>:</p>
 <ul>
-  <li>Port operations failing</li>
-  <li>Incorrect pin states</li>
-  <li>Port register access issues</li>
+  <li><code class="language-plaintext highlighter-rouge">SetRetries()</code> – setting 0, 3, and restoring to 1</li>
+  <li><code class="language-plaintext highlighter-rouge">EnsureInitialized()</code> – on already-initialized and fresh driver instances</li>
 </ul><hr />
-<h3 id="11-error-handling-tests">
+<h3 id="14-multi-pin-pcal9555a-api-tests-pcal9555a-only">
   
   
-    <a href="#11-error-handling-tests" class="anchor-heading" aria-labelledby="11-error-handling-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 11. Error Handling Tests
+    <a href="#14-multi-pin-pcal9555a-api-tests-pcal9555a-only" class="anchor-heading" aria-labelledby="14-multi-pin-pcal9555a-api-tests-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 14. Multi-Pin PCAL9555A API Tests (PCAL9555A only)
+  
+  
+</h3>
+    
+<h4 id="test_multi_pin_pcal_apis">
+  
+  
+    <a href="#test_multi_pin_pcal_apis" class="anchor-heading" aria-labelledby="test_multi_pin_pcal_apis"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_multi_pin_pcal_apis()</code>
+  
+  
+</h4>
+    
+<p><strong>Tests</strong>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">SetPullEnables()</code> – multi-pin pull enable via initializer list</li>
+  <li><code class="language-plaintext highlighter-rouge">SetPullDirections()</code> – multi-pin pull direction via initializer list</li>
+  <li><code class="language-plaintext highlighter-rouge">SetDriveStrengths()</code> – multi-pin drive strength via initializer list</li>
+  <li><code class="language-plaintext highlighter-rouge">ConfigureInterrupt()</code> – single-pin interrupt enable/disable</li>
+  <li><code class="language-plaintext highlighter-rouge">ConfigureInterrupts()</code> – multi-pin interrupt config via initializer list</li>
+  <li><code class="language-plaintext highlighter-rouge">EnableInputLatches()</code> – multi-pin input latch via initializer list</li>
+</ul>
+
+<p><strong>Auto-skip</strong>: Returns <code class="language-plaintext highlighter-rouge">true</code> with skip message on PCA9555.</p><hr />
+<h3 id="15-interactive-input-tests-disabled-by-default">
+  
+  
+    <a href="#15-interactive-input-tests-disabled-by-default" class="anchor-heading" aria-labelledby="15-interactive-input-tests-disabled-by-default"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 15. Interactive Input Tests (disabled by default)
+  
+  
+</h3>
+    
+<h4 id="test_interactive_input">
+  
+  
+    <a href="#test_interactive_input" class="anchor-heading" aria-labelledby="test_interactive_input"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> <code class="language-plaintext highlighter-rouge">test_interactive_input()</code>
+  
+  
+</h4>
+    
+
+<p><strong>Requires</strong>: Momentary push-button between PCA9555 pin 0 and GND.</p>
+
+<p><strong>Tests</strong>:</p>
+<ul>
+  <li><code class="language-plaintext highlighter-rouge">ReadPin()</code> – detecting physical button press</li>
+  <li>Pull-up configuration (internal on PCAL9555A, external on PCA9555)</li>
+  <li><code class="language-plaintext highlighter-rouge">HandleInterrupt()</code> – explicit manual call</li>
+</ul>
+
+<p><strong>Behavior</strong>:</p>
+<ol>
+  <li>Displays a banner explaining hardware requirements</li>
+  <li>Configures pin 0 as input with pull-up</li>
+  <li>Waits 10 seconds for button press with countdown</li>
+  <li>If button detected: verifies press and release</li>
+  <li>If no button: logs warning and continues (does not fail)</li>
+  <li>Calls <code class="language-plaintext highlighter-rouge">HandleInterrupt()</code> explicitly to verify no crash</li>
+</ol>
+
+<p><strong>To enable</strong>: Set <code class="language-plaintext highlighter-rouge">ENABLE_INTERACTIVE_INPUT_TESTS = true</code> in the test file.</p><hr />
+<h3 id="16-error-handling-tests">
+  
+  
+    <a href="#16-error-handling-tests" class="anchor-heading" aria-labelledby="16-error-handling-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 16. Error Handling Tests
   
   
 </h3>
@@ -960,28 +864,18 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates error handling and recovery mechanisms.</p>
-
-<p><strong>What it tests</strong>:</p>
+<p><strong>Tests</strong>:</p>
 <ul>
-  <li>Invalid pin number handling (pin 16)</li>
-  <li>Error flag reading</li>
-  <li>Error flag clearing</li>
-  <li>Graceful error recovery</li>
-</ul>
-
-<p><strong>Expected Result</strong>: Invalid operations are handled gracefully without crashing.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Invalid pin operations succeeding (should fail)</li>
-  <li>Error flags not being set</li>
-  <li>Error recovery not working</li>
+  <li>Invalid pin (16, 17, 18) for <code class="language-plaintext highlighter-rouge">SetPinDirection()</code>, <code class="language-plaintext highlighter-rouge">ReadPin()</code>, <code class="language-plaintext highlighter-rouge">WritePin()</code>, <code class="language-plaintext highlighter-rouge">TogglePin()</code></li>
+  <li><code class="language-plaintext highlighter-rouge">GetErrorFlags()</code> – verifying error flags are set</li>
+  <li><code class="language-plaintext highlighter-rouge">ClearErrorFlags(mask)</code> – selective flag clearing (specific mask vs all)</li>
+  <li><code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> – calling <code class="language-plaintext highlighter-rouge">SetDriveStrength()</code> on PCA9555</li>
+  <li><code class="language-plaintext highlighter-rouge">HandleInterrupt()</code> – explicit call on clean state (no crash)</li>
 </ul><hr />
-<h3 id="12-stress-tests">
+<h3 id="17-stress-tests">
   
   
-    <a href="#12-stress-tests" class="anchor-heading" aria-labelledby="12-stress-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 12. Stress Tests
+    <a href="#17-stress-tests" class="anchor-heading" aria-labelledby="17-stress-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 17. Stress Tests
   
   
 </h3>
@@ -994,25 +888,7 @@
   
 </h4>
     
-<p><strong>Purpose</strong>: Validates system stability under rapid operations.</p>
-
-<p><strong>What it tests</strong>:</p>
-<ul>
-  <li>Rapid pin toggle operations (100 cycles)</li>
-  <li>Continuous read/write cycles</li>
-  <li>System stability under load</li>
-  <li>Timing and performance</li>
-</ul>
-
-<p><strong>Expected Result</strong>: System remains stable under rapid operations.</p>
-
-<p><strong>Failure Indications</strong>:</p>
-<ul>
-  <li>Operations failing under load</li>
-  <li>System instability</li>
-  <li>Timing issues</li>
-  <li>I2C communication errors</li>
-</ul><hr />
+<p><strong>Tests</strong>: Rapid <code class="language-plaintext highlighter-rouge">WritePin()</code> toggle (100 cycles at 1ms intervals) to verify I2C stability under load.</p><hr />
 <h2 id="test-execution-flow">
   
   
@@ -1023,40 +899,59 @@
     
 
 <ol>
-  <li><strong>Initialization Phase</strong>
-    <ul>
-      <li>I2C bus setup</li>
-      <li>Driver creation</li>
-      <li>Device reset</li>
-    </ul>
-  </li>
-  <li><strong>Configuration Phase</strong>
-    <ul>
-      <li>GPIO direction setup</li>
-      <li>Feature configuration (pull, drive strength, etc.)</li>
-    </ul>
-  </li>
-  <li><strong>Functional Testing Phase</strong>
-    <ul>
-      <li>Read/write operations</li>
-      <li>Feature-specific tests</li>
-      <li>Interrupt setup</li>
-    </ul>
-  </li>
-  <li><strong>Validation Phase</strong>
-    <ul>
-      <li>Error handling</li>
-      <li>Stress testing</li>
-      <li>Port operations</li>
-    </ul>
-  </li>
-  <li><strong>Cleanup Phase</strong>
-    <ul>
-      <li>Resource cleanup</li>
-      <li>Test summary reporting</li>
-    </ul>
-  </li>
+  <li><strong>Initialization Phase</strong>: I2C bus setup, driver creation, chip variant detection</li>
+  <li><strong>Core GPIO Tests</strong>: Direction, read/write, toggle</li>
+  <li><strong>PCAL9555A Feature Tests</strong>: Pull resistors, drive strength, output mode, input latch, interrupts (auto-skip on PCA9555)</li>
+  <li><strong>Advanced API Tests</strong>: Multi-pin operations, address management, configuration</li>
+  <li><strong>Robustness Tests</strong>: Error handling, stress testing</li>
+  <li><strong>Cleanup Phase</strong>: Resource cleanup, test summary reporting</li>
 </ol><hr />
+<h2 id="enablingdisabling-test-sections">
+  
+  
+    <a href="#enablingdisabling-test-sections" class="anchor-heading" aria-labelledby="enablingdisabling-test-sections"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Enabling/Disabling Test Sections
+  
+  
+</h2>
+    
+
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+15
+16
+17
+18
+</pre></td><td class="rouge-code"><pre><span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INITIALIZATION_TESTS</span>    <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_GPIO_DIRECTION_TESTS</span>    <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_GPIO_READ_WRITE_TESTS</span>   <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_PULL_RESISTOR_TESTS</span>     <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_DRIVE_STRENGTH_TESTS</span>    <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_OUTPUT_MODE_TESTS</span>       <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_POLARITY_TESTS</span>          <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INPUT_LATCH_TESTS</span>       <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INTERRUPT_TESTS</span>         <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_PORT_OPERATION_TESTS</span>    <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_MULTI_PIN_TESTS</span>         <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_MULTI_PIN_API_TESTS</span>     <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_ADDRESS_TESTS</span>           <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_CONFIG_TESTS</span>            <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_MULTI_PIN_PCAL_TESTS</span>    <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INTERACTIVE_INPUT_TESTS</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Requires button on pin 0</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_ERROR_HANDLING_TESTS</span>    <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_STRESS_TESTS</span>            <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div><hr />
 <h2 id="test-results-interpretation">
   
   
@@ -1074,9 +969,8 @@
 </h3>
     
 <ul>
-  <li>✅ Test name: Test passed successfully</li>
-  <li>All operations completed without errors</li>
-  <li>Expected behavior observed</li>
+  <li><code class="language-plaintext highlighter-rouge">[SUCCESS] PASSED</code> – test passed</li>
+  <li><code class="language-plaintext highlighter-rouge">Skipping: ... requires PCAL9555A (detected PCA9555)</code> – expected skip, counts as pass</li>
 </ul>
 <h3 id="warning-indicators">
   
@@ -1087,8 +981,8 @@
 </h3>
     
 <ul>
-  <li>⚠️ Warning messages: Non-critical issues (e.g., INT pin not connected)</li>
-  <li>Tests may still pass with warnings</li>
+  <li><code class="language-plaintext highlighter-rouge">Driver has error flags: 0xNNNN</code> – I2C errors during init (may be expected on PCA9555)</li>
+  <li><code class="language-plaintext highlighter-rouge">No button press detected within 10 seconds</code> – interactive test timeout (OK)</li>
 </ul>
 <h3 id="failure-indicators">
   
@@ -1099,64 +993,54 @@
 </h3>
     
 <ul>
-  <li>❌ Error messages: Critical failures</li>
-  <li>Test execution stopped</li>
-  <li>Error flags set</li>
+  <li><code class="language-plaintext highlighter-rouge">[FAILED] FAILED</code> – test failed, check error messages above it</li>
+  <li><code class="language-plaintext highlighter-rouge">Error flags: 0xNNNN</code> – see Error Flags table below</li>
 </ul>
-<h3 id="test-summary">
+<h3 id="error-flags-reference">
   
   
-    <a href="#test-summary" class="anchor-heading" aria-labelledby="test-summary"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Test Summary
+    <a href="#error-flags-reference" class="anchor-heading" aria-labelledby="error-flags-reference"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Error Flags Reference
   
   
 </h3>
     
-<p>At the end of execution, a summary is printed showing:</p>
-<ul>
-  <li>Total tests run</li>
-  <li>Tests passed</li>
-  <li>Tests failed</li>
-  <li>Success percentage</li>
-  <li>Execution time</li>
-</ul><hr />
-<h2 id="enablingdisabling-tests">
-  
-  
-    <a href="#enablingdisabling-tests" class="anchor-heading" aria-labelledby="enablingdisabling-tests"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Enabling/Disabling Tests
-  
-  
-</h2>
-    
 
-<p>Individual test sections can be enabled or disabled by modifying the test configuration flags:</p>
-
-<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-2
-3
-4
-5
-6
-7
-8
-9
-10
-11
-12
-</pre></td><td class="rouge-code"><pre><span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INITIALIZATION_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_GPIO_DIRECTION_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_GPIO_READ_WRITE_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_PULL_RESISTOR_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_DRIVE_STRENGTH_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_OUTPUT_MODE_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_POLARITY_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INPUT_LATCH_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INTERRUPT_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_PORT_OPERATION_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_ERROR_HANDLING_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-<span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_STRESS_TESTS</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
-</pre></td></tr></tbody></table></div></code></pre></div></div>
-
-<p>Set to <code class="language-plaintext highlighter-rouge">false</code> to skip a test section.</p><hr />
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th>Flag</th>
+      <th>Value</th>
+      <th>Meaning</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">InvalidPin</code></td>
+      <td>0x0001</td>
+      <td>Pin index &gt;= 16</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">InvalidMask</code></td>
+      <td>0x0002</td>
+      <td>Mask bits outside valid range</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">I2CReadFail</code></td>
+      <td>0x0004</td>
+      <td>I2C read transaction failed</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">I2CWriteFail</code></td>
+      <td>0x0008</td>
+      <td>I2C write transaction failed</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">UnsupportedFeature</code></td>
+      <td>0x0010</td>
+      <td>PCAL9555A feature called on PCA9555</td>
+    </tr>
+  </tbody>
+</table></div><hr />
 <h2 id="hardware-requirements">
   
   
@@ -1165,115 +1049,87 @@
   
 </h2>
     
-<h3 id="minimum-requirements">
+<h3 id="minimum">
   
   
-    <a href="#minimum-requirements" class="anchor-heading" aria-labelledby="minimum-requirements"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Minimum Requirements
+    <a href="#minimum" class="anchor-heading" aria-labelledby="minimum"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Minimum
   
   
 </h3>
     
 <ul>
-  <li>PCAL9555 GPIO expander board</li>
+  <li>PCA9555 or PCAL9555A I/O expander</li>
   <li>ESP32-S3 development board</li>
-  <li>I2C connections (SDA, SCL)</li>
+  <li>I2C connections (SDA, SCL) with 4.7k pull-ups</li>
   <li>Power connections (3.3V, GND)</li>
 </ul>
-<h3 id="optional-for-full-testing">
+<h3 id="for-full-test-coverage">
   
   
-    <a href="#optional-for-full-testing" class="anchor-heading" aria-labelledby="optional-for-full-testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Optional for Full Testing
-  
-  
-</h3>
-    
-<ul>
-  <li>INT pin connection (for interrupt tests)</li>
-  <li>LEDs on output pins (for visual verification)</li>
-  <li>Switches/buttons on input pins (for input testing)</li>
-  <li>Logic analyzer (for protocol verification)</li>
-</ul><hr />
-<h2 id="troubleshooting">
-  
-  
-    <a href="#troubleshooting" class="anchor-heading" aria-labelledby="troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting
-  
-  
-</h2>
-    
-<h3 id="common-issues">
-  
-  
-    <a href="#common-issues" class="anchor-heading" aria-labelledby="common-issues"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Common Issues
+    <a href="#for-full-test-coverage" class="anchor-heading" aria-labelledby="for-full-test-coverage"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> For Full Test Coverage
   
   
 </h3>
     
-
-<ol>
-  <li><strong>I2C Communication Failures</strong>
-    <ul>
-      <li>Check SDA/SCL connections</li>
-      <li>Verify pull-up resistors (4.7kΩ recommended)</li>
-      <li>Check I2C address configuration</li>
-      <li>Verify power supply stability</li>
-    </ul>
-  </li>
-  <li><strong>Interrupt Tests Failing</strong>
-    <ul>
-      <li>Verify INT pin connection (GPIO7)</li>
-      <li>Check pull-up resistor on INT pin</li>
-      <li>Ensure interrupt mask is configured correctly</li>
-    </ul>
-  </li>
-  <li><strong>Address Pin Issues</strong>
-    <ul>
-      <li>Verify GPIO connections (A0=GPIO45, A1=GPIO48, A2=GPIO47)</li>
-      <li>Check address pin levels match expected address</li>
-      <li>Verify GPIO configuration as outputs</li>
-    </ul>
-  </li>
-  <li><strong>Test Timeouts</strong>
-    <ul>
-      <li>Check I2C bus speed (may need to reduce frequency)</li>
-      <li>Verify device is responding</li>
-      <li>Check for I2C bus conflicts</li>
-    </ul>
-  </li>
-</ol><hr />
-<h2 id="test-duration">
-  
-  
-    <a href="#test-duration" class="anchor-heading" aria-labelledby="test-duration"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Test Duration
-  
-  
-</h2>
-    
-
-<p>Typical test execution time: <strong>2-5 minutes</strong></p>
-
-<p>The duration depends on:</p>
 <ul>
-  <li>Number of enabled test sections</li>
-  <li>I2C communication speed</li>
-  <li>System load</li>
-  <li>Hardware response time</li>
-</ul><hr />
-<h2 id="additional-notes">
-  
-  
-    <a href="#additional-notes" class="anchor-heading" aria-labelledby="additional-notes"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Additional Notes
-  
-  
-</h2>
-    
-
-<ul>
-  <li><strong>GPIO14 Test Indicator</strong>: Toggles on each completed test for visual progress tracking</li>
-  <li><strong>Serial Output</strong>: Detailed test results are printed to serial console</li>
-  <li><strong>Error Recovery</strong>: Tests attempt to recover from errors and continue</li>
-  <li><strong>Graceful Degradation</strong>: Some tests (e.g., interrupt handler) will pass even if optional hardware is not connected</li>
+  <li>Address pins connected to GPIOs (A0=GPIO45, A1=GPIO48, A2=GPIO47)</li>
+  <li>INT pin connected to GPIO7 (for interrupt handler test)</li>
+  <li>LED on GPIO14 (test progress indicator)</li>
 </ul>
+<h3 id="for-interactive-input-test">
+  
+  
+    <a href="#for-interactive-input-test" class="anchor-heading" aria-labelledby="for-interactive-input-test"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> For Interactive Input Test
+  
+  
+</h3>
+    
+<ul>
+  <li>Momentary push-button between pin 0 and GND</li>
+  <li>10k pull-up to VDD (PCA9555) or use internal pull-up (PCAL9555A)</li>
+</ul><hr />
+<h2 id="expected-test-count">
+  
+  
+    <a href="#expected-test-count" class="anchor-heading" aria-labelledby="expected-test-count"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Expected Test Count
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th>Chip Variant</th>
+      <th>Enabled Sections</th>
+      <th>Expected Tests</th>
+      <th>Expected Pass</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>PCA9555</td>
+      <td>All (default)</td>
+      <td>~31</td>
+      <td>31 (PCAL tests skip as pass)</td>
+    </tr>
+    <tr>
+      <td>PCAL9555A</td>
+      <td>All (default)</td>
+      <td>~31</td>
+      <td>31</td>
+    </tr>
+    <tr>
+      <td>Either + Interactive</td>
+      <td>All + Interactive</td>
+      <td>~32</td>
+      <td>32</td>
+    </tr>
+  </tbody>
+</table></div><hr />
+
+<p><strong>Navigation</strong>
+<a href="/hf-pcal95555-driver/development/examples/esp32/">Back to Examples README</a> | <a href="/hf-pcal95555-driver/development/">Main README</a></p>
 
           
 

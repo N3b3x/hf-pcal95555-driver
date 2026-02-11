@@ -1,520 +1,311 @@
-# PCAL9555 ESP32-S3 Comprehensive Test Suite
+# PCA9555 / PCAL9555A ESP32-S3 Examples
 
-This directory contains comprehensive test suites for the PCAL9555 16-bit I/O expander driver using the ESP32-S3.
-
-## 📋 Table of Contents
-
-- [Hardware Overview](#-hardware-overview)
-- [Pin Connections](#-pin-connections)
-- [Hardware Setup](#-hardware-setup)
-- [Building the Tests](#-building-the-tests)
-- [Running the Tests](#-running-the-tests)
-- [Test Suites](#-test-suites)
-- [Troubleshooting](#-troubleshooting)
+This directory contains example applications for the HF-PCAL95555 driver on ESP32-S3,
+covering both the standard **PCA9555** and extended **PCAL9555A** 16-bit I/O expanders.
 
 ---
 
-## 🔌 Hardware Overview
+## Table of Contents
+
+- [Hardware Overview](#hardware-overview)
+- [Pin Connections](#pin-connections)
+- [Available Applications](#available-applications)
+- [Building](#building)
+- [Flashing and Monitoring](#flashing-and-monitoring)
+- [Comprehensive Test Suite](#comprehensive-test-suite)
+- [LED Animation Demo](#led-animation-demo)
+- [Configuration](#configuration)
+- [Troubleshooting](#troubleshooting)
+
+---
+
+## Hardware Overview
 
 ### ESP32-S3
 
-The ESP32-S3 serves as the host controller for communicating with the PCAL9555 GPIO expander via I2C.
+The ESP32-S3 serves as the host controller for communicating with the PCA9555 /
+PCAL9555A GPIO expander via I2C.
 
 ```
-┌─────────────────────────────────────────────────┐
-│        ESP32-S3 Development Board               │
-│                                                 │
-│  ┌──────────────────────────────────────────┐   │
-│  │        ESP32-S3 Microcontroller          │   │
-│  │                                          │   │
-│  │  GPIO Pins:                              │   │
-│  │  • I2C: SDA (GPIO4), SCL (GPIO5)         │   │
-│  │  • Interrupt: INT (GPIO7)                │   │
-│  │  • Address Control:                      │   │
-│  │   - A0 (GPIO45), A1 (GPIO48), A2 (GPIO47)│   │
-│  │  • Test Indicator: GPIO14                │   │
-│  └──────────────────────────────────────────┘   │
-│                                                 │
-│  USB-C Connector                                │
-│  (Power + Serial Communication)                 │
-└─────────────────────────────────────────────────┘
+ESP32-S3 Development Board
+├── I2C:      SDA (GPIO4), SCL (GPIO5)
+├── INT:      GPIO7 (open-drain, needs pull-up)
+├── Address:  A0 (GPIO45), A1 (GPIO48), A2 (GPIO47)
+└── Indicator: GPIO14 (test progress LED)
 ```
 
-### PCAL9555 GPIO Expander
+### PCA9555 / PCAL9555A
 
-The PCAL9555 is a 16-bit I/O expander with I²C interface, providing 16 GPIO pins organized into two 8-bit ports.
+Both chips provide 16 GPIO pins in two 8-bit ports over I2C. The driver auto-detects
+which variant is connected and enables features accordingly:
 
-```
-┌─────────────────────────────────────────────────┐
-│      PCAL9555 GPIO Expander                     │
-│                                                 │
-│  ┌──────────────────────────────────────────┐   │
-│  │        PCAL9555 IC                       │   │
-│  │                                          │   │
-│  │  Features:                               │   │
-│  │  • 16 GPIO pins (PORT_0: P0.0-P0.7)      │   │
-│  │  • 16 GPIO pins (PORT_1: P1.0-P1.7)      │   │
-│  │  • I2C interface (7-bit address)         │   │
-│  │  • Configurable pull-up/pull-down        │   │
-│  │  • Programmable drive strength           │   │
-│  │  • Interrupt support                     │   │
-│  │  • Input latch capability                │   │
-│  │  • Polarity inversion                    │   │
-│  │  • Open-drain output mode                │   │
-│  └──────────────────────────────────────────┘   │
-│                                                 │
-│  I2C Connections:                               │
-│  • SDA (I2C Data)                               │
-│  • SCL (I2C Clock)                              │
-│  • VDD (3.3V Power)                             │
-│  • GND (Ground)                                 │
-│  • INT (Interrupt Output, optional)             │
-└─────────────────────────────────────────────────┘
-```
+| Feature | PCA9555 | PCAL9555A |
+|---------|---------|-----------|
+| 16 GPIO, I2C, polarity inversion | Yes | Yes |
+| Pull-up / pull-down resistors | -- | Yes |
+| Drive strength, input latch | -- | Yes |
+| Interrupt mask / status | -- | Yes |
+| Output mode (push-pull / OD) | -- | Yes |
 
 ---
 
-## 📌 Pin Connections
+## Pin Connections
 
-### I2C Bus Connections
+### I2C Bus
 
-| PCAL9555 Pin | ESP32-S3 GPIO | Function | Notes |
-|--------------|---------------|----------|-------|
-| SDA | GPIO4 | I2C Data | With 4.7kΩ pull-up to 3.3V |
-| SCL | GPIO5 | I2C Clock | With 4.7kΩ pull-up to 3.3V |
-| VDD | 3.3V | Power Supply | |
-| GND | GND | Ground | |
-| INT | GPIO7 | Interrupt Output | Open-drain, requires pull-up |
+| Chip Pin | ESP32-S3 GPIO | Notes |
+|----------|---------------|-------|
+| SDA | GPIO4 | 4.7k pull-up to 3.3V |
+| SCL | GPIO5 | 4.7k pull-up to 3.3V |
+| VDD | 3.3V | |
+| GND | GND | |
+| INT | GPIO7 | Open-drain, 4.7k pull-up (optional) |
 
-### Address Pin Control (GPIO-Controlled)
+### Address Pins (GPIO-controlled)
 
-The comprehensive test uses GPIO pins to dynamically control the PCAL9555 address pins:
+| Chip Pin | ESP32-S3 GPIO | Default |
+|----------|---------------|---------|
+| A0 | GPIO45 | LOW |
+| A1 | GPIO48 | LOW |
+| A2 | GPIO47 | LOW |
 
-| PCAL9555 Pin | ESP32-S3 GPIO | Function | Notes |
-|--------------|---------------|----------|-------|
-| A0 | GPIO45 | Address Bit 0 | Controlled by MCU (output) |
-| A1 | GPIO48 | Address Bit 1 | Controlled by MCU (output) |
-| A2 | GPIO47 | Address Bit 2 | Controlled by MCU (output) |
+Default address: **0x20** (all LOW)
 
-**Note**: The driver automatically configures these GPIOs as outputs and sets them during initialization based on the constructor parameters. This allows dynamic address configuration without hardware changes.
+### I2C Address Table
 
-### Test Indicator
-
-| Signal | ESP32-S3 GPIO | Function |
-|--------|---------------|----------|
-| Test Progress | GPIO14 | Visual test progression indicator |
-
-### I2C Address Configuration
-
-The PCAL9555 I2C address is determined by the A0, A1, and A2 address pins:
-
-| A2 | A1 | A0 | I2C Address (7-bit) | I2C Address (8-bit) |
-|----|----|----|---------------------|---------------------|
-| LOW | LOW | LOW | 0x20 | 0x40 |
-| LOW | LOW | HIGH | 0x21 | 0x42 |
-| LOW | HIGH | LOW | 0x22 | 0x44 |
-| LOW | HIGH | HIGH | 0x23 | 0x46 |
-| HIGH | LOW | LOW | 0x24 | 0x48 |
-| HIGH | LOW | HIGH | 0x25 | 0x4A |
-| HIGH | HIGH | LOW | 0x26 | 0x4C |
-| HIGH | HIGH | HIGH | 0x27 | 0x4E |
-
-**Default**: All address pins LOW = **0x20** (used in comprehensive test)
-
-The comprehensive test configures address pins via GPIO:
-- **A0**: GPIO45 (default: LOW)
-- **A1**: GPIO48 (default: LOW)
-- **A2**: GPIO47 (default: LOW)
-
-This results in I2C address **0x20** by default.
+| A2 | A1 | A0 | Address |
+|----|----|----|---------|
+| L | L | L | 0x20 |
+| L | L | H | 0x21 |
+| L | H | L | 0x22 |
+| L | H | H | 0x23 |
+| H | L | L | 0x24 |
+| H | L | H | 0x25 |
+| H | H | L | 0x26 |
+| H | H | H | 0x27 |
 
 ---
 
-## 🛠️ Hardware Setup
+## Available Applications
 
-### Basic Setup for Comprehensive Test
-
-1. **Connect I2C Bus**:
-   - Connect PCAL9555 SDA to ESP32-S3 GPIO4
-   - Connect PCAL9555 SCL to ESP32-S3 GPIO5
-   - Add 4.7kΩ pull-up resistors on both SDA and SCL to 3.3V
-
-2. **Power Connections**:
-   - Connect PCAL9555 VDD to ESP32-S3 3.3V
-   - Connect PCAL9555 GND to ESP32-S3 GND
-
-3. **Interrupt Connection** (for interrupt tests):
-   - Connect PCAL9555 INT to ESP32-S3 GPIO7
-   - Add 4.7kΩ pull-up resistor to 3.3V (INT is open-drain)
-
-4. **Address Pin Control** (GPIO-controlled):
-   - Connect PCAL9555 A0 to ESP32-S3 GPIO45
-   - Connect PCAL9555 A1 to ESP32-S3 GPIO48
-   - Connect PCAL9555 A2 to ESP32-S3 GPIO47
-   - **Note**: These are controlled by the MCU, not hardwired to GND/VDD
-
-5. **Test Indicator** (optional):
-   - Connect LED to ESP32-S3 GPIO14 (with current-limiting resistor)
-   - Provides visual feedback of test progress
-
-### Test Setup
-
-For comprehensive testing, you can connect:
-- LEDs to output pins (with current-limiting resistors)
-- Switches/buttons to input pins
-- External pull-up/pull-down resistors for testing
-- Logic analyzer on I2C bus for protocol verification
-
----
-
-## 🚀 Building the Tests
-
-### Prerequisites
-
-1. **Install ESP-IDF** (if not already installed):
-
-   ```bash
-   # Clone ESP-IDF
-   git clone --recursive https://github.com/espressif/esp-idf.git
-   cd esp-idf
-   
-   # Checkout release version 5.5
-   git checkout release/v5.5
-   git submodule update --init --recursive
-   
-   # Install ESP-IDF (Linux/macOS)
-   ./install.sh esp32s3
-   
-   # Set up environment (add to ~/.bashrc or ~/.zshrc for persistence)
-   . ./export.sh
-   ```
-
-2. **Navigate to ESP32 Examples**:
-
-   ```bash
-   cd examples/esp32
-   ```
-
-3. **Setup Repository** (First time only):
-
-   ```bash
-   # Make scripts executable and setup the build environment
-   chmod +x scripts/*.sh
-   ./scripts/setup_repo.sh
-   ```
-
-### Available Test Applications
-
-The test suites use a centralized build system with scripts. Available applications:
-
-| **Application Name** | **Description** | **Hardware Required** |
-|----------------------|----------------|----------------------|
-| `pcal9555_comprehensive_test` | Comprehensive PCAL9555 GPIO expander testing with all features | PCAL9555 board |
-
-### List Available Applications
+| Application | Description |
+|-------------|-------------|
+| `pcal95555_comprehensive_test` | Full API test suite (17 sections, 43 methods) |
+| `pcal95555_led_animation` | 16-LED animation demo (10 patterns) |
 
 ```bash
-# List all available applications
+# List all available apps
 ./scripts/build_app.sh list
 ```
 
-### Build an Application
-
-```bash
-# Build comprehensive test (Debug build)
-./scripts/build_app.sh pcal9555_comprehensive_test Debug
-
-# Build comprehensive test (Release build)
-./scripts/build_app.sh pcal9555_comprehensive_test Release
-```
-
 ---
 
-## 📤 Running the Tests
+## Building
 
-### Flash Application
+### Prerequisites
 
-```bash
-# Flash the application to ESP32-S3
-./scripts/flash_app.sh pcal95555_comprehensive_test Debug
-
-# Or manually:
-idf.py -p /dev/ttyUSB0 flash
-```
-
-### Monitor Output
-
-```bash
-# Monitor serial output
-idf.py -p /dev/ttyUSB0 monitor
-
-# Or use the flash script which includes monitoring
-./scripts/flash_app.sh pcal95555_comprehensive_test Debug
-```
-
-### Auto-detect Port
-
-```bash
-# The scripts can auto-detect the port
-./scripts/detect_ports.sh
-```
-
----
-
-## 🧪 Test Suites
-
-### Comprehensive Test Suite
-
-**Application**: `pcal95555_comprehensive_test`
-
-This comprehensive test suite validates all PCAL9555 functionality. For detailed documentation on each test, see [Comprehensive Test Documentation](docs/comprehensive_test.md).
-
-**Key Features**:
-- GPIO-controlled address pins (A0-A2 via GPIO45, GPIO48, GPIO47)
-- Hardware interrupt support (INT pin on GPIO7)
-- Complete feature coverage (all PCAL9555 registers and functions)
-
-This comprehensive test suite validates all PCAL9555 functionality:
-
-#### Test Sections
-
-1. **Initialization Tests**
-   - I2C bus initialization
-   - Driver initialization
-   - Reset to default state
-
-2. **GPIO Direction Tests**
-   - Single pin direction configuration (input/output)
-   - Multiple pin direction configuration
-   - Port-level direction control
-
-3. **GPIO Read/Write Tests**
-   - Pin write operations (HIGH/LOW)
-   - Pin read operations
-   - Pin toggle operations
-   - Port-level read/write
-
-4. **Pull Resistor Tests**
-   - Pull-up resistor configuration
-   - Pull-down resistor configuration
-   - Pull enable/disable
-   - Per-pin pull configuration
-
-5. **Drive Strength Tests**
-   - All drive strength levels (Level0-Level3)
-   - Per-pin drive strength configuration
-
-6. **Output Mode Tests**
-   - Push-pull mode configuration
-   - Open-drain mode configuration
-   - Port-level output mode control
-
-7. **Polarity Tests**
-   - Input polarity inversion (normal/inverted)
-   - Single pin polarity configuration
-   - Multiple pin polarity configuration
-
-8. **Input Latch Tests**
-   - Input latch enable/disable
-   - Single pin latch configuration
-   - Multiple pin latch configuration
-
-9. **Interrupt Tests**
-   - Interrupt mask configuration
-   - Interrupt status reading
-   - Interrupt callback registration
-
-10. **Port Operation Tests**
-    - Port 0 operations (pins 0-7)
-    - Port 1 operations (pins 8-15)
-    - Mixed port operations
-
-11. **Error Handling Tests**
-    - Invalid pin handling
-    - Error flag management
-    - Error recovery
-
-12. **Stress Tests**
-    - Rapid pin operations
-    - Continuous read/write cycles
-    - Multi-pin simultaneous operations
-
-#### Test Configuration
-
-You can enable/disable specific test sections by editing the test file:
-
-```cpp
-// In PCAL9555ComprehensiveTest.cpp
-static constexpr bool ENABLE_INITIALIZATION_TESTS = true;
-static constexpr bool ENABLE_GPIO_DIRECTION_TESTS = true;
-// ... etc
-```
-
-#### Test Results
-
-The test framework provides:
-- Automatic pass/fail tracking
-- Execution time measurement
-- GPIO14 progress indicator (toggles on each test)
-- Comprehensive test summary
-- Success percentage calculation
-
----
-
-## 🔧 Configuration
-
-### I2C Bus Configuration
-
-Default I2C configuration (can be modified in test file):
-
-```cpp
-Esp32Pcal9555Bus::I2CConfig config;
-config.port = I2C_NUM_0;
-config.sda_pin = GPIO_NUM_4;      // SDA pin (ESP32-S3)
-config.scl_pin = GPIO_NUM_5;       // SCL pin (ESP32-S3)
-config.frequency = 400000;         // 400 kHz
-config.pullup_enable = true;        // Enable internal pullups
-
-// Address pin GPIO control (ESP32-S3)
-config.a0_pin = GPIO_NUM_45;       // A0 address pin control
-config.a1_pin = GPIO_NUM_48;       // A1 address pin control
-config.a2_pin = GPIO_NUM_47;       // A2 address pin control
-```
-
-### PCAL9555 Address Configuration
-
-The driver uses GPIO-controlled address pins. Default address configuration:
-
-```cpp
-// Address pin levels (A2, A1, A0)
-static constexpr bool PCAL9555_A0_LEVEL = false;  // LOW = 0x20
-static constexpr bool PCAL9555_A1_LEVEL = false;  // LOW = 0x20
-static constexpr bool PCAL9555_A2_LEVEL = false;  // LOW = 0x20
-// Results in I2C address 0x20
-```
-
-The driver automatically sets the GPIO pins during initialization to configure the I2C address.
-
----
-
-## 🐛 Troubleshooting
-
-### I2C Communication Failures
-
-**Symptoms**: Tests fail with I2C errors
-
-**Solutions**:
-1. **Check I2C connections**:
-   - Verify SDA/SCL connections
-   - Check pull-up resistors (4.7kΩ recommended)
-   - Ensure proper power connections
-
-2. **Verify I2C address**:
-   - Check A0, A1, A2 pin configuration
-   - Use I2C scanner to detect device address
-   - Update `PCAL9555_I2C_ADDRESS` if different
-
-3. **Check I2C bus speed**:
-   - Reduce frequency if using long wires
-   - Try 100 kHz instead of 400 kHz
-
-4. **Verify power supply**:
-   - Ensure 3.3V is stable
-   - Check for voltage drops
-
-### Build Errors
-
-**Symptoms**: CMake or compilation errors
-
-**Solutions**:
-1. **Verify ESP-IDF version**:
-   ```bash
-   idf.py --version
-   # Should show ESP-IDF v5.5 or compatible
-   ```
-
-2. **Clean and rebuild**:
-   ```bash
-   idf.py fullclean
-   ./scripts/build_app.sh pcal95555_comprehensive_test Debug
-   ```
-
-3. **Check component paths**:
-   - Verify component CMakeLists.txt paths
-   - Ensure source files are accessible
-
-### Test Failures
-
-**Symptoms**: Specific tests fail
-
-**Solutions**:
-1. **Check hardware connections**:
-   - Verify all pins are properly connected
-   - Check for loose connections
-
-2. **Review test logs**:
-   - Check which specific test failed
-   - Review error messages in serial output
-
-3. **Verify device state**:
-   - Reset PCAL9555 (power cycle)
-   - Run reset test first
-
----
-
-## 📚 Additional Resources
-
-- [Comprehensive Test Documentation](docs/comprehensive_test.md) - Detailed test documentation
-- [PCAL9555 Datasheet](../../datasheet/PCAL9555A.pdf)
-- [Driver API Documentation](../../docs/api_reference.md)
-- [Platform Integration Guide](../../docs/platform_integration.md)
-- [Hardware Overview](../../docs/hardware_overview.md)
-
----
-
-## 🎯 Quick Reference
+- [ESP-IDF v5.5+](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/)
+- ESP32-S3 devkit
+- PCA9555 or PCAL9555A board connected via I2C
 
 ### Build Commands
 
 ```bash
-# List available apps
-./scripts/build_app.sh list
+cd examples/esp32
 
-# Build comprehensive test
+# Build comprehensive test suite
 ./scripts/build_app.sh pcal95555_comprehensive_test Debug
 
-# Flash and monitor
-./scripts/flash_app.sh pcal95555_comprehensive_test Debug
+# Build LED animation demo
+./scripts/build_app.sh pcal95555_led_animation Debug
 ```
 
-### Test Execution
+---
 
-The comprehensive test suite runs automatically on boot and provides:
-- Real-time test progress via GPIO14 indicator
-- Serial output with detailed test results
-- Automatic test summary at completion
+## Flashing and Monitoring
 
-### GPIO14 Test Indicator
+```bash
+# Flash and open serial monitor
+./scripts/flash_app.sh flash_monitor pcal95555_comprehensive_test Debug
 
-GPIO14 toggles between HIGH/LOW for each completed test, providing visual feedback:
-- Use oscilloscope or logic analyzer to monitor
-- Useful for automated test verification
-- Blinks 5 times at section start/end
+# Flash only
+./scripts/flash_app.sh flash pcal95555_comprehensive_test Debug
+
+# Monitor only (if already flashed)
+./scripts/flash_app.sh monitor
+```
+
+> **ESP32-S3 native USB note:** If flashing fails on `/dev/ttyACM0`, manually enter
+> download mode: Hold **BOOT** -> Press **RESET** -> Release **BOOT** -> Run flash.
 
 ---
 
-## 📝 Notes
+## Comprehensive Test Suite
 
-- **I2C Pull-ups**: External pull-up resistors (4.7kΩ) are recommended even if internal pullups are enabled
-- **Address Configuration**: Default address is 0x20. Modify if using different A0/A1/A2 configuration
-- **Test Duration**: Comprehensive test suite takes approximately 2-5 minutes to complete
-- **Hardware Requirements**: Basic tests work without external hardware; some tests benefit from LEDs/switches
+**File:** `main/pcal95555_comprehensive_test.cpp`
+
+Tests every public API method of the PCAL95555 driver class across 17 sections.
+PCAL9555A-specific tests are **automatically skipped** (not failed) on a standard PCA9555.
+
+### Test Sections
+
+| # | Section | Methods Tested | PCAL9555A? |
+|---|---------|----------------|------------|
+| 1 | Initialization | Constructor, ResetToDefault, auto-detection | No |
+| 2 | GPIO Direction (single) | SetPinDirection | No |
+| 3 | GPIO Direction (multi) | SetMultipleDirections | No |
+| 4 | Pin Write | WritePin | No |
+| 5 | Pin Read | ReadPin | No |
+| 6 | Pin Toggle | TogglePin | No |
+| 7 | Pull Resistor | SetPullEnable, SetPullDirection | Yes |
+| 8 | Drive Strength | SetDriveStrength | Yes |
+| 9 | Output Mode | SetOutputMode | Yes |
+| 10 | Polarity | SetPinPolarity, SetMultiplePolarities | No |
+| 11 | Input Latch | EnableInputLatch, EnableMultipleInputLatches | Yes |
+| 12 | Interrupt Config | ConfigureInterruptMask, GetInterruptStatus, callbacks | Yes |
+| 13 | Port Operations | Mixed port direction + read/write | No |
+| 14 | Multi-Pin APIs | WritePins, ReadPins, SetDirections, SetPolarities | No |
+| 15 | Address Management | ChangeAddress, address-based constructor | No |
+| 16 | Configuration | SetRetries, EnsureInitialized | No |
+| 17 | Multi-Pin PCAL | SetPullEnables, SetDriveStrengths, ConfigureInterrupt/s, EnableInputLatches | Yes |
+| 18 | Interactive Input | Button press, HandleInterrupt (disabled by default) | No |
+| 19 | Error Handling | Invalid pins, UnsupportedFeature, flag clearing | No |
+| 20 | Stress Tests | Rapid pin toggling | No |
+
+### Enable/Disable Sections
+
+```cpp
+// At top of pcal95555_comprehensive_test.cpp
+static constexpr bool ENABLE_INITIALIZATION_TESTS = true;
+static constexpr bool ENABLE_GPIO_DIRECTION_TESTS = true;
+static constexpr bool ENABLE_INTERACTIVE_INPUT_TESTS = false; // Requires button on pin 0
+// ... etc
+```
+
+### Interactive Input Test
+
+Disabled by default. Requires a momentary push-button between PCA9555 pin 0 and GND:
+
+- **PCAL9555A:** Internal pull-up is enabled automatically
+- **PCA9555:** Add an external 10k pull-up resistor to VDD
+
+The test waits 10 seconds for a button press, logging a countdown. If no button is
+connected, it times out gracefully without failing.
+
+### Expected Output (PCA9555)
+
+```
+Detected chip variant: PCA9555 (standard)
+Agile I/O support: NO
+...
+Skipping: Pull resistor config requires PCAL9555A (detected PCA9555)
+...
+Total: 31, Passed: 31, Failed: 0, Success: 100.00%
+```
 
 ---
 
-<div style="text-align: center; margin: 2em 0; padding: 1em; background: #f8f9fa; border-radius: 8px;">
-  <strong>🎯 Ready to test the PCAL9555?</strong><br>
-  Start with: <code>./scripts/build_app.sh pcal95555_comprehensive_test Debug</code><br>
-  <small>See <a href="docs/comprehensive_test.md">Comprehensive Test Documentation</a> for detailed test information</small>
-</div>
+## LED Animation Demo
 
+**File:** `main/pcal95555_led_animation.cpp`
+
+Drives 16 LEDs through 10 animation patterns to visually test the driver's output
+capabilities and I2C throughput. Uses only PCA9555-compatible registers, so it works
+with both chip variants.
+
+### Animation Patterns
+
+1. **Sequential Chase** -- single LED scans left to right and back
+2. **Bounce** -- LED bounces between endpoints with acceleration
+3. **Binary Counter** -- counts 0-65535 showing binary on 16 LEDs
+4. **Breathing (PWM)** -- software PWM fade-in/fade-out of all LEDs
+5. **Wave / Comet Tail** -- 4-LED comet sweeps back and forth
+6. **Random Sparkle** -- random LED patterns at fast rate
+7. **Build-up / Teardown** -- LEDs light sequentially then extinguish
+8. **Accelerating Scan** -- speed ramps from 120ms down to 1ms and back
+9. **Center Expand** -- symmetric outward/inward animation from center
+10. **Alternating Flash** -- port-vs-port and even-vs-odd flashing
+
+### LED Wiring
+
+Connect LEDs with 220-1k current-limiting resistors to each I/O pin.
+
+- **Active-HIGH (default):** LED anode to IO pin, cathode to GND
+- **Active-LOW:** Set `LEDS_ACTIVE_LOW = true` in the source, LED cathode to IO pin, anode to VDD
+
+### Configuration
+
+Edit at top of `pcal95555_led_animation.cpp`:
+
+```cpp
+static constexpr uint16_t NUM_PINS = 16;
+static constexpr bool LEDS_ACTIVE_LOW = false;
+static constexpr int NUM_CYCLES = 0; // 0 = infinite
+```
+
+---
+
+## Configuration
+
+### I2C Bus
+
+Default configuration in the bus header (`esp32_pcal95555_bus.hpp`):
+
+| Parameter | Default | Notes |
+|-----------|---------|-------|
+| I2C Port | I2C_NUM_0 | |
+| SDA | GPIO4 | |
+| SCL | GPIO5 | |
+| Frequency | 400 kHz | Reduce to 100k for long wires |
+| Internal Pull-ups | Enabled | External 4.7k recommended |
+
+### Stack Size
+
+The test suite requires a larger-than-default main task stack due to extensive logging.
+Set in `sdkconfig`:
+```
+CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384
+```
+
+---
+
+## Troubleshooting
+
+### I2C NACK Errors
+
+| Symptom | Likely Cause | Fix |
+|---------|-------------|-----|
+| NACK on all registers | Wrong address / no power | Check wiring, verify address |
+| NACK on 0x40-0x4F only | PCA9555 (not PCAL9555A) | Expected -- driver auto-detects |
+| Intermittent NACKs | Bus noise, missing pull-ups | Add 4.7k pull-ups |
+
+### Stack Overflow / Assert
+
+```
+assert failed: xTaskRemoveFromEventList tasks.c
+```
+Increase stack size: `CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384` in sdkconfig.
+
+### ESP32-S3 Flash Failure
+
+```
+Failed to connect to ESP32-S3: Invalid head of packet (0x1B)
+```
+Manually enter download mode (BOOT + RESET) before flashing.
+
+### ChipVariant "Unknown"
+
+The 3-step detection could not confirm chip type. Check:
+- I2C pull-ups present
+- Chip powered and wired correctly
+- No other I2C master on bus
+
+---
+
+## Additional Resources
+
+- [Main README](../../README.md) -- Full project documentation
+- [PCAL9555A Datasheet](../../datasheet/PCAL9555A.pdf)
+- [Driver API Reference](../../docs/api_reference.md)
+- [Platform Integration Guide](../../docs/platform_integration.md)
+- [Build Scripts README](scripts/README.md)

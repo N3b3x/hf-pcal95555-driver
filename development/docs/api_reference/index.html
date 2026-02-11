@@ -176,7 +176,7 @@
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
       </button><a href="/hf-pcal95555-driver/development/" class="nav-list-link">HardFOC PCAL95555 Driver</a><ul class="nav-list"><li class="nav-list-item"><button class="nav-list-expander btn-reset" aria-label="📚 Documentation submenu" aria-expanded="false">
         <svg viewBox="0 0 24 24" aria-hidden="true"><use xlink:href="#svg-arrow-right"></use></svg>
-      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCAL9555 ESP32-S3 Comprehensive Test Suite</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
+      </button><a href="/hf-pcal95555-driver/development/docs/" class="nav-list-link">📚 Documentation</a><ul class="nav-list"><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/installation/" class="nav-list-link">🛠️ Installation</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/quickstart/" class="nav-list-link">⚡ Quick Start</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/hardware_setup/" class="nav-list-link">🔌 Hardware Setup</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/platform_integration/" class="nav-list-link">🔧 Platform Integration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/configuration/" class="nav-list-link">⚙️ Configuration</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/api_reference/" class="nav-list-link">📖 API Reference</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/examples/" class="nav-list-link">💡 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/docs/troubleshooting/" class="nav-list-link">🐛 Troubleshooting</a></li></ul></li></ul></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/" class="nav-list-link">PCA9555 / PCAL9555A ESP32-S3 Examples</a></li><li class="nav-list-item"><a href="/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html" class="nav-list-link">PCAL95555 Comprehensive Test Suite Documentation</a></li></ul>
   
 </nav>
 
@@ -303,7 +303,10 @@
 </h3>
     
 
-<p>Main driver class for interfacing with the PCAL9555A I/O expander.</p>
+<p>Main driver class for interfacing with the <strong>PCA9555</strong> and <strong>PCAL9555A</strong> I/O expanders.
+The chip variant is auto-detected during initialization. PCAL9555A-specific features
+(pull resistors, drive strength, input latch, interrupt mask/status, output mode)
+return <code class="language-plaintext highlighter-rouge">false</code> and set <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> when a standard PCA9555 is detected.</p>
 
 <p><strong>Template Parameter</strong>: <code class="language-plaintext highlighter-rouge">I2cType</code> - Your I2C interface implementation (must inherit from <code class="language-plaintext highlighter-rouge">pcal95555::I2cInterface&lt;I2cType&gt;</code>)</p>
 
@@ -313,7 +316,9 @@
 
 <p><strong>Constructor 1: Using address pin levels</strong></p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span><span class="p">(</span><span class="n">I2cType</span><span class="o">*</span> <span class="n">bus</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a0_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a1_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a2_level</span><span class="p">);</span>
+2
+</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span><span class="p">(</span><span class="n">I2cType</span><span class="o">*</span> <span class="n">bus</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a0_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a1_level</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a2_level</span><span class="p">,</span>
+          <span class="n">ChipVariant</span> <span class="n">variant</span> <span class="o">=</span> <span class="n">ChipVariant</span><span class="o">::</span><span class="n">Unknown</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p><strong>Parameters:</strong></p>
@@ -322,21 +327,28 @@
   <li><code class="language-plaintext highlighter-rouge">a0_level</code>: Initial state of A0 pin (true = HIGH/VDD, false = LOW/GND)</li>
   <li><code class="language-plaintext highlighter-rouge">a1_level</code>: Initial state of A1 pin (true = HIGH/VDD, false = LOW/GND)</li>
   <li><code class="language-plaintext highlighter-rouge">a2_level</code>: Initial state of A2 pin (true = HIGH/VDD, false = LOW/GND)</li>
+  <li><code class="language-plaintext highlighter-rouge">variant</code>: Optional chip variant override. Default <code class="language-plaintext highlighter-rouge">ChipVariant::Unknown</code> enables auto-detection. Set to <code class="language-plaintext highlighter-rouge">ChipVariant::PCA9555</code> or <code class="language-plaintext highlighter-rouge">ChipVariant::PCAL9555A</code> to skip detection.</li>
 </ul>
 
 <p><strong>Constructor 2: Using I2C address directly</strong></p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
-</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span><span class="p">(</span><span class="n">I2cType</span><span class="o">*</span> <span class="n">bus</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">address</span><span class="p">);</span>
+2
+</pre></td><td class="rouge-code"><pre><span class="k">explicit</span> <span class="nf">PCAL95555</span><span class="p">(</span><span class="n">I2cType</span><span class="o">*</span> <span class="n">bus</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">address</span><span class="p">,</span>
+                   <span class="n">ChipVariant</span> <span class="n">variant</span> <span class="o">=</span> <span class="n">ChipVariant</span><span class="o">::</span><span class="n">Unknown</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p><strong>Parameters:</strong></p>
 <ul>
   <li><code class="language-plaintext highlighter-rouge">bus</code>: Pointer to your I2C interface implementation</li>
   <li><code class="language-plaintext highlighter-rouge">address</code>: 7-bit I2C address (0x20 to 0x27). Address bits are calculated automatically.</li>
+  <li><code class="language-plaintext highlighter-rouge">variant</code>: Optional chip variant override (same as above).</li>
 </ul>
 
 <p><strong>Description:</strong>
-Both constructors calculate the I2C address and attempt to set address pins via <code class="language-plaintext highlighter-rouge">SetAddressPins()</code> if supported by the I2C interface, then verify communication afterward.</p>
+Both constructors use lazy initialization – no I2C traffic occurs in the constructor.
+Initialization (including chip variant detection) happens on first method call or
+explicit <code class="language-plaintext highlighter-rouge">EnsureInitialized()</code>. The address is calculated from A0-A2 levels or used
+directly. <code class="language-plaintext highlighter-rouge">SetAddressPins()</code> is called if supported by the I2C interface.</p>
 
 <p><strong>Examples:</strong></p>
 <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
@@ -350,23 +362,17 @@ Both constructors calculate the I2C address and attempt to set address pins via 
 9
 10
 11
-12
-13
-14
-</pre></td><td class="rouge-code"><pre><span class="c1">// Using pin levels - A2=LOW, A1=LOW, A0=LOW -&gt; address 0x20 (default)</span>
+</pre></td><td class="rouge-code"><pre><span class="c1">// Using pin levels - auto-detect chip variant (default)</span>
 <span class="n">PCAL95555</span> <span class="nf">driver1</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
 
-<span class="c1">// Using pin levels - A2=LOW, A1=LOW, A0=HIGH -&gt; address 0x21</span>
-<span class="n">PCAL95555</span> <span class="nf">driver2</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">true</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span>
+<span class="c1">// Using address directly - auto-detect</span>
+<span class="n">PCAL95555</span> <span class="nf">driver2</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
 
-<span class="c1">// Using address directly - address 0x20 (default)</span>
-<span class="n">PCAL95555</span> <span class="nf">driver3</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+<span class="c1">// Force PCA9555 mode (skip Agile I/O detection probe)</span>
+<span class="n">PCAL95555</span> <span class="nf">driver3</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">,</span> <span class="n">ChipVariant</span><span class="o">::</span><span class="n">PCA9555</span><span class="p">);</span>
 
-<span class="c1">// Using address directly - address 0x21</span>
-<span class="n">PCAL95555</span> <span class="nf">driver4</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x21</span><span class="p">);</span>
-
-<span class="c1">// Using address directly - address 0x25</span>
-<span class="n">PCAL95555</span> <span class="nf">driver5</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x25</span><span class="p">);</span>
+<span class="c1">// Force PCAL9555A mode</span>
+<span class="n">PCAL95555</span> <span class="nf">driver4</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="n">ChipVariant</span><span class="o">::</span><span class="n">PCAL9555A</span><span class="p">);</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div>
 
 <p><strong>Location</strong>: <a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></p>
@@ -493,14 +499,18 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     </tr>
   </tbody>
 </table></div>
-<h3 id="pull-uppull-down">
+<h3 id="pull-uppull-down-pcal9555a-only">
   
   
-    <a href="#pull-uppull-down" class="anchor-heading" aria-labelledby="pull-uppull-down"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Pull-up/Pull-down
+    <a href="#pull-uppull-down-pcal9555a-only" class="anchor-heading" aria-labelledby="pull-uppull-down-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Pull-up/Pull-down (PCAL9555A only)
   
   
 </h3>
     
+
+<blockquote>
+  <p><strong>Note</strong>: These methods return <code class="language-plaintext highlighter-rouge">false</code> and set <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555.</p>
+</blockquote>
 
 <div class="table-wrapper"><table>
   <thead>
@@ -533,14 +543,18 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     </tr>
   </tbody>
 </table></div>
-<h3 id="drive-strength">
+<h3 id="drive-strength-pcal9555a-only">
   
   
-    <a href="#drive-strength" class="anchor-heading" aria-labelledby="drive-strength"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Drive Strength
+    <a href="#drive-strength-pcal9555a-only" class="anchor-heading" aria-labelledby="drive-strength-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Drive Strength (PCAL9555A only)
   
   
 </h3>
     
+
+<blockquote>
+  <p><strong>Note</strong>: These methods return <code class="language-plaintext highlighter-rouge">false</code> and set <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555.</p>
+</blockquote>
 
 <div class="table-wrapper"><table>
   <thead>
@@ -572,11 +586,16 @@ Both constructors calculate the I2C address and attempt to set address pins via 
 </h3>
     
 
+<blockquote>
+  <p><strong>Note</strong>: <code class="language-plaintext highlighter-rouge">ConfigureInterrupt</code>, <code class="language-plaintext highlighter-rouge">ConfigureInterrupts</code>, <code class="language-plaintext highlighter-rouge">ConfigureInterruptMask</code>, and <code class="language-plaintext highlighter-rouge">GetInterruptStatus</code> require PCAL9555A and return <code class="language-plaintext highlighter-rouge">false</code>/<code class="language-plaintext highlighter-rouge">0</code> with <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555. The remaining interrupt methods (callbacks, handler) work on both variants – on PCA9555, <code class="language-plaintext highlighter-rouge">HandleInterrupt()</code> uses change-detection (comparing current vs. previous pin states) instead of the hardware interrupt status register.</p>
+</blockquote>
+
 <div class="table-wrapper"><table>
   <thead>
     <tr>
       <th>Method</th>
       <th>Signature</th>
+      <th>PCAL9555A?</th>
       <th>Location</th>
     </tr>
   </thead>
@@ -584,58 +603,71 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     <tr>
       <td><code class="language-plaintext highlighter-rouge">ConfigureInterrupt()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool ConfigureInterrupt(uint16_t pin, InterruptState state)</code></td>
+      <td>Yes</td>
       <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">ConfigureInterrupts()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool ConfigureInterrupts(std::initializer_list&lt;std::pair&lt;uint16_t, InterruptState&gt;&gt; configs)</code></td>
+      <td>Yes</td>
       <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">ConfigureInterruptMask()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool ConfigureInterruptMask(uint16_t mask)</code></td>
+      <td>Yes</td>
       <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">GetInterruptStatus()</code></td>
       <td><code class="language-plaintext highlighter-rouge">uint16_t GetInterruptStatus()</code></td>
-      <td><a href="../src/pcal95555.cpp#L300"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L300</code></a></td>
+      <td>Yes</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">RegisterPinInterrupt()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function&lt;void(uint16_t, bool)&gt; callback)</code></td>
-      <td><a href="../src/pcal95555.cpp#L317"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L317</code></a></td>
+      <td>No</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">UnregisterPinInterrupt()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool UnregisterPinInterrupt(uint16_t pin)</code></td>
-      <td><a href="../src/pcal95555.cpp#L342"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L342</code></a></td>
+      <td>No</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetInterruptCallback()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void SetInterruptCallback(const std::function&lt;void(uint16_t)&gt;&amp; callback)</code></td>
-      <td><a href="../src/pcal95555.cpp#L360"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L360</code></a></td>
+      <td>No</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">RegisterInterruptHandler()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool RegisterInterruptHandler()</code></td>
-      <td><a href="../src/pcal95555.cpp#L366"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L366</code></a></td>
+      <td>No</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">HandleInterrupt()</code></td>
       <td><code class="language-plaintext highlighter-rouge">void HandleInterrupt()</code></td>
-      <td><a href="../src/pcal95555.cpp#L385"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L385</code></a></td>
+      <td>No</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
-<h3 id="output-mode">
+<h3 id="output-mode-pcal9555a-only">
   
   
-    <a href="#output-mode" class="anchor-heading" aria-labelledby="output-mode"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Mode
+    <a href="#output-mode-pcal9555a-only" class="anchor-heading" aria-labelledby="output-mode-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Output Mode (PCAL9555A only)
   
   
 </h3>
     
+
+<blockquote>
+  <p><strong>Note</strong>: Returns <code class="language-plaintext highlighter-rouge">false</code> and sets <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555.</p>
+</blockquote>
 
 <div class="table-wrapper"><table>
   <thead>
@@ -649,7 +681,7 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetOutputMode()</code></td>
       <td><code class="language-plaintext highlighter-rouge">bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)</code></td>
-      <td><a href="../src/pcal95555.cpp#L626"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L626</code></a></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
@@ -688,14 +720,18 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     </tr>
   </tbody>
 </table></div>
-<h3 id="input-latch">
+<h3 id="input-latch-pcal9555a-only">
   
   
-    <a href="#input-latch" class="anchor-heading" aria-labelledby="input-latch"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Input Latch
+    <a href="#input-latch-pcal9555a-only" class="anchor-heading" aria-labelledby="input-latch-pcal9555a-only"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Input Latch (PCAL9555A only)
   
   
 </h3>
     
+
+<blockquote>
+  <p><strong>Note</strong>: These methods return <code class="language-plaintext highlighter-rouge">false</code> and set <code class="language-plaintext highlighter-rouge">Error::UnsupportedFeature</code> on PCA9555.</p>
+</blockquote>
 
 <div class="table-wrapper"><table>
   <thead>
@@ -783,21 +819,75 @@ Both constructors calculate the I2C address and attempt to set address pins via 
   <tbody>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">SetRetries()</code></td>
-      <td><code class="language-plaintext highlighter-rouge">void SetRetries(int retries)</code></td>
-      <td><a href="../src/pcal95555.cpp#L46"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L46</code></a></td>
+      <td><code class="language-plaintext highlighter-rouge">void SetRetries(int retries) noexcept</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">GetErrorFlags()</code></td>
-      <td><code class="language-plaintext highlighter-rouge">uint16_t GetErrorFlags() const</code></td>
-      <td><a href="../src/pcal95555.cpp#L525"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L525</code></a></td>
+      <td><code class="language-plaintext highlighter-rouge">[[nodiscard]] uint16_t GetErrorFlags() const noexcept</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">ClearErrorFlags()</code></td>
-      <td><code class="language-plaintext highlighter-rouge">void ClearErrorFlags(uint16_t mask = 0xFFFF)</code></td>
-      <td><a href="../src/pcal95555.cpp#L530"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L530</code></a></td>
+      <td><code class="language-plaintext highlighter-rouge">void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept</code></td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
     </tr>
   </tbody>
 </table></div>
+<h3 id="chip-variant-detection">
+  
+  
+    <a href="#chip-variant-detection" class="anchor-heading" aria-labelledby="chip-variant-detection"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Chip Variant Detection
+  
+  
+</h3>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th>Method</th>
+      <th>Signature</th>
+      <th>Description</th>
+      <th>Location</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">HasAgileIO()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">[[nodiscard]] bool HasAgileIO() const noexcept</code></td>
+      <td>Returns <code class="language-plaintext highlighter-rouge">true</code> if PCAL9555A detected (Agile I/O available)</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">GetChipVariant()</code></td>
+      <td><code class="language-plaintext highlighter-rouge">[[nodiscard]] ChipVariant GetChipVariant() const noexcept</code></td>
+      <td>Returns the detected <code class="language-plaintext highlighter-rouge">ChipVariant</code> enum value</td>
+      <td><a href="../src/pcal95555.cpp"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp</code></a></td>
+    </tr>
+  </tbody>
+</table></div>
+
+<p><strong>Usage:</strong></p>
+<div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+6
+7
+8
+9
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="p">(</span><span class="n">driver</span><span class="p">.</span><span class="n">HasAgileIO</span><span class="p">())</span> <span class="p">{</span>
+    <span class="c1">// PCAL9555A features available</span>
+    <span class="n">driver</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level2</span><span class="p">);</span>
+<span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+    <span class="c1">// PCA9555 -- only standard registers</span>
+<span class="p">}</span>
+
+<span class="k">auto</span> <span class="n">variant</span> <span class="o">=</span> <span class="n">driver</span><span class="p">.</span><span class="n">GetChipVariant</span><span class="p">();</span>
+<span class="c1">// ChipVariant::Unknown, ChipVariant::PCA9555, or ChipVariant::PCAL9555A</span>
+</pre></td></tr></tbody></table></div></code></pre></div></div>
 <h2 id="types">
   
   
@@ -834,7 +924,7 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     <tr>
       <td><code class="language-plaintext highlighter-rouge">DriveStrength</code></td>
       <td><code class="language-plaintext highlighter-rouge">Level0</code>, <code class="language-plaintext highlighter-rouge">Level1</code>, <code class="language-plaintext highlighter-rouge">Level2</code>, <code class="language-plaintext highlighter-rouge">Level3</code></td>
-      <td>Output drive strength (Level0=25%, Level1=50%, Level2=75%, Level3=100%)</td>
+      <td>Output drive strength (Level0=25%, Level1=50%, Level2=75%, Level3=100%). <strong>PCAL9555A only.</strong></td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
     <tr>
@@ -846,25 +936,31 @@ Both constructors calculate the I2C address and attempt to set address pins via 
     <tr>
       <td><code class="language-plaintext highlighter-rouge">OutputMode</code></td>
       <td><code class="language-plaintext highlighter-rouge">PushPull</code>, <code class="language-plaintext highlighter-rouge">OpenDrain</code></td>
-      <td>Output mode (per port)</td>
+      <td>Output mode (per port). <strong>PCAL9555A only.</strong></td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">InterruptState</code></td>
       <td><code class="language-plaintext highlighter-rouge">Enabled</code>, <code class="language-plaintext highlighter-rouge">Disabled</code></td>
-      <td>Interrupt enable/disable state</td>
+      <td>Interrupt enable/disable state. <strong>PCAL9555A only.</strong></td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">InterruptEdge</code></td>
       <td><code class="language-plaintext highlighter-rouge">Rising</code>, <code class="language-plaintext highlighter-rouge">Falling</code>, <code class="language-plaintext highlighter-rouge">Both</code></td>
-      <td>Interrupt edge trigger type</td>
+      <td>Interrupt edge trigger type (works on both variants via software)</td>
+      <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">ChipVariant</code></td>
+      <td><code class="language-plaintext highlighter-rouge">Unknown</code>, <code class="language-plaintext highlighter-rouge">PCA9555</code>, <code class="language-plaintext highlighter-rouge">PCAL9555A</code></td>
+      <td>Detected or user-specified chip variant</td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
     <tr>
       <td><code class="language-plaintext highlighter-rouge">Error</code></td>
-      <td><code class="language-plaintext highlighter-rouge">None</code>, <code class="language-plaintext highlighter-rouge">InvalidPin</code>, <code class="language-plaintext highlighter-rouge">InvalidMask</code>, <code class="language-plaintext highlighter-rouge">I2CReadFail</code>, <code class="language-plaintext highlighter-rouge">I2CWriteFail</code></td>
-      <td>Error conditions (bitmask)</td>
+      <td><code class="language-plaintext highlighter-rouge">None</code>, <code class="language-plaintext highlighter-rouge">InvalidPin</code>, <code class="language-plaintext highlighter-rouge">InvalidMask</code>, <code class="language-plaintext highlighter-rouge">I2CReadFail</code>, <code class="language-plaintext highlighter-rouge">I2CWriteFail</code>, <code class="language-plaintext highlighter-rouge">UnsupportedFeature</code></td>
+      <td>Error conditions (bitmask). <code class="language-plaintext highlighter-rouge">UnsupportedFeature</code> (0x0010) is set when a PCAL9555A-only method is called on a PCA9555.</td>
       <td><a href="../inc/pcal95555.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555.hpp</code></a></td>
     </tr>
   </tbody>

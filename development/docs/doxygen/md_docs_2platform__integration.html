@@ -76,41 +76,41 @@ $(function() {
   <div class="headertitle"><div class="title">Platform Integration Guide</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md90"></a> This guide explains how to implement the hardware abstraction interface for the PCAL95555 driver on your platform.</p>
-<h1><a class="anchor" id="autotoc_md91"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md104"></a> This guide explains how to implement the hardware abstraction interface for the PCAL95555 driver on your platform.</p>
+<h1><a class="anchor" id="autotoc_md105"></a>
 Understanding CRTP (Curiously Recurring Template Pattern)</h1>
 <p>The PCAL95555 driver uses <b>CRTP</b> (Curiously Recurring Template Pattern) for hardware abstraction. This design choice provides several critical benefits for embedded systems:</p>
-<h2><a class="anchor" id="autotoc_md92"></a>
+<h2><a class="anchor" id="autotoc_md106"></a>
 Why CRTP Instead of Virtual Functions?</h2>
-<h3><a class="anchor" id="autotoc_md93"></a>
+<h3><a class="anchor" id="autotoc_md107"></a>
 1. <b>Zero Runtime Overhead</b></h3>
 <ul>
 <li><b>Virtual functions</b>: Require a vtable lookup (indirect call) = ~5-10 CPU cycles overhead per call</li>
 <li><b>CRTP</b>: Direct function calls = 0 overhead, compiler can inline</li>
 <li><b>Impact</b>: In time-critical embedded code, this matters significantly</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md94"></a>
+<h3><a class="anchor" id="autotoc_md108"></a>
 2. <b>Compile-Time Polymorphism</b></h3>
 <ul>
 <li><b>Virtual functions</b>: Runtime dispatch - the compiler cannot optimize across the abstraction boundary</li>
 <li><b>CRTP</b>: Compile-time dispatch - full optimization, dead code elimination, constant propagation</li>
 <li><b>Impact</b>: Smaller code size, faster execution</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md95"></a>
+<h3><a class="anchor" id="autotoc_md109"></a>
 3. <b>Memory Efficiency</b></h3>
 <ul>
 <li><b>Virtual functions</b>: Each object needs a vtable pointer (4-8 bytes)</li>
 <li><b>CRTP</b>: No vtable pointer needed</li>
 <li><b>Impact</b>: Critical in memory-constrained systems (many MCUs have &lt;64KB RAM)</li>
 </ul>
-<h3><a class="anchor" id="autotoc_md96"></a>
+<h3><a class="anchor" id="autotoc_md110"></a>
 4. **Type Safety**</h3>
 <ul>
 <li>**Virtual functions**: Runtime errors if method not implemented</li>
 <li>**CRTP**: Compile-time errors if method not implemented</li>
 <li>**Impact**: Catch bugs at compile time, not in the field</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md97"></a>
+<h2><a class="anchor" id="autotoc_md111"></a>
 How CRTP Works</h2>
 <div class="fragment"><div class="line"><span class="comment">// Base template class (from pcal95555_i2c_interface.hpp)</span></div>
 <div class="line"><span class="keyword">template</span> &lt;<span class="keyword">typename</span> Derived&gt;</div>
@@ -139,7 +139,7 @@ How CRTP Works</h2>
 <div class="line">    }</div>
 <div class="line">};</div>
 </div><!-- fragment --><p>The key insight: <code>static_cast&lt;Derived*&gt;(this)</code> allows the base class to call methods on the derived class <b>at compile time</b>, not runtime.</p>
-<h2><a class="anchor" id="autotoc_md98"></a>
+<h2><a class="anchor" id="autotoc_md112"></a>
 Performance Comparison</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -155,7 +155,7 @@ Performance Comparison</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone">Optimization   </td><td class="markdownTableBodyNone">Limited   </td><td class="markdownTableBodyNone">Full   </td></tr>
 </table>
-<h1><a class="anchor" id="autotoc_md99"></a>
+<h1><a class="anchor" id="autotoc_md113"></a>
 Interface Definition</h1>
 <p>The PCAL95555 driver requires you to implement the <code>I2cInterface</code> template:</p>
 <p><b>Location</b>: <a href="../inc/pcal95555.hpp#L437"><code>inc/pcal95555.hpp#L437</code></a></p>
@@ -176,9 +176,9 @@ Interface Definition</h1>
 <li><code>SetAddressPins()</code>: Control A2-A0 address pins via GPIO (returns <code>false</code> by default if not supported)</li>
 <li><code>RegisterInterruptHandler()</code>: Register interrupt handler for INT pin (returns <code>false</code> by default if not supported)</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md100"></a>
+<h1><a class="anchor" id="autotoc_md114"></a>
 Implementation Steps</h1>
-<h2><a class="anchor" id="autotoc_md101"></a>
+<h2><a class="anchor" id="autotoc_md115"></a>
 Step 1: Create Your Implementation Class</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
 <div class="line"> </div>
@@ -231,9 +231,9 @@ Step 1: Create Your Implementation Class</h2>
 <div class="line"><span class="keyword">private</span>:</div>
 <div class="line">    <span class="keywordtype">bool</span> initialized_ = <span class="keyword">false</span>;  <span class="comment">// Track initialization state</span></div>
 <div class="line">};</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md102"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md116"></a>
 Step 2: Platform-Specific Examples</h2>
-<h3><a class="anchor" id="autotoc_md103"></a>
+<h3><a class="anchor" id="autotoc_md117"></a>
 ESP32 (ESP-IDF)</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;driver/i2c.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -266,7 +266,7 @@ ESP32 (ESP-IDF)</h3>
 <div class="line">        <span class="keywordflow">return</span> ret == ESP_OK;</div>
 <div class="line">    }</div>
 <div class="line">};</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md104"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md118"></a>
 STM32 (HAL)</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;stm32f4xx_hal.h&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -290,7 +290,7 @@ STM32 (HAL)</h3>
 <div class="line">                                HAL_MAX_DELAY) == HAL_OK;</div>
 <div class="line">    }</div>
 <div class="line">};</div>
-</div><!-- fragment --><h3><a class="anchor" id="autotoc_md105"></a>
+</div><!-- fragment --><h3><a class="anchor" id="autotoc_md119"></a>
 Arduino</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;Wire.h&gt;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -316,9 +316,9 @@ Arduino</h3>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">    }</div>
 <div class="line">};</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md106"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md120"></a>
 Common Pitfalls</h1>
-<h2><a class="anchor" id="autotoc_md107"></a>
+<h2><a class="anchor" id="autotoc_md121"></a>
 ❌ Don't Use Virtual Functions</h2>
 <div class="fragment"><div class="line"><span class="comment">// WRONG - defeats the purpose of CRTP</span></div>
 <div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {</div>
@@ -327,7 +327,7 @@ Common Pitfalls</h1>
 <div class="line">        <span class="comment">// ...</span></div>
 <div class="line">    }</div>
 <div class="line">};</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md108"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md122"></a>
 ✅ Correct CRTP Implementation</h2>
 <div class="fragment"><div class="line"><span class="comment">// CORRECT - no virtual keyword</span></div>
 <div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {</div>
@@ -336,31 +336,40 @@ Common Pitfalls</h1>
 <div class="line">        <span class="comment">// ...</span></div>
 <div class="line">    }</div>
 <div class="line">};</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md109"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md123"></a>
 ❌ Don't Forget the Template Parameter</h2>
 <div class="fragment"><div class="line"><span class="comment">// WRONG - missing template parameter</span></div>
 <div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface {  <span class="comment">// ❌ Compiler error</span></div>
 <div class="line">    <span class="comment">// ...</span></div>
 <div class="line">};</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md110"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md124"></a>
 ✅ Correct Template Parameter</h2>
 <div class="fragment"><div class="line"><span class="comment">// CORRECT - pass your class as template parameter</span></div>
 <div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {  <span class="comment">// ✅</span></div>
 <div class="line">    <span class="comment">// ...</span></div>
 <div class="line">};</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md111"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md125"></a>
 Testing Your Implementation</h1>
 <p>After implementing the interface, test it:</p>
 <div class="fragment"><div class="line">MyPlatformI2c i2c;</div>
-<div class="line"><span class="comment">// Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default)</span></div>
+<div class="line"><span class="comment">// Constructor takes A0, A1, A2 pin levels (all LOW = address 0x20, default)</span></div>
+<div class="line"><span class="comment">// Optional: pass ChipVariant to skip auto-detection</span></div>
 <div class="line">pcal95555::PCAL95555&lt;MyPlatformI2c&gt; gpio(&amp;i2c, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
 <div class="line"> </div>
 <div class="line">gpio.ResetToDefault();</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Check which chip variant was detected</span></div>
+<div class="line"><span class="keywordflow">if</span> (gpio.HasAgileIO()) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;PCAL9555A detected - full feature set\n&quot;</span>);</div>
+<div class="line">} <span class="keywordflow">else</span> {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;PCA9555 detected - standard GPIO only\n&quot;</span>);</div>
+<div class="line">}</div>
+<div class="line"> </div>
 <div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyPlatformI2c&gt;::GPIODir::Output);</div>
 <div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
 <div class="line"><span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
 <div class="line"><span class="comment">// Interface works!</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md112"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md126"></a>
 Next Steps</h1>
 <ul>
 <li>See <a class="el" href="md_docs_2configuration.html">Configuration</a> for driver configuration options</li>

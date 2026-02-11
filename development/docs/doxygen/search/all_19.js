@@ -1,4 +1,25 @@
 var searchData=
 [
-  ['virtual_20functions_0',['Virtual Functions',['../md_docs_2platform__integration.html#autotoc_md107',1,'❌ Don&apos;t Use Virtual Functions'],['../md_docs_2platform__integration.html#autotoc_md92',1,'Why CRTP Instead of Virtual Functions?']]]
+  ['t_20forget_20the_20template_20parameter_0',['❌ Don&apos;t Forget the Template Parameter',['../md_docs_2platform__integration.html#autotoc_md123',1,'']]],
+  ['t_20use_20virtual_20functions_1',['❌ Don&apos;t Use Virtual Functions',['../md_docs_2platform__integration.html#autotoc_md121',1,'']]],
+  ['table_2',['Address Pin Configuration Table',['../md_docs_2configuration.html#autotoc_md39',1,'']]],
+  ['template_20parameter_3',['Template Parameter',['../md_docs_2platform__integration.html#autotoc_md124',1,'✅ Correct Template Parameter'],['../md_docs_2platform__integration.html#autotoc_md123',1,'❌ Don&apos;t Forget the Template Parameter']]],
+  ['template_20pattern_4',['Understanding CRTP (Curiously Recurring Template Pattern)',['../md_docs_2platform__integration.html#autotoc_md105',1,'']]],
+  ['test_20suite_20tt_20pcal95555_5fcomprehensive_5ftest_20tt_5',['Comprehensive Test Suite (&lt;tt&gt;pcal95555_comprehensive_test&lt;/tt&gt;)',['../index.html#autotoc_md11',1,'']]],
+  ['test_20wiring_6',['Interactive test wiring',['../index.html#autotoc_md16',1,'']]],
+  ['testing_20your_20implementation_7',['Testing Your Implementation',['../md_docs_2platform__integration.html#autotoc_md125',1,'']]],
+  ['the_20driver_20and_20use_20it_8',['2. Create the driver and use it',['../index.html#autotoc_md5',1,'']]],
+  ['the_20examples_9',['Running the Examples',['../md_docs_2examples.html#autotoc_md70',1,'']]],
+  ['the_20header_10',['The Header',['../md_docs_2installation.html#autotoc_md102',1,'Including the Header'],['../md_docs_2quickstart.html#autotoc_md131',1,'Step 1: Include the Header']]],
+  ['the_20i2c_20interface_11',['Step 2: Implement the I2C Interface',['../md_docs_2quickstart.html#autotoc_md132',1,'']]],
+  ['the_20i2c_20interface_20for_20your_20platform_12',['1. Implement the I2C interface for your platform',['../index.html#autotoc_md4',1,'']]],
+  ['the_20template_20parameter_13',['❌ Don&apos;t Forget the Template Parameter',['../md_docs_2platform__integration.html#autotoc_md123',1,'']]],
+  ['time_20polymorphism_20strong_14',['2. &lt;strong&gt;Compile-Time Polymorphism&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md108',1,'']]],
+  ['troubleshooting_15',['Troubleshooting',['../md_docs_2troubleshooting.html',1,'Troubleshooting'],['../md_docs_2quickstart.html#autotoc_md137',1,'Troubleshooting']]],
+  ['troubleshooting_20strong_16',['&lt;strong&gt;Troubleshooting&lt;/strong&gt;',['../md_docs_2index.html#autotoc_md95',1,'']]],
+  ['tt_20pcal95555_20i2ctype_20tt_17',['&lt;tt&gt;PCAL95555\&lt;I2cType\&gt;&lt;/tt&gt;',['../md_docs_2api__reference.html#autotoc_md21',1,'']]],
+  ['tt_20pcal95555_5fcomprehensive_5ftest_20tt_18',['Comprehensive Test Suite (&lt;tt&gt;pcal95555_comprehensive_test&lt;/tt&gt;)',['../index.html#autotoc_md11',1,'']]],
+  ['tt_20pcal95555_5fled_5fanimation_20tt_19',['LED Animation Demo (&lt;tt&gt;pcal95555_led_animation&lt;/tt&gt;)',['../index.html#autotoc_md12',1,'']]],
+  ['type_20safety_20',['4. **Type Safety**',['../md_docs_2platform__integration.html#autotoc_md110',1,'']]],
+  ['types_21',['Types',['../md_docs_2api__reference.html#autotoc_md35',1,'']]]
 ];
