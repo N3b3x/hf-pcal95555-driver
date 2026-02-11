@@ -646,6 +646,27 @@ public:
   bool WritePin(uint16_t pin, bool value) noexcept;
 
   /**
+   * @brief Set the output level for multiple GPIO pins at once using a bitmask.
+   *
+   * Reads both output port registers, modifies the bits indicated by @p mask to
+   * the specified @p value, and writes both registers back. This is significantly
+   * more efficient than calling WritePin() in a loop (2 reads + 2 writes vs.
+   * 2 reads + 2 writes per pin).
+   *
+   * @param mask  Bitmask where each set bit indicates a pin to modify.
+   * @param value Common output level for all selected pins (true=HIGH, false=LOW).
+   * @return true on success; false if any I2C operation fails.
+   *
+   * @example
+   *   // Set pins 0, 2, 4 HIGH in one call
+   *   driver.SetMultipleOutputs(0x0015, true);
+   *
+   *   // Clear pins 8-15
+   *   driver.SetMultipleOutputs(0xFF00, false);
+   */
+  bool SetMultipleOutputs(uint16_t mask, bool value) noexcept;
+
+  /**
    * @brief Toggle the output state of a GPIO pin.
    *
    * @param pin Zero-based pin index (0-15).
@@ -737,6 +758,21 @@ public:
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
   bool SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
+
+  /**
+   * @brief Read the current pull resistor configuration from hardware registers.
+   *
+   * Reads the PULL_ENABLE (0x46-0x47) and PULL_SELECT (0x48-0x49) registers
+   * and returns them as 16-bit bitmasks (bit N corresponds to pin N).
+   *
+   * @param[out] enable_mask  Bitmask: bit set = pull resistor enabled on that pin.
+   * @param[out] direction_mask Bitmask: bit set = pull-up, bit clear = pull-down.
+   *                            Only meaningful for pins where the corresponding
+   *                            enable_mask bit is set.
+   * @return true on success; false on I2C failure.
+   * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
+   */
+  bool GetPullConfiguration(uint16_t& enable_mask, uint16_t& direction_mask) noexcept;
 
   /**
    * @brief Configure the output drive strength for a GPIO pin.

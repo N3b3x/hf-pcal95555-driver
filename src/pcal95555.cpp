@@ -361,6 +361,41 @@ bool pcal95555::PCAL95555<I2cType>::WritePin(uint16_t pin, bool value) noexcept 
   return writeRegister(reg, val);
 }
 
+// Set multiple outputs via bitmask (analogous to SetMultipleDirections)
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::SetMultipleOutputs(uint16_t mask, bool value) noexcept {
+  if (!EnsureInitialized()) {
+    return false;
+  }
+  clearError(Error::InvalidMask);
+
+  // Read current output port 0
+  uint8_t val0 = 0;
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_0), val0)) {
+    return false;
+  }
+  for (int bit = 0; bit < 8; ++bit) {
+    if ((mask & (1U << bit)) != 0U) {
+      val0 = updateBit(val0, bit, value);
+    }
+  }
+  if (!writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_0), val0)) {
+    return false;
+  }
+
+  // Read current output port 1
+  uint8_t val1 = 0;
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_1), val1)) {
+    return false;
+  }
+  for (int bit = 0; bit < 8; ++bit) {
+    if ((mask & (1U << (bit + 8))) != 0U) {
+      val1 = updateBit(val1, bit, value);
+    }
+  }
+  return writeRegister(static_cast<uint8_t>(PCAL95555_REG::OUTPUT_PORT_1), val1);
+}
+
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::TogglePin(uint16_t pin) noexcept {
   if (!EnsureInitialized()) {
@@ -600,6 +635,36 @@ bool pcal95555::PCAL95555<I2cType>::SetPullDirections(std::initializer_list<std:
     return false;
   }
   return writeRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_1), port1);
+}
+
+// Read pull configuration from hardware
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::GetPullConfiguration(uint16_t& enable_mask,
+                                                          uint16_t& direction_mask) noexcept {
+  if (!EnsureInitialized()) {
+    return false;
+  }
+  if (!requireAgileIO()) {
+    return false;
+  }
+
+  uint8_t en0 = 0, en1 = 0, sel0 = 0, sel1 = 0;
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_0), en0)) {
+    return false;
+  }
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_ENABLE_1), en1)) {
+    return false;
+  }
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_0), sel0)) {
+    return false;
+  }
+  if (!readRegister(static_cast<uint8_t>(PCAL95555_REG::PULL_SELECT_1), sel1)) {
+    return false;
+  }
+
+  enable_mask    = static_cast<uint16_t>((en1 << 8) | en0);
+  direction_mask = static_cast<uint16_t>((sel1 << 8) | sel0);
+  return true;
 }
 
 // Drive strength (2 bits per pin)
