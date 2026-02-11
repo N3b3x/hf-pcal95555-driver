@@ -163,6 +163,7 @@ public:
 
 ### 2. Create the driver and use it
 
+{% raw %}
 ```cpp
 MyI2c i2c;
 
@@ -191,6 +192,7 @@ if (gpio.HasAgileIO()) {
 gpio.WritePins({{0, true}, {1, false}, {2, true}});
 gpio.SetDirections({{0, GPIODir::Output}, {1, GPIODir::Input}});
 ```
+{% endraw %}
 
 ---
 
