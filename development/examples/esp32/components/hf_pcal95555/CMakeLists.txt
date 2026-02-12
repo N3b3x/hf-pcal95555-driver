@@ -10,10 +10,10 @@ cmake_minimum_required(VERSION 3.16)
 # Path Configuration
 # =============================================================================
 # Set the source root path relative to this component directory
-set(SRC_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../")
-set(INC_ROOT "${SRC_ROOT}")
+set(SRC_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../src")
+set(INC_ROOT "${CMAKE_CURRENT_SOURCE_DIR}/../../../../inc")
 
-message(STATUS "PCAL9555 Driver - ESP32 Component Configuration")
+message(STATUS "PCAL95555 Driver - ESP32 Component Configuration")
 message(STATUS "Source Root: ${SRC_ROOT}")
 
 # =============================================================================
@@ -42,7 +42,7 @@ endforeach()
 # =============================================================================
 # Define include directories for the driver component
 set(DRIVER_INCLUDE_DIRS
-    "${INC_ROOT}/inc"                       # Main driver headers
+    "${INC_ROOT}"                           # Main driver headers
 )
 
 # =============================================================================
