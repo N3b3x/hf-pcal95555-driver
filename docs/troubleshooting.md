@@ -165,7 +165,7 @@ if (pin < 16) {
 Add debug prints to your I2C interface:
 
 ```cpp
-bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
     printf("I2C Write: addr=0x%02X, reg=0x%02X, len=%zu\n", addr, reg, len);
     // ... your implementation
     bool result = /* ... */;
@@ -196,6 +196,38 @@ void i2c_scanner() {
     }
 }
 ```
+
+---
+
+### Error: Invalid Address (InvalidAddress)
+
+**Symptoms:**
+- Constructor or `ChangeAddress()` sets `Error::InvalidAddress` (flag `0x0020`)
+- Methods fail after providing an out-of-range address
+
+**Cause:**
+The I2C address provided is outside the valid range **0x20-0x27**. The PCA9555/PCAL9555A
+only responds to addresses in this range (determined by the A0-A2 hardware pins).
+
+**Solutions:**
+1. **Check address parameter**: Ensure the address is between `0x20` and `0x27`:
+   ```cpp
+   // Valid: address in 0x20-0x27 range
+   PCAL95555 driver(bus, 0x20);
+
+   // Invalid: will set Error::InvalidAddress
+   PCAL95555 driver(bus, 0x50);
+   ```
+2. **Use pin-level constructor**: The pin-level constructor always computes a valid address:
+   ```cpp
+   PCAL95555 driver(bus, false, false, false); // Always valid (0x20)
+   ```
+3. **Check error flags**: After construction, verify no errors:
+   ```cpp
+   if (driver.GetErrorFlags() & static_cast<uint16_t>(Error::InvalidAddress)) {
+       printf("Invalid I2C address!\n");
+   }
+   ```
 
 ---
 
@@ -362,7 +394,7 @@ gpio.SetDriveStrength(pin, DriveStrength::Level1); // 50% strength
 ```cpp
 uint16_t errors = gpio.GetErrorFlags();
 if (errors & static_cast<uint16_t>(Error::I2CReadFail)) {
-    // I2C read failed
+    // I2C read failed (also set by ReadPins() on failure)
 }
 if (errors & static_cast<uint16_t>(Error::I2CWriteFail)) {
     // I2C write failed
@@ -373,9 +405,15 @@ if (errors & static_cast<uint16_t>(Error::InvalidPin)) {
 if (errors & static_cast<uint16_t>(Error::UnsupportedFeature)) {
     // PCAL9555A feature called on PCA9555
 }
+if (errors & static_cast<uint16_t>(Error::InvalidAddress)) {
+    // I2C address outside valid 0x20-0x27 range
+}
 gpio.ClearErrorFlags(); // Clear all errors
 // Or clear selectively: gpio.ClearErrorFlags(0x0001); // Clear only InvalidPin
 ```
+
+> **Note:** `ReadPins()` now properly reports `Error::I2CReadFail` when the underlying
+> I2C read fails, instead of silently returning empty results.
 
 ---
 

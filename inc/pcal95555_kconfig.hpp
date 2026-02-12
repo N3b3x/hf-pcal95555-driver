@@ -1,0 +1,314 @@
+/**
+ * @file pcal95555_kconfig.hpp
+ * @brief ESP-IDF Kconfig default macros for PCAL95555 driver initialization
+ *
+ * This header provides default values for the CONFIG_PCAL95555_* macros used by
+ * the InitFromConfig() method. These macros can be overridden by ESP-IDF's Kconfig
+ * system or by defining them before including this header.
+ *
+ * @note This file is automatically included by pcal95555.hpp. Non-ESP-IDF users
+ *       who don't use InitFromConfig() will see these macros defined but never used.
+ *
+ * @author Nebiyu Tadesse
+ * @date 2025-05-21
+ * @version 1.0
+ */
+#ifndef PCAL95555_KCONFIG_HPP
+#define PCAL95555_KCONFIG_HPP
+
+// NOLINTBEGIN(cppcoreguidelines-macro-usage) - Kconfig macros for ESP-IDF integration
+
+#ifndef CONFIG_PCAL95555_INIT_FROM_KCONFIG
+#define CONFIG_PCAL95555_INIT_FROM_KCONFIG 1
+#endif
+#ifndef CONFIG_PCAL95555_PORT0_OD
+#define CONFIG_PCAL95555_PORT0_OD 0
+#endif
+#ifndef CONFIG_PCAL95555_PORT1_OD
+#define CONFIG_PCAL95555_PORT1_OD 0
+#endif
+
+/* Per-pin direction defaults (1 = Input, 0 = Output) */
+#ifndef CONFIG_PCAL95555_P0_0_DIR
+#define CONFIG_PCAL95555_P0_0_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_1_DIR
+#define CONFIG_PCAL95555_P0_1_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_2_DIR
+#define CONFIG_PCAL95555_P0_2_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_3_DIR
+#define CONFIG_PCAL95555_P0_3_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_4_DIR
+#define CONFIG_PCAL95555_P0_4_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_5_DIR
+#define CONFIG_PCAL95555_P0_5_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_6_DIR
+#define CONFIG_PCAL95555_P0_6_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_7_DIR
+#define CONFIG_PCAL95555_P0_7_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_0_DIR
+#define CONFIG_PCAL95555_P1_0_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_1_DIR
+#define CONFIG_PCAL95555_P1_1_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_2_DIR
+#define CONFIG_PCAL95555_P1_2_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_3_DIR
+#define CONFIG_PCAL95555_P1_3_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_4_DIR
+#define CONFIG_PCAL95555_P1_4_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_5_DIR
+#define CONFIG_PCAL95555_P1_5_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_6_DIR
+#define CONFIG_PCAL95555_P1_6_DIR 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_7_DIR
+#define CONFIG_PCAL95555_P1_7_DIR 1
+#endif
+
+/* Per-pin pull resistor enable defaults (1 = Enabled, 0 = Disabled) */
+#ifndef CONFIG_PCAL95555_P0_0_PULL
+#define CONFIG_PCAL95555_P0_0_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_1_PULL
+#define CONFIG_PCAL95555_P0_1_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_2_PULL
+#define CONFIG_PCAL95555_P0_2_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_3_PULL
+#define CONFIG_PCAL95555_P0_3_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_4_PULL
+#define CONFIG_PCAL95555_P0_4_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_5_PULL
+#define CONFIG_PCAL95555_P0_5_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_6_PULL
+#define CONFIG_PCAL95555_P0_6_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_7_PULL
+#define CONFIG_PCAL95555_P0_7_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_0_PULL
+#define CONFIG_PCAL95555_P1_0_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_1_PULL
+#define CONFIG_PCAL95555_P1_1_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_2_PULL
+#define CONFIG_PCAL95555_P1_2_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_3_PULL
+#define CONFIG_PCAL95555_P1_3_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_4_PULL
+#define CONFIG_PCAL95555_P1_4_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_5_PULL
+#define CONFIG_PCAL95555_P1_5_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_6_PULL
+#define CONFIG_PCAL95555_P1_6_PULL 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_7_PULL
+#define CONFIG_PCAL95555_P1_7_PULL 0
+#endif
+
+/* Per-pin pull-up direction defaults (1 = Pull-Up, 0 = Pull-Down) */
+#ifndef CONFIG_PCAL95555_P0_0_PULL_UP
+#define CONFIG_PCAL95555_P0_0_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_1_PULL_UP
+#define CONFIG_PCAL95555_P0_1_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_2_PULL_UP
+#define CONFIG_PCAL95555_P0_2_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_3_PULL_UP
+#define CONFIG_PCAL95555_P0_3_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_4_PULL_UP
+#define CONFIG_PCAL95555_P0_4_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_5_PULL_UP
+#define CONFIG_PCAL95555_P0_5_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_6_PULL_UP
+#define CONFIG_PCAL95555_P0_6_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P0_7_PULL_UP
+#define CONFIG_PCAL95555_P0_7_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_0_PULL_UP
+#define CONFIG_PCAL95555_P1_0_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_1_PULL_UP
+#define CONFIG_PCAL95555_P1_1_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_2_PULL_UP
+#define CONFIG_PCAL95555_P1_2_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_3_PULL_UP
+#define CONFIG_PCAL95555_P1_3_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_4_PULL_UP
+#define CONFIG_PCAL95555_P1_4_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_5_PULL_UP
+#define CONFIG_PCAL95555_P1_5_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_6_PULL_UP
+#define CONFIG_PCAL95555_P1_6_PULL_UP 1
+#endif
+#ifndef CONFIG_PCAL95555_P1_7_PULL_UP
+#define CONFIG_PCAL95555_P1_7_PULL_UP 1
+#endif
+
+/* Per-pin output defaults (1 = High, 0 = Low) */
+#ifndef CONFIG_PCAL95555_P0_0_OUTPUT
+#define CONFIG_PCAL95555_P0_0_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_1_OUTPUT
+#define CONFIG_PCAL95555_P0_1_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_2_OUTPUT
+#define CONFIG_PCAL95555_P0_2_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_3_OUTPUT
+#define CONFIG_PCAL95555_P0_3_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_4_OUTPUT
+#define CONFIG_PCAL95555_P0_4_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_5_OUTPUT
+#define CONFIG_PCAL95555_P0_5_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_6_OUTPUT
+#define CONFIG_PCAL95555_P0_6_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P0_7_OUTPUT
+#define CONFIG_PCAL95555_P0_7_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_0_OUTPUT
+#define CONFIG_PCAL95555_P1_0_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_1_OUTPUT
+#define CONFIG_PCAL95555_P1_1_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_2_OUTPUT
+#define CONFIG_PCAL95555_P1_2_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_3_OUTPUT
+#define CONFIG_PCAL95555_P1_3_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_4_OUTPUT
+#define CONFIG_PCAL95555_P1_4_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_5_OUTPUT
+#define CONFIG_PCAL95555_P1_5_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_6_OUTPUT
+#define CONFIG_PCAL95555_P1_6_OUTPUT 0
+#endif
+#ifndef CONFIG_PCAL95555_P1_7_OUTPUT
+#define CONFIG_PCAL95555_P1_7_OUTPUT 0
+#endif
+
+/* Derived port-level masks from per-pin options */
+#ifndef CONFIG_PCAL95555_PORT0_DIRECTION
+#define CONFIG_PCAL95555_PORT0_DIRECTION                                                           \
+  ((CONFIG_PCAL95555_P0_0_DIR << 0) | (CONFIG_PCAL95555_P0_1_DIR << 1) |                           \
+   (CONFIG_PCAL95555_P0_2_DIR << 2) | (CONFIG_PCAL95555_P0_3_DIR << 3) |                           \
+   (CONFIG_PCAL95555_P0_4_DIR << 4) | (CONFIG_PCAL95555_P0_5_DIR << 5) |                           \
+   (CONFIG_PCAL95555_P0_6_DIR << 6) | (CONFIG_PCAL95555_P0_7_DIR << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT1_DIRECTION
+#define CONFIG_PCAL95555_PORT1_DIRECTION                                                           \
+  ((CONFIG_PCAL95555_P1_0_DIR << 0) | (CONFIG_PCAL95555_P1_1_DIR << 1) |                           \
+   (CONFIG_PCAL95555_P1_2_DIR << 2) | (CONFIG_PCAL95555_P1_3_DIR << 3) |                           \
+   (CONFIG_PCAL95555_P1_4_DIR << 4) | (CONFIG_PCAL95555_P1_5_DIR << 5) |                           \
+   (CONFIG_PCAL95555_P1_6_DIR << 6) | (CONFIG_PCAL95555_P1_7_DIR << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT0_PULL_ENABLE
+#define CONFIG_PCAL95555_PORT0_PULL_ENABLE                                                         \
+  ((CONFIG_PCAL95555_P0_0_PULL << 0) | (CONFIG_PCAL95555_P0_1_PULL << 1) |                         \
+   (CONFIG_PCAL95555_P0_2_PULL << 2) | (CONFIG_PCAL95555_P0_3_PULL << 3) |                         \
+   (CONFIG_PCAL95555_P0_4_PULL << 4) | (CONFIG_PCAL95555_P0_5_PULL << 5) |                         \
+   (CONFIG_PCAL95555_P0_6_PULL << 6) | (CONFIG_PCAL95555_P0_7_PULL << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT1_PULL_ENABLE
+#define CONFIG_PCAL95555_PORT1_PULL_ENABLE                                                         \
+  ((CONFIG_PCAL95555_P1_0_PULL << 0) | (CONFIG_PCAL95555_P1_1_PULL << 1) |                         \
+   (CONFIG_PCAL95555_P1_2_PULL << 2) | (CONFIG_PCAL95555_P1_3_PULL << 3) |                         \
+   (CONFIG_PCAL95555_P1_4_PULL << 4) | (CONFIG_PCAL95555_P1_5_PULL << 5) |                         \
+   (CONFIG_PCAL95555_P1_6_PULL << 6) | (CONFIG_PCAL95555_P1_7_PULL << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT0_PULL_UP
+#define CONFIG_PCAL95555_PORT0_PULL_UP                                                             \
+  ((CONFIG_PCAL95555_P0_0_PULL_UP << 0) | (CONFIG_PCAL95555_P0_1_PULL_UP << 1) |                   \
+   (CONFIG_PCAL95555_P0_2_PULL_UP << 2) | (CONFIG_PCAL95555_P0_3_PULL_UP << 3) |                   \
+   (CONFIG_PCAL95555_P0_4_PULL_UP << 4) | (CONFIG_PCAL95555_P0_5_PULL_UP << 5) |                   \
+   (CONFIG_PCAL95555_P0_6_PULL_UP << 6) | (CONFIG_PCAL95555_P0_7_PULL_UP << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT1_PULL_UP
+#define CONFIG_PCAL95555_PORT1_PULL_UP                                                             \
+  ((CONFIG_PCAL95555_P1_0_PULL_UP << 0) | (CONFIG_PCAL95555_P1_1_PULL_UP << 1) |                   \
+   (CONFIG_PCAL95555_P1_2_PULL_UP << 2) | (CONFIG_PCAL95555_P1_3_PULL_UP << 3) |                   \
+   (CONFIG_PCAL95555_P1_4_PULL_UP << 4) | (CONFIG_PCAL95555_P1_5_PULL_UP << 5) |                   \
+   (CONFIG_PCAL95555_P1_6_PULL_UP << 6) | (CONFIG_PCAL95555_P1_7_PULL_UP << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT0_OUTPUT
+#define CONFIG_PCAL95555_PORT0_OUTPUT                                                              \
+  ((CONFIG_PCAL95555_P0_0_OUTPUT << 0) | (CONFIG_PCAL95555_P0_1_OUTPUT << 1) |                     \
+   (CONFIG_PCAL95555_P0_2_OUTPUT << 2) | (CONFIG_PCAL95555_P0_3_OUTPUT << 3) |                     \
+   (CONFIG_PCAL95555_P0_4_OUTPUT << 4) | (CONFIG_PCAL95555_P0_5_OUTPUT << 5) |                     \
+   (CONFIG_PCAL95555_P0_6_OUTPUT << 6) | (CONFIG_PCAL95555_P0_7_OUTPUT << 7))
+#endif
+#ifndef CONFIG_PCAL95555_PORT1_OUTPUT
+#define CONFIG_PCAL95555_PORT1_OUTPUT                                                              \
+  ((CONFIG_PCAL95555_P1_0_OUTPUT << 0) | (CONFIG_PCAL95555_P1_1_OUTPUT << 1) |                     \
+   (CONFIG_PCAL95555_P1_2_OUTPUT << 2) | (CONFIG_PCAL95555_P1_3_OUTPUT << 3) |                     \
+   (CONFIG_PCAL95555_P1_4_OUTPUT << 4) | (CONFIG_PCAL95555_P1_5_OUTPUT << 5) |                     \
+   (CONFIG_PCAL95555_P1_6_OUTPUT << 6) | (CONFIG_PCAL95555_P1_7_OUTPUT << 7))
+#endif
+
+#ifndef CONFIG_PCAL95555_INIT_DIRECTION
+#define CONFIG_PCAL95555_INIT_DIRECTION                                                            \
+  ((CONFIG_PCAL95555_PORT1_DIRECTION << 8) | CONFIG_PCAL95555_PORT0_DIRECTION)
+#endif
+#ifndef CONFIG_PCAL95555_INIT_PULL_ENABLE
+#define CONFIG_PCAL95555_INIT_PULL_ENABLE                                                          \
+  ((CONFIG_PCAL95555_PORT1_PULL_ENABLE << 8) | CONFIG_PCAL95555_PORT0_PULL_ENABLE)
+#endif
+#ifndef CONFIG_PCAL95555_INIT_PULL_UP
+#define CONFIG_PCAL95555_INIT_PULL_UP                                                              \
+  ((CONFIG_PCAL95555_PORT1_PULL_UP << 8) | CONFIG_PCAL95555_PORT0_PULL_UP)
+#endif
+#ifndef CONFIG_PCAL95555_INIT_OUTPUT
+#define CONFIG_PCAL95555_INIT_OUTPUT                                                               \
+  ((CONFIG_PCAL95555_PORT1_OUTPUT << 8) | CONFIG_PCAL95555_PORT0_OUTPUT)
+#endif
+#ifndef CONFIG_PCAL95555_INIT_OD_PORT0
+#define CONFIG_PCAL95555_INIT_OD_PORT0 CONFIG_PCAL95555_PORT0_OD
+#endif
+#ifndef CONFIG_PCAL95555_INIT_OD_PORT1
+#define CONFIG_PCAL95555_INIT_OD_PORT1 CONFIG_PCAL95555_PORT1_OD
+#endif
+
+// NOLINTEND(cppcoreguidelines-macro-usage)
+
+#endif // PCAL95555_KCONFIG_HPP

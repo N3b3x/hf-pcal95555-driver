@@ -46,300 +46,11 @@
 #include <string.h> // NOLINT(modernize-deprecated-headers) - For C string functions (must be before namespace)
 
 #include "pcal95555_i2c_interface.hpp"
-
-// NOLINTBEGIN(cppcoreguidelines-macro-usage) - Kconfig macros for ESP-IDF integration
-#ifndef CONFIG_PCAL95555_INIT_FROM_KCONFIG
-#define CONFIG_PCAL95555_INIT_FROM_KCONFIG 1
-#endif
-#ifndef CONFIG_PCAL95555_PORT0_OD
-#define CONFIG_PCAL95555_PORT0_OD 0
-#endif
-#ifndef CONFIG_PCAL95555_PORT1_OD
-#define CONFIG_PCAL95555_PORT1_OD 0
-#endif
-
-/* Per-pin defaults */
-#ifndef CONFIG_PCAL95555_P0_0_DIR
-#define CONFIG_PCAL95555_P0_0_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_1_DIR
-#define CONFIG_PCAL95555_P0_1_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_2_DIR
-#define CONFIG_PCAL95555_P0_2_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_3_DIR
-#define CONFIG_PCAL95555_P0_3_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_4_DIR
-#define CONFIG_PCAL95555_P0_4_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_5_DIR
-#define CONFIG_PCAL95555_P0_5_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_6_DIR
-#define CONFIG_PCAL95555_P0_6_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_7_DIR
-#define CONFIG_PCAL95555_P0_7_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_0_DIR
-#define CONFIG_PCAL95555_P1_0_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_1_DIR
-#define CONFIG_PCAL95555_P1_1_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_2_DIR
-#define CONFIG_PCAL95555_P1_2_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_3_DIR
-#define CONFIG_PCAL95555_P1_3_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_4_DIR
-#define CONFIG_PCAL95555_P1_4_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_5_DIR
-#define CONFIG_PCAL95555_P1_5_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_6_DIR
-#define CONFIG_PCAL95555_P1_6_DIR 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_7_DIR
-#define CONFIG_PCAL95555_P1_7_DIR 1
-#endif
-
-#ifndef CONFIG_PCAL95555_P0_0_PULL
-#define CONFIG_PCAL95555_P0_0_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_1_PULL
-#define CONFIG_PCAL95555_P0_1_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_2_PULL
-#define CONFIG_PCAL95555_P0_2_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_3_PULL
-#define CONFIG_PCAL95555_P0_3_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_4_PULL
-#define CONFIG_PCAL95555_P0_4_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_5_PULL
-#define CONFIG_PCAL95555_P0_5_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_6_PULL
-#define CONFIG_PCAL95555_P0_6_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_7_PULL
-#define CONFIG_PCAL95555_P0_7_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_0_PULL
-#define CONFIG_PCAL95555_P1_0_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_1_PULL
-#define CONFIG_PCAL95555_P1_1_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_2_PULL
-#define CONFIG_PCAL95555_P1_2_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_3_PULL
-#define CONFIG_PCAL95555_P1_3_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_4_PULL
-#define CONFIG_PCAL95555_P1_4_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_5_PULL
-#define CONFIG_PCAL95555_P1_5_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_6_PULL
-#define CONFIG_PCAL95555_P1_6_PULL 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_7_PULL
-#define CONFIG_PCAL95555_P1_7_PULL 0
-#endif
-
-#ifndef CONFIG_PCAL95555_P0_0_PULL_UP
-#define CONFIG_PCAL95555_P0_0_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_1_PULL_UP
-#define CONFIG_PCAL95555_P0_1_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_2_PULL_UP
-#define CONFIG_PCAL95555_P0_2_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_3_PULL_UP
-#define CONFIG_PCAL95555_P0_3_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_4_PULL_UP
-#define CONFIG_PCAL95555_P0_4_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_5_PULL_UP
-#define CONFIG_PCAL95555_P0_5_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_6_PULL_UP
-#define CONFIG_PCAL95555_P0_6_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P0_7_PULL_UP
-#define CONFIG_PCAL95555_P0_7_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_0_PULL_UP
-#define CONFIG_PCAL95555_P1_0_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_1_PULL_UP
-#define CONFIG_PCAL95555_P1_1_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_2_PULL_UP
-#define CONFIG_PCAL95555_P1_2_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_3_PULL_UP
-#define CONFIG_PCAL95555_P1_3_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_4_PULL_UP
-#define CONFIG_PCAL95555_P1_4_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_5_PULL_UP
-#define CONFIG_PCAL95555_P1_5_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_6_PULL_UP
-#define CONFIG_PCAL95555_P1_6_PULL_UP 1
-#endif
-#ifndef CONFIG_PCAL95555_P1_7_PULL_UP
-#define CONFIG_PCAL95555_P1_7_PULL_UP 1
-#endif
-
-#ifndef CONFIG_PCAL95555_P0_0_OUTPUT
-#define CONFIG_PCAL95555_P0_0_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_1_OUTPUT
-#define CONFIG_PCAL95555_P0_1_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_2_OUTPUT
-#define CONFIG_PCAL95555_P0_2_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_3_OUTPUT
-#define CONFIG_PCAL95555_P0_3_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_4_OUTPUT
-#define CONFIG_PCAL95555_P0_4_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_5_OUTPUT
-#define CONFIG_PCAL95555_P0_5_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_6_OUTPUT
-#define CONFIG_PCAL95555_P0_6_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P0_7_OUTPUT
-#define CONFIG_PCAL95555_P0_7_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_0_OUTPUT
-#define CONFIG_PCAL95555_P1_0_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_1_OUTPUT
-#define CONFIG_PCAL95555_P1_1_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_2_OUTPUT
-#define CONFIG_PCAL95555_P1_2_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_3_OUTPUT
-#define CONFIG_PCAL95555_P1_3_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_4_OUTPUT
-#define CONFIG_PCAL95555_P1_4_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_5_OUTPUT
-#define CONFIG_PCAL95555_P1_5_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_6_OUTPUT
-#define CONFIG_PCAL95555_P1_6_OUTPUT 0
-#endif
-#ifndef CONFIG_PCAL95555_P1_7_OUTPUT
-#define CONFIG_PCAL95555_P1_7_OUTPUT 0
-#endif
-
-/* Derived port-level masks from per-pin options */
-#ifndef CONFIG_PCAL95555_PORT0_DIRECTION
-#define CONFIG_PCAL95555_PORT0_DIRECTION                                                           \
-  ((CONFIG_PCAL95555_P0_0_DIR << 0) | (CONFIG_PCAL95555_P0_1_DIR << 1) |                           \
-   (CONFIG_PCAL95555_P0_2_DIR << 2) | (CONFIG_PCAL95555_P0_3_DIR << 3) |                           \
-   (CONFIG_PCAL95555_P0_4_DIR << 4) | (CONFIG_PCAL95555_P0_5_DIR << 5) |                           \
-   (CONFIG_PCAL95555_P0_6_DIR << 6) | (CONFIG_PCAL95555_P0_7_DIR << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT1_DIRECTION
-#define CONFIG_PCAL95555_PORT1_DIRECTION                                                           \
-  ((CONFIG_PCAL95555_P1_0_DIR << 0) | (CONFIG_PCAL95555_P1_1_DIR << 1) |                           \
-   (CONFIG_PCAL95555_P1_2_DIR << 2) | (CONFIG_PCAL95555_P1_3_DIR << 3) |                           \
-   (CONFIG_PCAL95555_P1_4_DIR << 4) | (CONFIG_PCAL95555_P1_5_DIR << 5) |                           \
-   (CONFIG_PCAL95555_P1_6_DIR << 6) | (CONFIG_PCAL95555_P1_7_DIR << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT0_PULL_ENABLE
-#define CONFIG_PCAL95555_PORT0_PULL_ENABLE                                                         \
-  ((CONFIG_PCAL95555_P0_0_PULL << 0) | (CONFIG_PCAL95555_P0_1_PULL << 1) |                         \
-   (CONFIG_PCAL95555_P0_2_PULL << 2) | (CONFIG_PCAL95555_P0_3_PULL << 3) |                         \
-   (CONFIG_PCAL95555_P0_4_PULL << 4) | (CONFIG_PCAL95555_P0_5_PULL << 5) |                         \
-   (CONFIG_PCAL95555_P0_6_PULL << 6) | (CONFIG_PCAL95555_P0_7_PULL << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT1_PULL_ENABLE
-#define CONFIG_PCAL95555_PORT1_PULL_ENABLE                                                         \
-  ((CONFIG_PCAL95555_P1_0_PULL << 0) | (CONFIG_PCAL95555_P1_1_PULL << 1) |                         \
-   (CONFIG_PCAL95555_P1_2_PULL << 2) | (CONFIG_PCAL95555_P1_3_PULL << 3) |                         \
-   (CONFIG_PCAL95555_P1_4_PULL << 4) | (CONFIG_PCAL95555_P1_5_PULL << 5) |                         \
-   (CONFIG_PCAL95555_P1_6_PULL << 6) | (CONFIG_PCAL95555_P1_7_PULL << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT0_PULL_UP
-#define CONFIG_PCAL95555_PORT0_PULL_UP                                                             \
-  ((CONFIG_PCAL95555_P0_0_PULL_UP << 0) | (CONFIG_PCAL95555_P0_1_PULL_UP << 1) |                   \
-   (CONFIG_PCAL95555_P0_2_PULL_UP << 2) | (CONFIG_PCAL95555_P0_3_PULL_UP << 3) |                   \
-   (CONFIG_PCAL95555_P0_4_PULL_UP << 4) | (CONFIG_PCAL95555_P0_5_PULL_UP << 5) |                   \
-   (CONFIG_PCAL95555_P0_6_PULL_UP << 6) | (CONFIG_PCAL95555_P0_7_PULL_UP << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT1_PULL_UP
-#define CONFIG_PCAL95555_PORT1_PULL_UP                                                             \
-  ((CONFIG_PCAL95555_P1_0_PULL_UP << 0) | (CONFIG_PCAL95555_P1_1_PULL_UP << 1) |                   \
-   (CONFIG_PCAL95555_P1_2_PULL_UP << 2) | (CONFIG_PCAL95555_P1_3_PULL_UP << 3) |                   \
-   (CONFIG_PCAL95555_P1_4_PULL_UP << 4) | (CONFIG_PCAL95555_P1_5_PULL_UP << 5) |                   \
-   (CONFIG_PCAL95555_P1_6_PULL_UP << 6) | (CONFIG_PCAL95555_P1_7_PULL_UP << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT0_OUTPUT
-#define CONFIG_PCAL95555_PORT0_OUTPUT                                                              \
-  ((CONFIG_PCAL95555_P0_0_OUTPUT << 0) | (CONFIG_PCAL95555_P0_1_OUTPUT << 1) |                     \
-   (CONFIG_PCAL95555_P0_2_OUTPUT << 2) | (CONFIG_PCAL95555_P0_3_OUTPUT << 3) |                     \
-   (CONFIG_PCAL95555_P0_4_OUTPUT << 4) | (CONFIG_PCAL95555_P0_5_OUTPUT << 5) |                     \
-   (CONFIG_PCAL95555_P0_6_OUTPUT << 6) | (CONFIG_PCAL95555_P0_7_OUTPUT << 7))
-#endif
-#ifndef CONFIG_PCAL95555_PORT1_OUTPUT
-#define CONFIG_PCAL95555_PORT1_OUTPUT                                                              \
-  ((CONFIG_PCAL95555_P1_0_OUTPUT << 0) | (CONFIG_PCAL95555_P1_1_OUTPUT << 1) |                     \
-   (CONFIG_PCAL95555_P1_2_OUTPUT << 2) | (CONFIG_PCAL95555_P1_3_OUTPUT << 3) |                     \
-   (CONFIG_PCAL95555_P1_4_OUTPUT << 4) | (CONFIG_PCAL95555_P1_5_OUTPUT << 5) |                     \
-   (CONFIG_PCAL95555_P1_6_OUTPUT << 6) | (CONFIG_PCAL95555_P1_7_OUTPUT << 7))
-#endif
-
-#ifndef CONFIG_PCAL95555_INIT_DIRECTION
-#define CONFIG_PCAL95555_INIT_DIRECTION                                                            \
-  ((CONFIG_PCAL95555_PORT1_DIRECTION << 8) | CONFIG_PCAL95555_PORT0_DIRECTION)
-#endif
-#ifndef CONFIG_PCAL95555_INIT_PULL_ENABLE
-#define CONFIG_PCAL95555_INIT_PULL_ENABLE                                                          \
-  ((CONFIG_PCAL95555_PORT1_PULL_ENABLE << 8) | CONFIG_PCAL95555_PORT0_PULL_ENABLE)
-#endif
-#ifndef CONFIG_PCAL95555_INIT_PULL_UP
-#define CONFIG_PCAL95555_INIT_PULL_UP                                                              \
-  ((CONFIG_PCAL95555_PORT1_PULL_UP << 8) | CONFIG_PCAL95555_PORT0_PULL_UP)
-#endif
-#ifndef CONFIG_PCAL95555_INIT_OUTPUT
-#define CONFIG_PCAL95555_INIT_OUTPUT                                                               \
-  ((CONFIG_PCAL95555_PORT1_OUTPUT << 8) | CONFIG_PCAL95555_PORT0_OUTPUT)
-#endif
-#ifndef CONFIG_PCAL95555_INIT_OD_PORT0
-#define CONFIG_PCAL95555_INIT_OD_PORT0 CONFIG_PCAL95555_PORT0_OD
-#endif
-#ifndef CONFIG_PCAL95555_INIT_OD_PORT1
-#define CONFIG_PCAL95555_INIT_OD_PORT1 CONFIG_PCAL95555_PORT1_OD
-#endif
-// NOLINTEND(cppcoreguidelines-macro-usage)
+#include "pcal95555_kconfig.hpp"
 
 /** PCAL95555 register map (all control registers). */
 /**
- * @enum PCAL95555_REG
+ * @enum Pcal95555Reg
  * @brief Register addresses for the PCA9555 / PCAL9555A I/O expander chips
  *
  * The register map is split into two banks:
@@ -361,7 +72,7 @@
  *       I2C NACK. The driver auto-detects the chip variant and guards these
  *       registers accordingly.
  */
-enum class PCAL95555_REG : uint8_t {
+enum class Pcal95555Reg : uint8_t {
   // === Standard PCA9555 registers (0x00-0x07) — PCA9555 + PCAL9555A ===
   INPUT_PORT_0 = 0x00,     ///< Input port 0 (read-only) [PCA9555 + PCAL9555A]
   INPUT_PORT_1 = 0x01,     ///< Input port 1 (read-only) [PCA9555 + PCAL9555A]
@@ -423,14 +134,21 @@ enum class Error : uint16_t {
   InvalidMask = 1 << 1,         ///< Mask contained bits outside 0-15
   I2CReadFail = 1 << 2,         ///< An I2C read operation failed
   I2CWriteFail = 1 << 3,        ///< An I2C write operation failed
-  UnsupportedFeature = 1 << 4   ///< Feature requires PCAL9555A but chip is PCA9555
+  UnsupportedFeature = 1 << 4,  ///< Feature requires PCAL9555A but chip is PCA9555
+  InvalidAddress = 1 << 5       ///< Provided I2C address is out of valid range (0x20-0x27)
 };
 
-inline Error operator|(Error lhs, Error rhs) {
+/** @brief Combine two Error flags. */
+inline constexpr Error operator|(Error lhs, Error rhs) noexcept {
   return static_cast<Error>(static_cast<uint16_t>(lhs) | static_cast<uint16_t>(rhs));
 }
-inline Error operator&(Error lhs, Error rhs) {
+/** @brief Intersect two Error flags. */
+inline constexpr Error operator&(Error lhs, Error rhs) noexcept {
   return static_cast<Error>(static_cast<uint16_t>(lhs) & static_cast<uint16_t>(rhs));
+}
+/** @brief Complement an Error flag (useful with ClearErrorFlags). */
+inline constexpr Error operator~(Error e) noexcept {
+  return static_cast<Error>(~static_cast<uint16_t>(e));
 }
 
 namespace pcal95555 {
@@ -568,7 +286,33 @@ public:
   [[nodiscard]] uint16_t GetErrorFlags() const noexcept;
 
   /**
-   * @brief Clear specific error flags.
+   * @brief Check if a specific error flag is set.
+   *
+   * @param e The error flag to test.
+   * @return true if the flag is set in the current error bitmask.
+   *
+   * @code
+   *   if (driver.HasError(Error::I2CReadFail)) { ... }
+   * @endcode
+   */
+  [[nodiscard]] bool HasError(Error e) const noexcept;
+
+  /**
+   * @brief Check if any error flag is set.
+   *
+   * @return true if error_flags_ != 0.
+   */
+  [[nodiscard]] bool HasAnyError() const noexcept;
+
+  /**
+   * @brief Clear a single error flag.
+   *
+   * @param e The error flag to clear.
+   */
+  void ClearError(Error e) noexcept;
+
+  /**
+   * @brief Clear specific error flags by raw bitmask.
    *
    * @param mask Bitmask of errors to clear (default: all).
    */
@@ -1224,7 +968,7 @@ private:
    * @param bits 3-bit value (0-7) representing A2, A1, A0 pins.
    * @return 7-bit I2C address (0x20 to 0x27).
    */
-  static constexpr uint8_t CalculateAddress(uint8_t bits) {
+  static constexpr uint8_t calculateAddress(uint8_t bits) {
     constexpr uint8_t BASE_ADDRESS = 0x20;
     constexpr uint8_t MAX_BITS = 0x07;
     return BASE_ADDRESS + (bits & MAX_BITS);
@@ -1235,7 +979,7 @@ private:
    *
    * @return 16-bit mask with current pin states (bit N = pin N state).
    */
-  uint16_t ReadPinStates() noexcept;
+  uint16_t readPinStates() noexcept;
 
   /**
    * @brief Perform actual initialization of the driver.
@@ -1248,10 +992,38 @@ private:
    *
    * @return true if initialization succeeded; false on failure.
    */
-  bool Initialize() noexcept;
+  bool initialize() noexcept;
 
   void setError(Error error_code) noexcept;
   void clearError(Error error_code) noexcept;
+
+  // ---- Internal R-M-W helpers (reduce code duplication) ----
+
+  /**
+   * @brief Read both port registers (port0 and port1) in one call.
+   */
+  bool readDualPort(uint8_t reg0, uint8_t reg1, uint8_t& val0, uint8_t& val1) noexcept;
+
+  /**
+   * @brief Write both port registers (port0 and port1) in one call.
+   */
+  bool writeDualPort(uint8_t reg0, uint8_t reg1, uint8_t val0, uint8_t val1) noexcept;
+
+  /**
+   * @brief Single-pin read-modify-write on a dual-port register pair.
+   *
+   * Selects the correct port register based on pin number, reads, modifies the bit,
+   * and writes back. Does NOT validate pin or call EnsureInitialized().
+   */
+  bool modifySinglePinRegister(uint8_t reg0, uint8_t reg1, uint16_t pin, bool bit_value) noexcept;
+
+  /**
+   * @brief Batch mask read-modify-write on a dual-port register pair.
+   *
+   * For each bit set in mask (0-15), sets or clears the corresponding bit in the
+   * appropriate port register. Does NOT call EnsureInitialized().
+   */
+  bool modifyDualPortByMask(uint8_t reg0, uint8_t reg1, uint16_t mask, bool bit_value) noexcept;
 
   /**
    * @brief Check that the chip supports Agile I/O, setting error if not.
@@ -1259,6 +1031,17 @@ private:
    * @return true if chip is PCAL9555A; false if PCA9555 (sets Error::UnsupportedFeature).
    */
   bool requireAgileIO() noexcept;
+
+  /**
+   * @brief Shared implementation for ChangeAddress overloads.
+   *
+   * Sets GPIO address pins, updates internal state, verifies communication,
+   * and re-detects chip variant at the new address.
+   *
+   * @param new_bits  Address bits (0-7) to set.
+   * @return true if communication at the new address succeeded.
+   */
+  bool changeAddressImpl(uint8_t new_bits) noexcept;
 
   /**
    * @brief Detect the chip variant by probing an Agile I/O register.
@@ -1273,13 +1056,13 @@ private:
    * If step 2 NACKs but step 3 succeeds the chip is a standard PCA9555.
    * If step 3 also fails the detection is inconclusive (bus error).
    */
-  void DetectChipVariant() noexcept;
+  void detectChipVariant() noexcept;
 };
 
 // Include template implementation
 #define PCAL95555_HEADER_INCLUDED
 // NOLINTNEXTLINE(bugprone-suspicious-include) - Intentional: template implementation file
-#include "../src/pcal95555.cpp"
+#include "../src/pcal95555.ipp"
 #undef PCAL95555_HEADER_INCLUDED
 
 } // namespace pcal95555

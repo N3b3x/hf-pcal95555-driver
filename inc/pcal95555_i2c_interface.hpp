@@ -36,8 +36,8 @@ namespace pcal95555 {
  * @code
  * class MyI2C : public pcal95555::I2cInterface<MyI2C> {
  * public:
- *   bool write(...) { ... }
- *   bool read(...) { ... }
+ *   bool Write(...) { ... }
+ *   bool Read(...) { ... }
  * };
  * @endcode
  *
@@ -56,8 +56,8 @@ public:
    * @return true if the device acknowledges the transfer; false on NACK or
    * error.
    */
-  bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) noexcept {
-    return static_cast<Derived*>(this)->write(addr, reg, data, len);
+  bool Write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) noexcept {
+    return static_cast<Derived*>(this)->Write(addr, reg, data, len);
   }
 
   /**
@@ -69,8 +69,8 @@ public:
    * @param len Number of bytes to read into the buffer.
    * @return true if the read succeeds; false on NACK or error.
    */
-  bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) noexcept {
-    return static_cast<Derived*>(this)->read(addr, reg, data, len);
+  bool Read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) noexcept {
+    return static_cast<Derived*>(this)->Read(addr, reg, data, len);
   }
 
   /**

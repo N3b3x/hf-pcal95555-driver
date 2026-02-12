@@ -20,7 +20,7 @@ This example shows basic input/output operations.
 
 // Implement I2C interface (see platform_integration.md)
 class MyI2c : public pcal95555::I2cInterface<MyI2c> {
-    // ... implement write() and read()
+    // ... implement Write() and Read()
 };
 
 MyI2c i2c;

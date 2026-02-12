@@ -29,12 +29,13 @@ Copy the following files into your project:
 
 ```
 inc/
-  └── pcal95555.hpp
+  ├── pcal95555.hpp
+  └── pcal95555_kconfig.hpp
 src/
-  └── pcal95555.cpp
+  └── pcal95555.ipp
 ```
 
-**Note**: The driver uses a header-only template design where `pcal95555.cpp` is included by `pcal95555.hpp`. You typically only need to include the header file in your project.
+**Note**: The driver uses a header-only template design where `pcal95555.ipp` is included by `pcal95555.hpp`. Kconfig compile-time configuration macros live in `pcal95555_kconfig.hpp` (also included automatically). You typically only need to include the main header file in your project.
 
 ### Option 2: Git Submodule
 

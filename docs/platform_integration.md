@@ -44,13 +44,13 @@ The PCAL95555 driver uses **CRTP** (Curiously Recurring Template Pattern) for ha
 template <typename Derived>
 class I2cInterface {
 public:
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         // Cast 'this' to Derived* and call the derived implementation
-        return static_cast<Derived*>(this)->write(addr, reg, data, len);
+        return static_cast<Derived*>(this)->Write(addr, reg, data, len);
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
-        return static_cast<Derived*>(this)->read(addr, reg, data, len);
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
+        return static_cast<Derived*>(this)->Read(addr, reg, data, len);
     }
 };
 
@@ -58,11 +58,11 @@ public:
 class MyI2c : public pcal95555::I2cInterface<MyI2c> {
 public:
     // This method is called directly (no virtual overhead)
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         // Your platform-specific I2C code
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
         // Your platform-specific I2C code
     }
 };
@@ -91,14 +91,14 @@ template <typename Derived>
 class I2cInterface {
 public:
     // Required methods (implement both)
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len);
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len);
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len);
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len);
 };
 ```
 
 **Required Methods** (must be implemented):
-- `write()`: Write `len` bytes from `data` to register `reg` at I2C address `addr` (7-bit address)
-- `read()`: Read `len` bytes into `data` from register `reg` at I2C address `addr` (7-bit address)
+- `Write()`: Write `len` bytes from `data` to register `reg` at I2C address `addr` (7-bit address)
+- `Read()`: Read `len` bytes into `data` from register `reg` at I2C address `addr` (7-bit address)
 - `EnsureInitialized()`: Ensure I2C bus is initialized and ready for communication
 - All return `true` on success, `false` on failure (NACK, timeout, etc.)
 
@@ -123,12 +123,12 @@ public:
     MyPlatformI2c(i2c_handle_t handle) : i2c_handle_(handle) {}
     
     // Implement required methods (NO virtual keyword!)
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         // Your I2C write implementation
         return true;
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
         // Your I2C read implementation
         return true;
     }
@@ -174,7 +174,7 @@ private:
 
 class Esp32I2cBus : public pcal95555::I2cInterface<Esp32I2cBus> {
 public:
-    bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) {
         i2c_cmd_handle_t cmd = i2c_cmd_link_create();
         i2c_master_start(cmd);
         i2c_master_write_byte(cmd, (addr << 1) | I2C_MASTER_WRITE, true);
@@ -186,7 +186,7 @@ public:
         return ret == ESP_OK;
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) {
         i2c_cmd_handle_t cmd = i2c_cmd_link_create();
         i2c_master_start(cmd);
         i2c_master_write_byte(cmd, (addr << 1) | I2C_MASTER_WRITE, true);
@@ -212,7 +212,7 @@ extern I2C_HandleTypeDef hi2c1;
 
 class STM32I2cBus : public pcal95555::I2cInterface<STM32I2cBus> {
 public:
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         // STM32 HAL uses 8-bit address (7-bit << 1)
         return HAL_I2C_Mem_Write(&hi2c1, addr << 1, reg, 
                                  I2C_MEMADD_SIZE_8BIT, 
@@ -220,7 +220,7 @@ public:
                                  HAL_MAX_DELAY) == HAL_OK;
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
         return HAL_I2C_Mem_Read(&hi2c1, addr << 1, reg,
                                 I2C_MEMADD_SIZE_8BIT,
                                 data, len,
@@ -237,14 +237,14 @@ public:
 
 class ArduinoI2cBus : public pcal95555::I2cInterface<ArduinoI2cBus> {
 public:
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         Wire.beginTransmission(addr);
         Wire.write(reg);
         Wire.write(data, len);
         return Wire.endTransmission() == 0;
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
         Wire.beginTransmission(addr);
         Wire.write(reg);
         if (Wire.endTransmission(false) != 0) return false;
@@ -266,7 +266,7 @@ public:
 // WRONG - defeats the purpose of CRTP
 class MyI2c : public pcal95555::I2cInterface<MyI2c> {
 public:
-    virtual bool write(...) override {  // ❌ Virtual keyword not needed
+    virtual bool Write(...) override {  // ❌ Virtual keyword not needed
         // ...
     }
 };
@@ -278,7 +278,7 @@ public:
 // CORRECT - no virtual keyword
 class MyI2c : public pcal95555::I2cInterface<MyI2c> {
 public:
-    bool write(...) {  // ✅ Direct implementation
+    bool Write(...) {  // ✅ Direct implementation
         // ...
     }
 };

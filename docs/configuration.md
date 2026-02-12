@@ -73,9 +73,11 @@ uint8_t bits = gpio.GetAddressBits();  // Returns address bits (e.g., 1 = binary
 
 ## Kconfig Configuration (Optional)
 
-If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration:
+If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration.
 
-**Location**: [`Kconfig`](../Kconfig)
+The Kconfig compile-time macros are defined in a dedicated header: [`inc/pcal95555_kconfig.hpp`](../inc/pcal95555_kconfig.hpp). This file is automatically included by the main `pcal95555.hpp` header -- no additional includes are needed.
+
+**Kconfig file**: [`Kconfig`](../Kconfig)
 
 ### Configuration Options
 
@@ -181,7 +183,7 @@ gpio.ResetToDefault();
 - Interrupts: Masked (disabled)
 - Polarity: Normal (not inverted)
 
-**Location**: [`src/pcal95555.cpp#L49`](../src/pcal95555.cpp#L49)
+**Location**: [`src/pcal95555.ipp`](../src/pcal95555.ipp)
 
 ## Chip Variant Configuration
 

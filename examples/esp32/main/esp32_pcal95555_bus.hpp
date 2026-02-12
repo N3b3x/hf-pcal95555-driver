@@ -32,7 +32,7 @@ extern "C" {
 }
 #endif
 
-static constexpr const char* TAG_I2C = "PCAL9555_I2C";
+static constexpr const char* g_TAG_I2C = "PCAL9555_I2C";
 
 class Esp32Pcal9555Bus : public pcal95555::I2cInterface<Esp32Pcal9555Bus> {
 public:
@@ -67,7 +67,7 @@ public:
     // Initialize address pins as outputs if configured
     if (config_.a0_pin != GPIO_NUM_NC || config_.a1_pin != GPIO_NUM_NC ||
         config_.a2_pin != GPIO_NUM_NC) {
-      InitAddressPins();
+      initAddressPins();
     }
   }
 
@@ -92,11 +92,11 @@ public:
    */
   bool Init() noexcept {
     if (initialized_) {
-      ESP_LOGW(TAG_I2C, "I2C bus already initialized");
+      ESP_LOGW(g_TAG_I2C, "I2C bus already initialized");
       return true;
     }
 
-    ESP_LOGI(TAG_I2C, "Initializing I2C bus on port %d (SDA:GPIO%d, SCL:GPIO%d, Freq:%lu Hz)",
+    ESP_LOGI(g_TAG_I2C, "Initializing I2C bus on port %d (SDA:GPIO%d, SCL:GPIO%d, Freq:%lu Hz)",
              config_.port, config_.sda_pin, config_.scl_pin, config_.frequency);
 
     // Configure I2C master bus
@@ -112,12 +112,12 @@ public:
 
     esp_err_t ret = i2c_new_master_bus(&bus_config, &bus_handle_);
     if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "Failed to create I2C master bus: %s", esp_err_to_name(ret));
+      ESP_LOGE(g_TAG_I2C, "Failed to create I2C master bus: %s", esp_err_to_name(ret));
       return false;
     }
 
     initialized_ = true;
-    ESP_LOGI(TAG_I2C, "I2C bus initialized successfully");
+    ESP_LOGI(g_TAG_I2C, "I2C bus initialized successfully");
     return true;
   }
 
@@ -129,13 +129,20 @@ public:
       return;
     }
 
+    // Remove cached device handle before deleting bus
+    if (dev_handle_ != nullptr) {
+      i2c_master_bus_rm_device(dev_handle_);
+      dev_handle_ = nullptr;
+      cached_dev_addr_ = 0xFF;
+    }
+
     if (bus_handle_ != nullptr) {
       i2c_del_master_bus(bus_handle_);
       bus_handle_ = nullptr;
     }
 
     initialized_ = false;
-    ESP_LOGI(TAG_I2C, "I2C bus deinitialized");
+    ESP_LOGI(g_TAG_I2C, "I2C bus deinitialized");
   }
 
   /**
@@ -146,32 +153,21 @@ public:
    * @param len Number of bytes to write from the buffer
    * @return true if the device acknowledges the transfer; false on NACK or error
    */
-  bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) noexcept {
+  bool Write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) noexcept {
     if (!initialized_ || bus_handle_ == nullptr) {
-      ESP_LOGE(TAG_I2C, "I2C bus not initialized");
+      ESP_LOGE(g_TAG_I2C, "I2C bus not initialized");
       return false;
     }
 
-    // Create device handle if not exists for this address
-    i2c_master_dev_handle_t dev_handle = nullptr;
-    i2c_device_config_t dev_config = {
-        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
-        .device_address = addr,
-        .scl_speed_hz = config_.frequency,
-        .scl_wait_us = 0,
-        .flags = {},
-    };
-
-    esp_err_t ret = i2c_master_bus_add_device(bus_handle_, &dev_config, &dev_handle);
-    if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "Failed to add device 0x%02X: %s", addr, esp_err_to_name(ret));
+    i2c_master_dev_handle_t dev = getOrCreateDeviceHandle(addr);
+    if (dev == nullptr) {
       return false;
     }
 
     // Prepare write buffer: register address + data
     std::array<uint8_t, 32> write_buffer{}; // Max 32 bytes (register + 31 data bytes)
     if (len > 31) {
-      ESP_LOGE(TAG_I2C, "Write length %zu exceeds maximum (31 bytes)", len);
+      ESP_LOGE(g_TAG_I2C, "Write length %zu exceeds maximum (31 bytes)", len);
       return false;
     }
 
@@ -181,15 +177,9 @@ public:
     }
 
     // Perform I2C write transaction
-    ret = i2c_master_transmit(dev_handle, write_buffer.data(), len + 1, pdMS_TO_TICKS(1000));
-
-    // Remove device handle (cleanup)
-    if (dev_handle != nullptr) {
-      i2c_master_bus_rm_device(dev_handle);
-    }
-
+    esp_err_t ret = i2c_master_transmit(dev, write_buffer.data(), len + 1, pdMS_TO_TICKS(1000));
     if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "I2C write failed: %s (addr=0x%02X, reg=0x%02X, len=%zu)",
+      ESP_LOGE(g_TAG_I2C, "I2C write failed: %s (addr=0x%02X, reg=0x%02X, len=%zu)",
                esp_err_to_name(ret), addr, reg, len);
       return false;
     }
@@ -205,43 +195,26 @@ public:
    * @param len Number of bytes to read into the buffer
    * @return true if the read succeeds; false on NACK or error
    */
-  bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) noexcept {
+  bool Read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) noexcept {
     if (!initialized_ || bus_handle_ == nullptr) {
-      ESP_LOGE(TAG_I2C, "I2C bus not initialized");
+      ESP_LOGE(g_TAG_I2C, "I2C bus not initialized");
       return false;
     }
 
     if (data == nullptr || len == 0) {
-      ESP_LOGE(TAG_I2C, "Invalid read parameters");
+      ESP_LOGE(g_TAG_I2C, "Invalid read parameters");
       return false;
     }
 
-    // Create device handle if not exists for this address
-    i2c_master_dev_handle_t dev_handle = nullptr;
-    i2c_device_config_t dev_config = {
-        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
-        .device_address = addr,
-        .scl_speed_hz = config_.frequency,
-        .scl_wait_us = 0,
-        .flags = {},
-    };
-
-    esp_err_t ret = i2c_master_bus_add_device(bus_handle_, &dev_config, &dev_handle);
-    if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "Failed to add device 0x%02X: %s", addr, esp_err_to_name(ret));
+    i2c_master_dev_handle_t dev = getOrCreateDeviceHandle(addr);
+    if (dev == nullptr) {
       return false;
     }
 
     // Write register address, then read data
-    ret = i2c_master_transmit_receive(dev_handle, &reg, 1, data, len, pdMS_TO_TICKS(1000));
-
-    // Remove device handle (cleanup)
-    if (dev_handle != nullptr) {
-      i2c_master_bus_rm_device(dev_handle);
-    }
-
+    esp_err_t ret = i2c_master_transmit_receive(dev, &reg, 1, data, len, pdMS_TO_TICKS(1000));
     if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "I2C read failed: %s (addr=0x%02X, reg=0x%02X, len=%zu)",
+      ESP_LOGE(g_TAG_I2C, "I2C read failed: %s (addr=0x%02X, reg=0x%02X, len=%zu)",
                esp_err_to_name(ret), addr, reg, len);
       return false;
     }
@@ -253,7 +226,7 @@ public:
    * @brief Get the I2C configuration
    * @return Reference to the I2C configuration
    */
-  [[nodiscard]] const I2CConfig& getConfig() const noexcept {
+  [[nodiscard]] const I2CConfig& GetConfig() const noexcept {
     return config_;
   }
 
@@ -261,7 +234,7 @@ public:
    * @brief Check if the bus is initialized
    * @return true if initialized, false otherwise
    */
-  [[nodiscard]] bool isInitialized() const noexcept {
+  [[nodiscard]] bool IsInitialized() const noexcept {
     return initialized_;
   }
 
@@ -306,7 +279,7 @@ public:
     if (config_.a0_pin != GPIO_NUM_NC) {
       ret = gpio_set_level(config_.a0_pin, a0_level ? 1 : 0);
       if (ret != ESP_OK) {
-        ESP_LOGE(TAG_I2C, "Failed to set A0 pin (GPIO%d): %s", config_.a0_pin,
+        ESP_LOGE(g_TAG_I2C, "Failed to set A0 pin (GPIO%d): %s", config_.a0_pin,
                  esp_err_to_name(ret));
         return false;
       }
@@ -316,7 +289,7 @@ public:
     if (config_.a1_pin != GPIO_NUM_NC) {
       ret = gpio_set_level(config_.a1_pin, a1_level ? 1 : 0);
       if (ret != ESP_OK) {
-        ESP_LOGE(TAG_I2C, "Failed to set A1 pin (GPIO%d): %s", config_.a1_pin,
+        ESP_LOGE(g_TAG_I2C, "Failed to set A1 pin (GPIO%d): %s", config_.a1_pin,
                  esp_err_to_name(ret));
         return false;
       }
@@ -326,13 +299,15 @@ public:
     if (config_.a2_pin != GPIO_NUM_NC) {
       ret = gpio_set_level(config_.a2_pin, a2_level ? 1 : 0);
       if (ret != ESP_OK) {
-        ESP_LOGE(TAG_I2C, "Failed to set A2 pin (GPIO%d): %s", config_.a2_pin,
+        ESP_LOGE(g_TAG_I2C, "Failed to set A2 pin (GPIO%d): %s", config_.a2_pin,
                  esp_err_to_name(ret));
         return false;
       }
     }
 
-    ESP_LOGI(TAG_I2C, "Address pins set: A2=%d, A1=%d, A0=%d", a2_level, a1_level, a0_level);
+    ESP_LOGI(g_TAG_I2C, "Address pins set: A2=%d, A1=%d, A0=%d", a2_level, a1_level, a0_level);
+    // Allow device to settle after address pins change before first I2C transaction
+    vTaskDelay(pdMS_TO_TICKS(5));
     return true;
   }
 
@@ -359,13 +334,13 @@ public:
    */
   bool RegisterInterruptHandler(std::function<void()> handler) noexcept {
     if (!handler) {
-      ESP_LOGE(TAG_I2C, "Interrupt handler is null");
+      ESP_LOGE(g_TAG_I2C, "Interrupt handler is null");
       return false;
     }
 
     // Check if INT pin is configured
     if (interrupt_pin_ == GPIO_NUM_NC) {
-      ESP_LOGW(TAG_I2C, "INT pin not configured. Call SetupInterruptPin() first.");
+      ESP_LOGW(g_TAG_I2C, "INT pin not configured. Call SetupInterruptPin() first.");
       return false;
     }
 
@@ -380,7 +355,7 @@ public:
 
       esp_err_t ret = gpio_config(&io_conf);
       if (ret != ESP_OK) {
-        ESP_LOGE(TAG_I2C, "Failed to configure GPIO %d for interrupt: %s", interrupt_pin_,
+        ESP_LOGE(g_TAG_I2C, "Failed to configure GPIO %d for interrupt: %s", interrupt_pin_,
                  esp_err_to_name(ret));
         return false;
       }
@@ -388,7 +363,7 @@ public:
       // Create interrupt queue
       interrupt_queue_ = xQueueCreate(10, sizeof(uint32_t));
       if (interrupt_queue_ == nullptr) {
-        ESP_LOGE(TAG_I2C, "Failed to create interrupt queue");
+        ESP_LOGE(g_TAG_I2C, "Failed to create interrupt queue");
         return false;
       }
 
@@ -397,25 +372,25 @@ public:
       if (!isr_service_installed) {
         ret = gpio_install_isr_service(0);
         if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
-          ESP_LOGE(TAG_I2C, "Failed to install GPIO ISR service: %s", esp_err_to_name(ret));
+          ESP_LOGE(g_TAG_I2C, "Failed to install GPIO ISR service: %s", esp_err_to_name(ret));
           return false;
         }
         isr_service_installed = true;
       }
 
       // Hook ISR handler for this pin
-      ret = gpio_isr_handler_add(interrupt_pin_, interrupt_handler, this);
+      ret = gpio_isr_handler_add(interrupt_pin_, interruptHandler, this);
       if (ret != ESP_OK) {
-        ESP_LOGE(TAG_I2C, "Failed to add ISR handler for GPIO %d: %s", interrupt_pin_,
+        ESP_LOGE(g_TAG_I2C, "Failed to add ISR handler for GPIO %d: %s", interrupt_pin_,
                  esp_err_to_name(ret));
         return false;
       }
 
       // Create task to process interrupts
-      if (interrupt_task_handle_ == nullptr) {
-        xTaskCreate(interrupt_task, "pcal9555_int", 4096, this, 5, &interrupt_task_handle_);
-        if (interrupt_task_handle_ == nullptr) {
-          ESP_LOGE(TAG_I2C, "Failed to create interrupt task");
+      if (interruptTask_handle_ == nullptr) {
+        xTaskCreate(interruptTask, "pcal9555_int", 4096, this, 5, &interruptTask_handle_);
+        if (interruptTask_handle_ == nullptr) {
+          ESP_LOGE(g_TAG_I2C, "Failed to create interrupt task");
           return false;
         }
       }
@@ -424,7 +399,7 @@ public:
     // Store handler for interrupt processing
     interrupt_callback_ = handler;
 
-    ESP_LOGI(TAG_I2C, "Interrupt handler registered on GPIO %d", interrupt_pin_);
+    ESP_LOGI(g_TAG_I2C, "Interrupt handler registered on GPIO %d", interrupt_pin_);
     return true;
   }
 
@@ -439,7 +414,7 @@ public:
    */
   bool SetupInterruptPin(gpio_num_t int_pin) noexcept {
     interrupt_pin_ = int_pin;
-    ESP_LOGI(TAG_I2C, "Interrupt pin configured: GPIO %d", int_pin);
+    ESP_LOGI(g_TAG_I2C, "Interrupt pin configured: GPIO %d", int_pin);
     return true;
   }
 
@@ -450,7 +425,7 @@ public:
   [[deprecated("Use SetupInterruptPin() + RegisterInterruptHandler() instead")]]
   bool SetupInterrupt(gpio_num_t int_pin, std::function<void()> interrupt_callback) noexcept {
     if (!interrupt_callback) {
-      ESP_LOGE(TAG_I2C, "Interrupt callback is null");
+      ESP_LOGE(g_TAG_I2C, "Interrupt callback is null");
       return false;
     }
 
@@ -464,7 +439,7 @@ public:
 
     esp_err_t ret = gpio_config(&io_conf);
     if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "Failed to configure GPIO %d for interrupt: %s", int_pin,
+      ESP_LOGE(g_TAG_I2C, "Failed to configure GPIO %d for interrupt: %s", int_pin,
                esp_err_to_name(ret));
       return false;
     }
@@ -473,7 +448,7 @@ public:
     if (interrupt_queue_ == nullptr) {
       interrupt_queue_ = xQueueCreate(10, sizeof(uint32_t));
       if (interrupt_queue_ == nullptr) {
-        ESP_LOGE(TAG_I2C, "Failed to create interrupt queue");
+        ESP_LOGE(g_TAG_I2C, "Failed to create interrupt queue");
         return false;
       }
     }
@@ -487,29 +462,29 @@ public:
     if (!isr_service_installed) {
       ret = gpio_install_isr_service(0);
       if (ret != ESP_OK && ret != ESP_ERR_INVALID_STATE) {
-        ESP_LOGE(TAG_I2C, "Failed to install GPIO ISR service: %s", esp_err_to_name(ret));
+        ESP_LOGE(g_TAG_I2C, "Failed to install GPIO ISR service: %s", esp_err_to_name(ret));
         return false;
       }
       isr_service_installed = true;
     }
 
     // Hook ISR handler for this pin
-    ret = gpio_isr_handler_add(int_pin, interrupt_handler, this);
+    ret = gpio_isr_handler_add(int_pin, interruptHandler, this);
     if (ret != ESP_OK) {
-      ESP_LOGE(TAG_I2C, "Failed to add ISR handler for GPIO %d: %s", int_pin, esp_err_to_name(ret));
+      ESP_LOGE(g_TAG_I2C, "Failed to add ISR handler for GPIO %d: %s", int_pin, esp_err_to_name(ret));
       return false;
     }
 
     // Create task to process interrupts
-    if (interrupt_task_handle_ == nullptr) {
-      xTaskCreate(interrupt_task, "pcal9555_int", 4096, this, 5, &interrupt_task_handle_);
-      if (interrupt_task_handle_ == nullptr) {
-        ESP_LOGE(TAG_I2C, "Failed to create interrupt task");
+    if (interruptTask_handle_ == nullptr) {
+      xTaskCreate(interruptTask, "pcal9555_int", 4096, this, 5, &interruptTask_handle_);
+      if (interruptTask_handle_ == nullptr) {
+        ESP_LOGE(g_TAG_I2C, "Failed to create interrupt task");
         return false;
       }
     }
 
-    ESP_LOGI(TAG_I2C, "Interrupt setup complete on GPIO %d", int_pin);
+    ESP_LOGI(g_TAG_I2C, "Interrupt setup complete on GPIO %d", int_pin);
     return true;
   }
 
@@ -522,9 +497,9 @@ public:
       interrupt_pin_ = GPIO_NUM_NC;
     }
     interrupt_callback_ = nullptr;
-    if (interrupt_task_handle_ != nullptr) {
-      vTaskDelete(interrupt_task_handle_);
-      interrupt_task_handle_ = nullptr;
+    if (interruptTask_handle_ != nullptr) {
+      vTaskDelete(interruptTask_handle_);
+      interruptTask_handle_ = nullptr;
     }
   }
 
@@ -533,16 +508,60 @@ private:
   i2c_master_bus_handle_t bus_handle_;
   bool initialized_;
 
+  // Cached device handle -- avoids add_device/rm_device per transaction
+  i2c_master_dev_handle_t dev_handle_{nullptr};
+  uint8_t cached_dev_addr_{0xFF};
+
+  /**
+   * @brief Get or create a cached I2C device handle for the given address.
+   *
+   * If the cached handle matches the requested address, it is reused.
+   * Otherwise the old handle is removed and a new one is created.
+   *
+   * @param addr 7-bit I2C device address
+   * @return Device handle, or nullptr on failure
+   */
+  i2c_master_dev_handle_t getOrCreateDeviceHandle(uint8_t addr) noexcept {
+    if (dev_handle_ != nullptr && cached_dev_addr_ == addr) {
+      return dev_handle_;  // Reuse cached handle
+    }
+
+    // Address changed or first call -- evict old handle
+    if (dev_handle_ != nullptr) {
+      i2c_master_bus_rm_device(dev_handle_);
+      dev_handle_ = nullptr;
+    }
+
+    i2c_device_config_t dev_config = {
+        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+        .device_address = addr,
+        .scl_speed_hz = config_.frequency,
+        .scl_wait_us = 0,
+        .flags = {},
+    };
+
+    esp_err_t ret = i2c_master_bus_add_device(bus_handle_, &dev_config, &dev_handle_);
+    if (ret != ESP_OK) {
+      ESP_LOGE(g_TAG_I2C, "Failed to add device 0x%02X: %s", addr, esp_err_to_name(ret));
+      dev_handle_ = nullptr;
+      cached_dev_addr_ = 0xFF;
+      return nullptr;
+    }
+
+    cached_dev_addr_ = addr;
+    return dev_handle_;
+  }
+
   // Interrupt handling members
   gpio_num_t interrupt_pin_ = GPIO_NUM_NC;
   std::function<void()> interrupt_callback_;
   QueueHandle_t interrupt_queue_ = nullptr;
-  TaskHandle_t interrupt_task_handle_ = nullptr;
+  TaskHandle_t interruptTask_handle_ = nullptr;
 
   /**
    * @brief Static interrupt handler (ISR context)
    */
-  static void IRAM_ATTR interrupt_handler(void* arg) {
+  static void IRAM_ATTR interruptHandler(void* arg) {
     auto* bus = static_cast<Esp32Pcal9555Bus*>(arg);
     auto pin = static_cast<uint32_t>(bus->interrupt_pin_);
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -555,7 +574,7 @@ private:
   /**
    * @brief Interrupt processing task (task context)
    */
-  static void interrupt_task(void* arg) {
+  static void interruptTask(void* arg) {
     auto* bus = static_cast<Esp32Pcal9555Bus*>(arg);
     uint32_t pin = 0;
 
@@ -571,7 +590,7 @@ private:
   /**
    * @brief Initialize address pins as outputs
    */
-  void InitAddressPins() noexcept {
+  void initAddressPins() noexcept {
     gpio_config_t io_conf = {};
     io_conf.mode = GPIO_MODE_OUTPUT;
     io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
@@ -593,9 +612,9 @@ private:
       io_conf.pin_bit_mask = pin_mask;
       esp_err_t ret = gpio_config(&io_conf);
       if (ret != ESP_OK) {
-        ESP_LOGE(TAG_I2C, "Failed to configure address pins: %s", esp_err_to_name(ret));
+        ESP_LOGE(g_TAG_I2C, "Failed to configure address pins: %s", esp_err_to_name(ret));
       } else {
-        ESP_LOGI(TAG_I2C, "Address pins configured: A0=GPIO%d, A1=GPIO%d, A2=GPIO%d",
+        ESP_LOGI(g_TAG_I2C, "Address pins configured: A0=GPIO%d, A1=GPIO%d, A2=GPIO%d",
                  config_.a0_pin, config_.a1_pin, config_.a2_pin);
       }
     }
@@ -611,7 +630,7 @@ inline std::unique_ptr<Esp32Pcal9555Bus> CreateEsp32Pcal9555Bus(
     const Esp32Pcal9555Bus::I2CConfig& config = Esp32Pcal9555Bus::I2CConfig{}) {
   auto bus = std::make_unique<Esp32Pcal9555Bus>(config);
   if (!bus->Init()) {
-    ESP_LOGE(TAG_I2C, "Failed to initialize I2C bus");
+    ESP_LOGE(g_TAG_I2C, "Failed to initialize I2C bus");
     return nullptr;
   }
   return bus;

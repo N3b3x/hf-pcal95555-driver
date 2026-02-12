@@ -14,7 +14,8 @@ Complete reference documentation for all public methods and types in the PCAL955
 ## Source Code
 
 - **Main Header**: [`inc/pcal95555.hpp`](../inc/pcal95555.hpp)
-- **Implementation**: [`src/pcal95555.cpp`](../src/pcal95555.cpp)
+- **Kconfig Macros**: [`inc/pcal95555_kconfig.hpp`](../inc/pcal95555_kconfig.hpp) (compile-time configuration, included by main header)
+- **Implementation**: [`src/pcal95555.ipp`](../src/pcal95555.ipp)
 
 ## Core Class
 
@@ -84,27 +85,27 @@ PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `EnsureInitialized()` | `bool EnsureInitialized()` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ResetToDefault()` | `void ResetToDefault()` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `InitFromConfig()` | `void InitFromConfig()` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `EnsureInitialized()` | `bool EnsureInitialized()` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ResetToDefault()` | `void ResetToDefault()` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `InitFromConfig()` | `void InitFromConfig()` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Pin Direction
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetPinDirection()` | `bool SetPinDirection(uint16_t pin, GPIODir dir)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetDirections()` | `bool SetDirections(std::initializer_list<std::pair<uint16_t, GPIODir>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetMultipleDirections()` | `bool SetMultipleDirections(uint16_t mask, GPIODir dir)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetPinDirection()` | `bool SetPinDirection(uint16_t pin, GPIODir dir)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetDirections()` | `bool SetDirections(std::initializer_list<std::pair<uint16_t, GPIODir>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetMultipleDirections()` | `bool SetMultipleDirections(uint16_t mask, GPIODir dir)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Pin I/O
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `ReadPin()` | `bool ReadPin(uint16_t pin)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ReadPins()` | `std::vector<std::pair<uint16_t, bool>> ReadPins(std::initializer_list<uint16_t> pins)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `WritePin()` | `bool WritePin(uint16_t pin, bool value)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `WritePins()` | `bool WritePins(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `TogglePin()` | `bool TogglePin(uint16_t pin)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `ReadPin()` | `bool ReadPin(uint16_t pin)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ReadPins()` | `std::vector<std::pair<uint16_t, bool>> ReadPins(std::initializer_list<uint16_t> pins)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `WritePin()` | `bool WritePin(uint16_t pin, bool value)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `WritePins()` | `bool WritePins(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `TogglePin()` | `bool TogglePin(uint16_t pin)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Pull-up/Pull-down (PCAL9555A only)
 
@@ -112,10 +113,10 @@ PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetPullEnable()` | `bool SetPullEnable(uint16_t pin, bool enable)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetPullEnables()` | `bool SetPullEnables(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetPullDirection()` | `bool SetPullDirection(uint16_t pin, bool pull_up)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetPullDirections()` | `bool SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetPullEnable()` | `bool SetPullEnable(uint16_t pin, bool enable)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetPullEnables()` | `bool SetPullEnables(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetPullDirection()` | `bool SetPullDirection(uint16_t pin, bool pull_up)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetPullDirections()` | `bool SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Drive Strength (PCAL9555A only)
 
@@ -123,8 +124,8 @@ PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetDriveStrength()` | `bool SetDriveStrength(uint16_t pin, DriveStrength level)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetDriveStrengths()` | `bool SetDriveStrengths(std::initializer_list<std::pair<uint16_t, DriveStrength>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetDriveStrength()` | `bool SetDriveStrength(uint16_t pin, DriveStrength level)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetDriveStrengths()` | `bool SetDriveStrengths(std::initializer_list<std::pair<uint16_t, DriveStrength>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Interrupts
 
@@ -132,15 +133,15 @@ PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 
 | Method | Signature | PCAL9555A? | Location |
 |--------|-----------|------------|----------|
-| `ConfigureInterrupt()` | `bool ConfigureInterrupt(uint16_t pin, InterruptState state)` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ConfigureInterrupts()` | `bool ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs)` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ConfigureInterruptMask()` | `bool ConfigureInterruptMask(uint16_t mask)` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `GetInterruptStatus()` | `uint16_t GetInterruptStatus()` | Yes | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `RegisterPinInterrupt()` | `bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function<void(uint16_t, bool)> callback)` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `UnregisterPinInterrupt()` | `bool UnregisterPinInterrupt(uint16_t pin)` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetInterruptCallback()` | `void SetInterruptCallback(const std::function<void(uint16_t)>& callback)` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `RegisterInterruptHandler()` | `bool RegisterInterruptHandler()` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `HandleInterrupt()` | `void HandleInterrupt()` | No | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `ConfigureInterrupt()` | `bool ConfigureInterrupt(uint16_t pin, InterruptState state)` | Yes | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ConfigureInterrupts()` | `bool ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs)` | Yes | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ConfigureInterruptMask()` | `bool ConfigureInterruptMask(uint16_t mask)` | Yes | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `GetInterruptStatus()` | `uint16_t GetInterruptStatus()` | Yes | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `RegisterPinInterrupt()` | `bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function<void(uint16_t, bool)> callback)` | No | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `UnregisterPinInterrupt()` | `bool UnregisterPinInterrupt(uint16_t pin)` | No | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetInterruptCallback()` | `void SetInterruptCallback(const std::function<void(uint16_t)>& callback)` | No | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `RegisterInterruptHandler()` | `bool RegisterInterruptHandler()` | No | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `HandleInterrupt()` | `void HandleInterrupt()` | No | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Output Mode (PCAL9555A only)
 
@@ -148,15 +149,15 @@ PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetOutputMode()` | `bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetOutputMode()` | `bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Polarity
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetPinPolarity()` | `bool SetPinPolarity(uint16_t pin, Polarity polarity)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetPolarities()` | `bool SetPolarities(std::initializer_list<std::pair<uint16_t, Polarity>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `SetMultiplePolarities()` | `bool SetMultiplePolarities(uint16_t mask, Polarity polarity)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetPinPolarity()` | `bool SetPinPolarity(uint16_t pin, Polarity polarity)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetPolarities()` | `bool SetPolarities(std::initializer_list<std::pair<uint16_t, Polarity>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `SetMultiplePolarities()` | `bool SetMultiplePolarities(uint16_t mask, Polarity polarity)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Input Latch (PCAL9555A only)
 
@@ -164,33 +165,33 @@ PCAL95555 driver4(bus, false, false, false, ChipVariant::PCAL9555A);
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `EnableInputLatch()` | `bool EnableInputLatch(uint16_t pin, bool enable)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `EnableInputLatches()` | `bool EnableInputLatches(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `EnableMultipleInputLatches()` | `bool EnableMultipleInputLatches(uint16_t mask, bool enable)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `EnableInputLatch()` | `bool EnableInputLatch(uint16_t pin, bool enable)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `EnableInputLatches()` | `bool EnableInputLatches(std::initializer_list<std::pair<uint16_t, bool>> configs)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `EnableMultipleInputLatches()` | `bool EnableMultipleInputLatches(uint16_t mask, bool enable)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Address Management
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `GetAddress()` | `uint8_t GetAddress() const` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `GetAddressBits()` | `uint8_t GetAddressBits() const` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ChangeAddress()` | `bool ChangeAddress(bool a0_level, bool a1_level, bool a2_level)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ChangeAddress()` | `bool ChangeAddress(uint8_t address)` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `GetAddress()` | `uint8_t GetAddress() const` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `GetAddressBits()` | `uint8_t GetAddressBits() const` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ChangeAddress()` | `bool ChangeAddress(bool a0_level, bool a1_level, bool a2_level)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ChangeAddress()` | `bool ChangeAddress(uint8_t address)` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Error Handling
 
 | Method | Signature | Location |
 |--------|-----------|----------|
-| `SetRetries()` | `void SetRetries(int retries) noexcept` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `GetErrorFlags()` | `[[nodiscard]] uint16_t GetErrorFlags() const noexcept` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `ClearErrorFlags()` | `void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept` | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `SetRetries()` | `void SetRetries(int retries) noexcept` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `GetErrorFlags()` | `[[nodiscard]] uint16_t GetErrorFlags() const noexcept` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `ClearErrorFlags()` | `void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept` | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 ### Chip Variant Detection
 
 | Method | Signature | Description | Location |
 |--------|-----------|-------------|----------|
-| `HasAgileIO()` | `[[nodiscard]] bool HasAgileIO() const noexcept` | Returns `true` if PCAL9555A detected (Agile I/O available) | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
-| `GetChipVariant()` | `[[nodiscard]] ChipVariant GetChipVariant() const noexcept` | Returns the detected `ChipVariant` enum value | [`src/pcal95555.cpp`](../src/pcal95555.cpp) |
+| `HasAgileIO()` | `[[nodiscard]] bool HasAgileIO() const noexcept` | Returns `true` if PCAL9555A detected (Agile I/O available) | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
+| `GetChipVariant()` | `[[nodiscard]] ChipVariant GetChipVariant() const noexcept` | Returns the detected `ChipVariant` enum value | [`src/pcal95555.ipp`](../src/pcal95555.ipp) |
 
 **Usage:**
 ```cpp
@@ -218,7 +219,7 @@ auto variant = driver.GetChipVariant();
 | `InterruptState` | `Enabled`, `Disabled` | Interrupt enable/disable state. **PCAL9555A only.** | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
 | `InterruptEdge` | `Rising`, `Falling`, `Both` | Interrupt edge trigger type (works on both variants via software) | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
 | `ChipVariant` | `Unknown`, `PCA9555`, `PCAL9555A` | Detected or user-specified chip variant | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
-| `Error` | `None`, `InvalidPin`, `InvalidMask`, `I2CReadFail`, `I2CWriteFail`, `UnsupportedFeature` | Error conditions (bitmask). `UnsupportedFeature` (0x0010) is set when a PCAL9555A-only method is called on a PCA9555. | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
+| `Error` | `None`, `InvalidPin`, `InvalidMask`, `I2CReadFail`, `I2CWriteFail`, `UnsupportedFeature`, `InvalidAddress` | Error conditions (bitmask). `UnsupportedFeature` (0x0010) is set when a PCAL9555A-only method is called on a PCA9555. `InvalidAddress` (0x0020) is set when an I2C address outside the valid 0x20-0x27 range is provided. | [`inc/pcal95555.hpp`](../inc/pcal95555.hpp) |
 
 ---
 

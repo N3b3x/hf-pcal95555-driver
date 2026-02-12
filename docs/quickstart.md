@@ -27,12 +27,12 @@ Here's a complete working example:
 // 1. Implement the I2C interface
 class MyI2c : public pcal95555::I2cInterface<MyI2c> {
 public:
-    bool write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) {
         // Your I2C write implementation
         return true;
     }
     
-    bool read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) {
         // Your I2C read implementation
         return true;
     }
@@ -85,8 +85,8 @@ bool input = gpio.ReadPin(1);
 You need to implement the `I2cInterface` for your platform. See [Platform Integration](platform_integration.md) for detailed examples for ESP32, STM32, and Arduino.
 
 The interface requires two methods:
-- `write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len)` - Write data to a register
-- `read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len)` - Read data from a register
+- `Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len)` - Write data to a register
+- `Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len)` - Read data from a register
 
 ### Step 3: Create Driver Instance
 

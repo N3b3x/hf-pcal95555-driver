@@ -113,9 +113,10 @@ if (driver.HasAgileIO()) {
 hf-pcal95555-driver/
 ├── inc/
 │   ├── pcal95555.hpp              # Main driver header (public API)
+│   ├── pcal95555_kconfig.hpp      # Kconfig compile-time configuration macros
 │   └── pcal95555_i2c_interface.hpp # CRTP I2C interface base class
 ├── src/
-│   └── pcal95555.cpp              # Template implementation (included by header)
+│   └── pcal95555.ipp              # Template implementation (included by header)
 ├── examples/
 │   └── esp32/
 │       ├── main/
@@ -149,10 +150,10 @@ hf-pcal95555-driver/
 
 class MyI2c : public pcal95555::I2cInterface<MyI2c> {
 public:
-    bool write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) {
+    bool Write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) {
         // Your platform I2C write implementation
     }
-    bool read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) {
+    bool Read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) {
         // Your platform I2C read implementation
     }
     bool SetAddressPins(bool a0, bool a1, bool a2) {
@@ -370,6 +371,7 @@ cd examples/esp32
 | `I2CReadFail` | 0x0004 | I2C read transaction failed |
 | `I2CWriteFail` | 0x0008 | I2C write transaction failed |
 | `UnsupportedFeature` | 0x0010 | PCAL9555A feature called on PCA9555 |
+| `InvalidAddress` | 0x0020 | I2C address outside valid 0x20-0x27 range |
 
 ---
 
