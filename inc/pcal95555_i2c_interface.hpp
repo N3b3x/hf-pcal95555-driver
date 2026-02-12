@@ -10,6 +10,36 @@
 
 namespace pcal95555 {
 
+// ============================================================================
+// GPIO Enums -- Standardised Control Pin Model
+// ============================================================================
+
+/**
+ * @enum CtrlPin
+ * @brief Identifies the hardware control pins of the PCAL95555.
+ *
+ * Used with `GpioSet()` / `GpioRead()` to control or read the IC's
+ * dedicated GPIO pins through the I2cInterface.
+ *
+ * - **INTN**: Active-low interrupt output (read-only via GpioRead)
+ * - **RSTN**: Active-low hardware reset (write via GpioSet)
+ */
+enum class CtrlPin : uint8_t {
+  INTN = 0, ///< Interrupt output (active-low, open-drain, read-only)
+  RSTN      ///< Hardware reset (active-low, not available on all variants)
+};
+
+/**
+ * @enum GpioSignal
+ * @brief Abstract signal level for control pins.
+ *
+ * Decouples the driver's intent from the physical pin polarity.
+ */
+enum class GpioSignal : uint8_t {
+  INACTIVE = 0, ///< Pin function is deasserted
+  ACTIVE   = 1  ///< Pin function is asserted
+};
+
 /**
  * @brief CRTP-based template interface for I2C bus operations
  *
@@ -156,6 +186,58 @@ public:
     (void)handler;  // Suppress unused parameter warning
     return false;
   }
+
+  // --------------------------------------------------------------------------
+  /// @name GPIO Pin Control
+  ///
+  /// Unified interface for controlling PCAL95555 hardware control pins.
+  /// @{
+
+  /**
+   * @brief Set a control pin to the specified signal state.
+   *
+   * @param[in] pin     Which control pin to drive (RSTN).
+   * @param[in] signal  ACTIVE to assert the pin function, INACTIVE to deassert.
+   *
+   * @note Default implementation is a no-op. Override in derived class if
+   *       the reset pin is wired and controllable.
+   */
+  void GpioSet(CtrlPin pin, GpioSignal signal) noexcept {
+    (void)pin;
+    (void)signal;
+  }
+
+  /**
+   * @brief Read the current state of a control pin.
+   *
+   * Primarily used for reading the INTN interrupt pin.
+   *
+   * @param[in]  pin     Which control pin to read.
+   * @param[out] signal  Receives the current signal state.
+   * @return true if the read was successful, false otherwise.
+   *
+   * @note Default implementation returns false (unsupported). Override in
+   *       derived class if interrupt pin monitoring is needed.
+   */
+  bool GpioRead(CtrlPin pin, GpioSignal &signal) noexcept {
+    (void)pin;
+    (void)signal;
+    return false;
+  }
+
+  /**
+   * @brief Assert a control pin (set to ACTIVE).
+   * @param[in] pin  Which control pin to assert.
+   */
+  void GpioSetActive(CtrlPin pin) noexcept { GpioSet(pin, GpioSignal::ACTIVE); }
+
+  /**
+   * @brief Deassert a control pin (set to INACTIVE).
+   * @param[in] pin  Which control pin to deassert.
+   */
+  void GpioSetInactive(CtrlPin pin) noexcept { GpioSet(pin, GpioSignal::INACTIVE); }
+
+  /// @}
 
 protected:
   /**
