@@ -48,9 +48,9 @@ public:
 
     // Optional: GPIO pins for controlling A2-A0 address pins
     // Set to GPIO_NUM_NC if not used (default - address pins are hardwired)
-    gpio_num_t a0_pin = GPIO_NUM_NC; ///< GPIO pin for A0 address control (optional)
-    gpio_num_t a1_pin = GPIO_NUM_NC; ///< GPIO pin for A1 address control (optional)
-    gpio_num_t a2_pin = GPIO_NUM_NC; ///< GPIO pin for A2 address control (optional)
+    gpio_num_t a0_pin = GPIO_NUM_45; ///< GPIO pin for A0 address control (optional)
+    gpio_num_t a1_pin = GPIO_NUM_48; ///< GPIO pin for A1 address control (optional)
+    gpio_num_t a2_pin = GPIO_NUM_47; ///< GPIO pin for A2 address control (optional)
   };
 
   /**
