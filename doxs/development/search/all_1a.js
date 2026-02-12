@@ -1,10 +1,7 @@
 var searchData=
 [
-  ['understanding_20crtp_20curiously_20recurring_20template_20pattern_0',['Understanding CRTP (Curiously Recurring Template Pattern)',['../md_docs_2platform__integration.html#autotoc_md105',1,'']]],
-  ['unsupportedfeature_1',['Error: PCAL9555A Features Fail (UnsupportedFeature)',['../md_docs_2troubleshooting.html#autotoc_md145',1,'']]],
-  ['up_20pull_20down_20pcal9555a_20only_2',['Pull-up/Pull-down (PCAL9555A only)',['../md_docs_2api__reference.html#autotoc_md26',1,'']]],
-  ['use_20it_3',['2. Create the driver and use it',['../index.html#autotoc_md5',1,'']]],
-  ['use_20pins_4',['Step 5: Configure and Use Pins',['../md_docs_2quickstart.html#autotoc_md135',1,'']]],
-  ['use_20virtual_20functions_5',['❌ Don&apos;t Use Virtual Functions',['../md_docs_2platform__integration.html#autotoc_md121',1,'']]],
-  ['using_20kconfig_6',['Using Kconfig',['../md_docs_2configuration.html#autotoc_md43',1,'']]]
+  ['variant_20configuration_0',['Chip Variant Configuration',['../md_docs_2configuration.html#autotoc_md52',1,'']]],
+  ['variant_20detection_1',['Variant Detection',['../md_docs_2api__reference.html#autotoc_md34',1,'Chip Variant Detection'],['../md_docs_2examples.html#autotoc_md69',1,'Example 8: Chip Variant Detection']]],
+  ['virtual_20functions_2',['Virtual Functions',['../md_docs_2platform__integration.html#autotoc_md121',1,'❌ Don&apos;t Use Virtual Functions'],['../md_docs_2platform__integration.html#autotoc_md106',1,'Why CRTP Instead of Virtual Functions?']]],
+  ['vs_20pcal9555a_3',['Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?',['../md_docs_2troubleshooting.html#autotoc_md151',1,'']]]
 ];

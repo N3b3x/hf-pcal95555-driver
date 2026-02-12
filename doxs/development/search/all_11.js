@@ -1,7 +1,15 @@
 var searchData=
 [
-  ['latch_20pcal9555a_20only_0',['Input Latch (PCAL9555A only)',['../md_docs_2api__reference.html#autotoc_md31',1,'']]],
-  ['layout_20recommendations_1',['Physical Layout Recommendations',['../md_docs_2hardware__setup.html#autotoc_md83',1,'']]],
-  ['led_20animation_20demo_20tt_20pcal95555_5fled_5fanimation_20tt_2',['LED Animation Demo (&lt;tt&gt;pcal95555_led_animation&lt;/tt&gt;)',['../index.html#autotoc_md12',1,'']]],
-  ['led_20animation_20demo_20wiring_3',['LED animation demo wiring',['../index.html#autotoc_md15',1,'']]]
+  ['management_0',['Address Management',['../md_docs_2api__reference.html#autotoc_md32',1,'']]],
+  ['memory_20efficiency_20strong_1',['3. &lt;strong&gt;Memory Efficiency&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md109',1,'']]],
+  ['messages_2',['Common Error Messages',['../md_docs_2troubleshooting.html#autotoc_md140',1,'']]],
+  ['methods_3',['Methods',['../md_docs_2api__reference.html#autotoc_md22',1,'']]],
+  ['minimal_20example_4',['Minimal Example',['../md_docs_2quickstart.html#autotoc_md129',1,'']]],
+  ['minimal_20wiring_20esp32_20s3_20pca9555_20pcal9555a_5',['Minimal wiring (ESP32-S3 + PCA9555/PCAL9555A)',['../index.html#autotoc_md14',1,'']]],
+  ['mode_20pcal9555a_20only_6',['Mode PCAL9555A only',['../md_docs_2api__reference.html#autotoc_md29',1,'Output Mode (PCAL9555A only)'],['../md_docs_2configuration.html#autotoc_md48',1,'Output Mode (PCAL9555A only)']]],
+  ['monitor_7',['Flash and Monitor',['../index.html#autotoc_md9',1,'']]],
+  ['multiple_20devices_8',['Multiple Devices',['../md_docs_2hardware__setup.html#autotoc_md86',1,'']]],
+  ['multiple_20devices_9',['Q: Can I use multiple devices?',['../md_docs_2troubleshooting.html#autotoc_md150',1,'']]],
+  ['multiple_20interrupts_10',['Configure Multiple Interrupts',['../md_docs_2examples.html#autotoc_md66',1,'']]],
+  ['my_20pin_20writes_20not_20work_11',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md148',1,'']]]
 ];

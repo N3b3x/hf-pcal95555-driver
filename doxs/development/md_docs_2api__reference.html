@@ -81,7 +81,8 @@ $(function() {
 Source Code</h1>
 <ul>
 <li><b>Main Header</b>: <a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a></li>
-<li><b>Implementation</b>: <a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a></li>
+<li><b>Kconfig Macros</b>: <a href="../inc/pcal95555_kconfig.hpp"><code>inc/pcal95555_kconfig.hpp</code></a> (compile-time configuration, included by main header)</li>
+<li><b>Implementation</b>: <a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a></li>
 </ul>
 <h1><a class="anchor" id="autotoc_md20"></a>
 Core Class</h1>
@@ -128,11 +129,11 @@ Initialization</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>EnsureInitialized()</code>   </td><td class="markdownTableBodyNone"><code>bool EnsureInitialized()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>EnsureInitialized()</code>   </td><td class="markdownTableBodyNone"><code>bool EnsureInitialized()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>ResetToDefault()</code>   </td><td class="markdownTableBodyNone"><code>void ResetToDefault()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ResetToDefault()</code>   </td><td class="markdownTableBodyNone"><code>void ResetToDefault()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>InitFromConfig()</code>   </td><td class="markdownTableBodyNone"><code>void InitFromConfig()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>InitFromConfig()</code>   </td><td class="markdownTableBodyNone"><code>void InitFromConfig()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md24"></a>
 Pin Direction</h2>
@@ -140,11 +141,11 @@ Pin Direction</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetPinDirection()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPinDirection(uint16_t pin, GPIODir dir)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPinDirection()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPinDirection(uint16_t pin, GPIODir dir)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>SetDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDirections(std::initializer_list&lt;std::pair&lt;uint16_t, GPIODir&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDirections(std::initializer_list&lt;std::pair&lt;uint16_t, GPIODir&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetMultipleDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetMultipleDirections(uint16_t mask, GPIODir dir)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>SetMultipleDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetMultipleDirections(uint16_t mask, GPIODir dir)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md25"></a>
 Pin I/O</h2>
@@ -152,15 +153,15 @@ Pin I/O</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ReadPin()</code>   </td><td class="markdownTableBodyNone"><code>bool ReadPin(uint16_t pin)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ReadPin()</code>   </td><td class="markdownTableBodyNone"><code>bool ReadPin(uint16_t pin)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>ReadPins()</code>   </td><td class="markdownTableBodyNone"><code>std::vector&lt;std::pair&lt;uint16_t, bool&gt;&gt; ReadPins(std::initializer_list&lt;uint16_t&gt; pins)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ReadPins()</code>   </td><td class="markdownTableBodyNone"><code>std::vector&lt;std::pair&lt;uint16_t, bool&gt;&gt; ReadPins(std::initializer_list&lt;uint16_t&gt; pins)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>WritePin()</code>   </td><td class="markdownTableBodyNone"><code>bool WritePin(uint16_t pin, bool value)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>WritePin()</code>   </td><td class="markdownTableBodyNone"><code>bool WritePin(uint16_t pin, bool value)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>WritePins()</code>   </td><td class="markdownTableBodyNone"><code>bool WritePins(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>WritePins()</code>   </td><td class="markdownTableBodyNone"><code>bool WritePins(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>TogglePin()</code>   </td><td class="markdownTableBodyNone"><code>bool TogglePin(uint16_t pin)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>TogglePin()</code>   </td><td class="markdownTableBodyNone"><code>bool TogglePin(uint16_t pin)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md26"></a>
 Pull-up/Pull-down (PCAL9555A only)</h2>
@@ -171,13 +172,13 @@ Pull-up/Pull-down (PCAL9555A only)</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetPullEnable()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullEnable(uint16_t pin, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPullEnable()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullEnable(uint16_t pin, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>SetPullEnables()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullEnables(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPullEnables()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullEnables(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetPullDirection()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullDirection(uint16_t pin, bool pull_up)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPullDirection()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullDirection(uint16_t pin, bool pull_up)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>SetPullDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullDirections(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>SetPullDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullDirections(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md27"></a>
 Drive Strength (PCAL9555A only)</h2>
@@ -188,9 +189,9 @@ Drive Strength (PCAL9555A only)</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetDriveStrength()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDriveStrength(uint16_t pin, DriveStrength level)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetDriveStrength()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDriveStrength(uint16_t pin, DriveStrength level)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>SetDriveStrengths()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDriveStrengths(std::initializer_list&lt;std::pair&lt;uint16_t, DriveStrength&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>SetDriveStrengths()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDriveStrengths(std::initializer_list&lt;std::pair&lt;uint16_t, DriveStrength&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md28"></a>
 Interrupts</h2>
@@ -201,23 +202,23 @@ Interrupts</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">PCAL9555A?   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ConfigureInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>bool ConfigureInterrupt(uint16_t pin, InterruptState state)</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ConfigureInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>bool ConfigureInterrupt(uint16_t pin, InterruptState state)</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>ConfigureInterrupts()</code>   </td><td class="markdownTableBodyNone"><code>bool ConfigureInterrupts(std::initializer_list&lt;std::pair&lt;uint16_t, InterruptState&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ConfigureInterrupts()</code>   </td><td class="markdownTableBodyNone"><code>bool ConfigureInterrupts(std::initializer_list&lt;std::pair&lt;uint16_t, InterruptState&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ConfigureInterruptMask()</code>   </td><td class="markdownTableBodyNone"><code>bool ConfigureInterruptMask(uint16_t mask)</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ConfigureInterruptMask()</code>   </td><td class="markdownTableBodyNone"><code>bool ConfigureInterruptMask(uint16_t mask)</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>GetInterruptStatus()</code>   </td><td class="markdownTableBodyNone"><code>uint16_t GetInterruptStatus()</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>GetInterruptStatus()</code>   </td><td class="markdownTableBodyNone"><code>uint16_t GetInterruptStatus()</code>   </td><td class="markdownTableBodyNone">Yes   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>RegisterPinInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function&lt;void(uint16_t, bool)&gt; callback)</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>RegisterPinInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge, std::function&lt;void(uint16_t, bool)&gt; callback)</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>UnregisterPinInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>bool UnregisterPinInterrupt(uint16_t pin)</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>UnregisterPinInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>bool UnregisterPinInterrupt(uint16_t pin)</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetInterruptCallback()</code>   </td><td class="markdownTableBodyNone"><code>void SetInterruptCallback(const std::function&lt;void(uint16_t)&gt;&amp; callback)</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetInterruptCallback()</code>   </td><td class="markdownTableBodyNone"><code>void SetInterruptCallback(const std::function&lt;void(uint16_t)&gt;&amp; callback)</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>RegisterInterruptHandler()</code>   </td><td class="markdownTableBodyNone"><code>bool RegisterInterruptHandler()</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>RegisterInterruptHandler()</code>   </td><td class="markdownTableBodyNone"><code>bool RegisterInterruptHandler()</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>HandleInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>void HandleInterrupt()</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>HandleInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>void HandleInterrupt()</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md29"></a>
 Output Mode (PCAL9555A only)</h2>
@@ -228,7 +229,7 @@ Output Mode (PCAL9555A only)</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetOutputMode()</code>   </td><td class="markdownTableBodyNone"><code>bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>SetOutputMode()</code>   </td><td class="markdownTableBodyNone"><code>bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md30"></a>
 Polarity</h2>
@@ -236,11 +237,11 @@ Polarity</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetPinPolarity()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPinPolarity(uint16_t pin, Polarity polarity)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPinPolarity()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPinPolarity(uint16_t pin, Polarity polarity)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>SetPolarities()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPolarities(std::initializer_list&lt;std::pair&lt;uint16_t, Polarity&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetPolarities()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPolarities(std::initializer_list&lt;std::pair&lt;uint16_t, Polarity&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetMultiplePolarities()</code>   </td><td class="markdownTableBodyNone"><code>bool SetMultiplePolarities(uint16_t mask, Polarity polarity)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>SetMultiplePolarities()</code>   </td><td class="markdownTableBodyNone"><code>bool SetMultiplePolarities(uint16_t mask, Polarity polarity)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md31"></a>
 Input Latch (PCAL9555A only)</h2>
@@ -251,11 +252,11 @@ Input Latch (PCAL9555A only)</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>EnableInputLatch()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableInputLatch(uint16_t pin, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>EnableInputLatch()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableInputLatch(uint16_t pin, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>EnableInputLatches()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableInputLatches(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>EnableInputLatches()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableInputLatches(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>EnableMultipleInputLatches()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableMultipleInputLatches(uint16_t mask, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>EnableMultipleInputLatches()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableMultipleInputLatches(uint16_t mask, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md32"></a>
 Address Management</h2>
@@ -263,13 +264,13 @@ Address Management</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>GetAddress()</code>   </td><td class="markdownTableBodyNone"><code>uint8_t GetAddress() const</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>GetAddress()</code>   </td><td class="markdownTableBodyNone"><code>uint8_t GetAddress() const</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>GetAddressBits()</code>   </td><td class="markdownTableBodyNone"><code>uint8_t GetAddressBits() const</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>GetAddressBits()</code>   </td><td class="markdownTableBodyNone"><code>uint8_t GetAddressBits() const</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ChangeAddress()</code>   </td><td class="markdownTableBodyNone"><code>bool ChangeAddress(bool a0_level, bool a1_level, bool a2_level)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>ChangeAddress()</code>   </td><td class="markdownTableBodyNone"><code>bool ChangeAddress(bool a0_level, bool a1_level, bool a2_level)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>ChangeAddress()</code>   </td><td class="markdownTableBodyNone"><code>bool ChangeAddress(uint8_t address)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>ChangeAddress()</code>   </td><td class="markdownTableBodyNone"><code>bool ChangeAddress(uint8_t address)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md33"></a>
 Error Handling</h2>
@@ -277,11 +278,11 @@ Error Handling</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>SetRetries()</code>   </td><td class="markdownTableBodyNone"><code>void SetRetries(int retries) noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>SetRetries()</code>   </td><td class="markdownTableBodyNone"><code>void SetRetries(int retries) noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>GetErrorFlags()</code>   </td><td class="markdownTableBodyNone"><code>[[nodiscard]] uint16_t GetErrorFlags() const noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>GetErrorFlags()</code>   </td><td class="markdownTableBodyNone"><code>[[nodiscard]] uint16_t GetErrorFlags() const noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>ClearErrorFlags()</code>   </td><td class="markdownTableBodyNone"><code>void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>ClearErrorFlags()</code>   </td><td class="markdownTableBodyNone"><code>void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md34"></a>
 Chip Variant Detection</h2>
@@ -289,9 +290,9 @@ Chip Variant Detection</h2>
 <tr class="markdownTableHead">
 <th class="markdownTableHeadNone">Method   </th><th class="markdownTableHeadNone">Signature   </th><th class="markdownTableHeadNone">Description   </th><th class="markdownTableHeadNone">Location    </th></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone"><code>HasAgileIO()</code>   </td><td class="markdownTableBodyNone"><code>[[nodiscard]] bool HasAgileIO() const noexcept</code>   </td><td class="markdownTableBodyNone">Returns <code>true</code> if PCAL9555A detected (Agile I/O available)   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>    </td></tr>
+<td class="markdownTableBodyNone"><code>HasAgileIO()</code>   </td><td class="markdownTableBodyNone"><code>[[nodiscard]] bool HasAgileIO() const noexcept</code>   </td><td class="markdownTableBodyNone">Returns <code>true</code> if PCAL9555A detected (Agile I/O available)   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>GetChipVariant()</code>   </td><td class="markdownTableBodyNone"><code>[[nodiscard]] ChipVariant GetChipVariant() const noexcept</code>   </td><td class="markdownTableBodyNone">Returns the detected <code>ChipVariant</code> enum value   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.cpp"><code>src/pcal95555.cpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>GetChipVariant()</code>   </td><td class="markdownTableBodyNone"><code>[[nodiscard]] ChipVariant GetChipVariant() const noexcept</code>   </td><td class="markdownTableBodyNone">Returns the detected <code>ChipVariant</code> enum value   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
 <p><b>Usage:</b> </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (driver.HasAgileIO()) {</div>
 <div class="line">    <span class="comment">// PCAL9555A features available</span></div>
@@ -324,7 +325,7 @@ Enumerations</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>ChipVariant</code>   </td><td class="markdownTableBodyNone"><code>Unknown</code>, <code>PCA9555</code>, <code>PCAL9555A</code>   </td><td class="markdownTableBodyNone">Detected or user-specified chip variant   </td><td class="markdownTableBodyNone"><a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a>    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone"><code>Error</code>   </td><td class="markdownTableBodyNone"><code>None</code>, <code>InvalidPin</code>, <code>InvalidMask</code>, <code>I2CReadFail</code>, <code>I2CWriteFail</code>, <code>UnsupportedFeature</code>   </td><td class="markdownTableBodyNone">Error conditions (bitmask). <code>UnsupportedFeature</code> (0x0010) is set when a PCAL9555A-only method is called on a PCA9555.   </td><td class="markdownTableBodyNone"><a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a>   </td></tr>
+<td class="markdownTableBodyNone"><code>Error</code>   </td><td class="markdownTableBodyNone"><code>None</code>, <code>InvalidPin</code>, <code>InvalidMask</code>, <code>I2CReadFail</code>, <code>I2CWriteFail</code>, <code>UnsupportedFeature</code>, <code>InvalidAddress</code>   </td><td class="markdownTableBodyNone">Error conditions (bitmask). <code>UnsupportedFeature</code> (0x0010) is set when a PCAL9555A-only method is called on a PCA9555. <code>InvalidAddress</code> (0x0020) is set when an I2C address outside the valid 0x20-0x27 range is provided.   </td><td class="markdownTableBodyNone"><a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a>   </td></tr>
 </table>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
