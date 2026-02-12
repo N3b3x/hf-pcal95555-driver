@@ -34,7 +34,7 @@ extern "C" {
 
 static constexpr const char* g_TAG_I2C = "PCAL9555_I2C";
 
-class Esp32Pcal9555Bus : public pcal95555::I2cInterface<Esp32Pcal9555Bus> {
+class Esp32Pcal9555I2cBus : public pcal95555::I2cInterface<Esp32Pcal9555I2cBus> {
 public:
   /**
    * @brief I2C bus configuration structure
@@ -56,13 +56,13 @@ public:
   /**
    * @brief Constructor with default configuration
    */
-  Esp32Pcal9555Bus() : Esp32Pcal9555Bus(I2CConfig{}) {}
+  Esp32Pcal9555I2cBus() : Esp32Pcal9555I2cBus(I2CConfig{}) {}
 
   /**
    * @brief Constructor with custom I2C configuration
    * @param config I2C bus configuration
    */
-  explicit Esp32Pcal9555Bus(const I2CConfig& config)
+  explicit Esp32Pcal9555I2cBus(const I2CConfig& config)
       : config_(config), bus_handle_(nullptr), initialized_(false) {
     // Initialize address pins as outputs if configured
     if (config_.a0_pin != GPIO_NUM_NC || config_.a1_pin != GPIO_NUM_NC ||
@@ -74,7 +74,7 @@ public:
   /**
    * @brief Destructor - cleans up I2C resources
    */
-  ~Esp32Pcal9555Bus() {
+  ~Esp32Pcal9555I2cBus() {
     Deinit();
   }
 
@@ -256,11 +256,11 @@ public:
    *
    * @example
    *   // Configure address pins in I2CConfig
-   *   Esp32Pcal9555Bus::I2CConfig config;
+   *   Esp32Pcal9555I2cBus::I2CConfig config;
    *   config.a0_pin = GPIO_NUM_10;
    *   config.a1_pin = GPIO_NUM_11;
    *   config.a2_pin = GPIO_NUM_12;
-   *   auto bus = CreateEsp32Pcal9555Bus(config);
+   *   auto bus = CreateEsp32Pcal9555I2cBus(config);
    *
    *   // Set A2=HIGH, A1=LOW, A0=HIGH (address bits = 0b101 = 5)
    *   bus->SetAddressPins(true, false, true);
@@ -327,7 +327,7 @@ public:
    *       The interrupt is configured for falling edge (active low).
    *
    * @example
-   *   auto bus = CreateEsp32Pcal9555Bus();
+   *   auto bus = CreateEsp32Pcal9555I2cBus();
    *   bus->SetupInterruptPin(GPIO_NUM_7);  // Configure INT pin
    *   auto driver = std::make_unique<PCAL95555Driver>(bus.get(), false, false, false);
    *   driver->RegisterInterruptHandler();  // Registers HandleInterrupt() with bus
@@ -562,7 +562,7 @@ private:
    * @brief Static interrupt handler (ISR context)
    */
   static void IRAM_ATTR interruptHandler(void* arg) {
-    auto* bus = static_cast<Esp32Pcal9555Bus*>(arg);
+    auto* bus = static_cast<Esp32Pcal9555I2cBus*>(arg);
     auto pin = static_cast<uint32_t>(bus->interrupt_pin_);
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
     xQueueSendFromISR(bus->interrupt_queue_, &pin, &xHigherPriorityTaskWoken);
@@ -575,7 +575,7 @@ private:
    * @brief Interrupt processing task (task context)
    */
   static void interruptTask(void* arg) {
-    auto* bus = static_cast<Esp32Pcal9555Bus*>(arg);
+    auto* bus = static_cast<Esp32Pcal9555I2cBus*>(arg);
     uint32_t pin = 0;
 
     while (true) {
@@ -624,11 +624,11 @@ private:
 /**
  * @brief Factory function to create an ESP32 I2C bus instance
  * @param config I2C configuration (optional, uses defaults if not provided)
- * @return Unique pointer to Esp32Pcal9555Bus instance
+ * @return Unique pointer to Esp32Pcal9555I2cBus instance
  */
-inline std::unique_ptr<Esp32Pcal9555Bus> CreateEsp32Pcal9555Bus(
-    const Esp32Pcal9555Bus::I2CConfig& config = Esp32Pcal9555Bus::I2CConfig{}) {
-  auto bus = std::make_unique<Esp32Pcal9555Bus>(config);
+inline std::unique_ptr<Esp32Pcal9555I2cBus> CreateEsp32Pcal9555I2cBus(
+    const Esp32Pcal9555I2cBus::I2CConfig& config = Esp32Pcal9555I2cBus::I2CConfig{}) {
+  auto bus = std::make_unique<Esp32Pcal9555I2cBus>(config);
   if (!bus->Init()) {
     ESP_LOGE(g_TAG_I2C, "Failed to initialize I2C bus");
     return nullptr;

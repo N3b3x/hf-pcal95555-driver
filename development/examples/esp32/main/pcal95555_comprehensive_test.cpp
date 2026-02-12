@@ -46,7 +46,7 @@
 #include <memory>
 
 // Use fully qualified name for the class
-using PCAL95555Driver = pcal95555::PCAL95555<Esp32Pcal9555Bus>;
+using PCAL95555Driver = pcal95555::PCAL95555<Esp32Pcal9555I2cBus>;
 
 #ifdef __cplusplus
 extern "C" {
@@ -98,7 +98,7 @@ static constexpr bool PCAL9555_A2_LEVEL = false; // A2 pin level (LOW = false, H
 //=============================================================================
 // SHARED TEST RESOURCES
 //=============================================================================
-static std::unique_ptr<Esp32Pcal9555Bus> g_i2c_bus;
+static std::unique_ptr<Esp32Pcal9555I2cBus> g_i2c_bus;
 static std::unique_ptr<PCAL95555Driver> g_driver;
 
 //=============================================================================
@@ -168,7 +168,7 @@ static std::unique_ptr<PCAL95555Driver> create_test_driver() noexcept {
 static bool test_i2c_bus_initialization() noexcept {
   ESP_LOGI(g_TAG, "Testing I2C bus initialization...");
 
-  Esp32Pcal9555Bus::I2CConfig config;
+  Esp32Pcal9555I2cBus::I2CConfig config;
   config.port = I2C_NUM_0;
   config.sda_pin = GPIO_NUM_4; // ESP32S3: GPIO4 for SDA
   config.scl_pin = GPIO_NUM_5; // ESP32S3: GPIO5 for SCL
@@ -180,7 +180,7 @@ static bool test_i2c_bus_initialization() noexcept {
   config.a1_pin = GPIO_NUM_48; // A1 address pin
   config.a2_pin = GPIO_NUM_47; // A2 address pin
 
-  g_i2c_bus = CreateEsp32Pcal9555Bus(config);
+  g_i2c_bus = CreateEsp32Pcal9555I2cBus(config);
   if (!g_i2c_bus || !g_i2c_bus->IsInitialized()) {
     ESP_LOGE(g_TAG, "Failed to initialize I2C bus");
     return false;
