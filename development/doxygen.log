@@ -1,60 +1,68 @@
-warning: ignoring unsupported tag 'PAGE_OUTLINE_PANEL' at line 1765, file /tmp/doxyfile.dXo4W3
-warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.dXo4W3' has become obsolete.
+warning: ignoring unsupported tag 'PAGE_OUTLINE_PANEL' at line 1765, file /tmp/doxyfile.KSeHNb
+warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.KSeHNb' has become obsolete.
          To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:13: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:33: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:71: warning: documented symbol 'bool pcal95555::PCAL95555::EnsureInitialized' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:80: warning: documented symbol 'bool pcal95555::PCAL95555::Initialize' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:125: warning: documented symbol 'void pcal95555::PCAL95555::SetRetries' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:131: warning: documented symbol 'bool pcal95555::PCAL95555::writeRegister' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:143: warning: documented symbol 'bool pcal95555::PCAL95555::readRegister' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:156: warning: documented symbol 'void pcal95555::PCAL95555::ResetToDefault' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:192: warning: documented symbol 'void pcal95555::PCAL95555::InitFromConfig' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:231: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinDirection' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:250: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultipleDirections' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:282: warning: documented symbol 'bool pcal95555::PCAL95555::SetDirections' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:325: warning: documented symbol 'bool pcal95555::PCAL95555::ReadPin' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:345: warning: documented symbol 'bool pcal95555::PCAL95555::WritePin' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:366: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultipleOutputs' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:400: warning: documented symbol 'bool pcal95555::PCAL95555::TogglePin' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:421: warning: documented symbol 'bool pcal95555::PCAL95555::WritePins' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:464: warning: documented symbol 'std::vector< std::pair< uint16_t, bool > > pcal95555::PCAL95555::ReadPins' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:504: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullEnable' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:526: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullDirection' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:550: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullEnables' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:596: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullDirections' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:642: warning: documented symbol 'bool pcal95555::PCAL95555::GetPullConfiguration' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:672: warning: documented symbol 'bool pcal95555::PCAL95555::SetDriveStrength' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:700: warning: documented symbol 'bool pcal95555::PCAL95555::SetDriveStrengths' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:765: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterrupt' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:804: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterrupts' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:850: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterruptMask' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:865: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetInterruptStatus' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:881: warning: documented symbol 'bool pcal95555::PCAL95555::SetOutputMode' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:894: warning: documented symbol 'bool pcal95555::PCAL95555::RegisterPinInterrupt' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:922: warning: documented symbol 'bool pcal95555::PCAL95555::UnregisterPinInterrupt' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:944: warning: documented symbol 'void pcal95555::PCAL95555::SetInterruptCallback' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:950: warning: documented symbol 'bool pcal95555::PCAL95555::RegisterInterruptHandler' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:962: warning: documented symbol 'uint16_t pcal95555::PCAL95555::ReadPinStates' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:972: warning: documented symbol 'void pcal95555::PCAL95555::HandleInterrupt' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1041: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinPolarity' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1060: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultiplePolarities' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1090: warning: documented symbol 'bool pcal95555::PCAL95555::SetPolarities' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1132: warning: documented symbol 'bool pcal95555::PCAL95555::EnableInputLatch' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1154: warning: documented symbol 'bool pcal95555::PCAL95555::EnableMultipleInputLatches' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1188: warning: documented symbol 'bool pcal95555::PCAL95555::EnableInputLatches' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1233: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetErrorFlags' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1238: warning: documented symbol 'void pcal95555::PCAL95555::ClearErrorFlags' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1243: warning: documented symbol 'void pcal95555::PCAL95555::setError' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1248: warning: documented symbol 'void pcal95555::PCAL95555::clearError' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1254: warning: documented symbol 'bool pcal95555::PCAL95555::HasAgileIO' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1260: warning: documented symbol 'ChipVariant pcal95555::PCAL95555::GetChipVariant' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1266: warning: documented symbol 'bool pcal95555::PCAL95555::requireAgileIO' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1277: warning: documented symbol 'void pcal95555::PCAL95555::DetectChipVariant' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1327: warning: documented symbol 'uint8_t pcal95555::PCAL95555::GetAddress' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1333: warning: documented symbol 'uint8_t pcal95555::PCAL95555::GetAddressBits' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1339: warning: documented symbol 'bool pcal95555::PCAL95555::ChangeAddress' was not declared or defined.
-/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp:1390: warning: documented symbol 'bool pcal95555::PCAL95555::ChangeAddress' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:13: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:33: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:71: warning: documented symbol 'bool pcal95555::PCAL95555::EnsureInitialized' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:80: warning: documented symbol 'bool pcal95555::PCAL95555::initialize' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:125: warning: documented symbol 'void pcal95555::PCAL95555::SetRetries' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:131: warning: documented symbol 'bool pcal95555::PCAL95555::writeRegister' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:143: warning: documented symbol 'bool pcal95555::PCAL95555::readRegister' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:156: warning: documented symbol 'void pcal95555::PCAL95555::ResetToDefault' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:192: warning: documented symbol 'void pcal95555::PCAL95555::InitFromConfig' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:232: warning: documented symbol 'bool pcal95555::PCAL95555::readDualPort' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:241: warning: documented symbol 'bool pcal95555::PCAL95555::writeDualPort' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:250: warning: documented symbol 'bool pcal95555::PCAL95555::modifySinglePinRegister' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:263: warning: documented symbol 'bool pcal95555::PCAL95555::modifyDualPortByMask' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:284: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinDirection' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:299: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultipleDirections' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:311: warning: documented symbol 'bool pcal95555::PCAL95555::SetDirections' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:340: warning: documented symbol 'bool pcal95555::PCAL95555::ReadPin' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:360: warning: documented symbol 'bool pcal95555::PCAL95555::WritePin' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:376: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultipleOutputs' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:387: warning: documented symbol 'bool pcal95555::PCAL95555::TogglePin' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:409: warning: documented symbol 'bool pcal95555::PCAL95555::WritePins' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:438: warning: documented symbol 'std::vector< std::pair< uint16_t, bool > > pcal95555::PCAL95555::ReadPins' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:478: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullEnable' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:493: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullDirection' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:509: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullEnables' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:538: warning: documented symbol 'bool pcal95555::PCAL95555::SetPullDirections' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:567: warning: documented symbol 'bool pcal95555::PCAL95555::GetPullConfiguration' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:597: warning: documented symbol 'bool pcal95555::PCAL95555::SetDriveStrength' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:625: warning: documented symbol 'bool pcal95555::PCAL95555::SetDriveStrengths' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:690: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterrupt' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:729: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterrupts' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:775: warning: documented symbol 'bool pcal95555::PCAL95555::ConfigureInterruptMask' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:790: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetInterruptStatus' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:806: warning: documented symbol 'bool pcal95555::PCAL95555::SetOutputMode' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:819: warning: documented symbol 'bool pcal95555::PCAL95555::RegisterPinInterrupt' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:847: warning: documented symbol 'bool pcal95555::PCAL95555::UnregisterPinInterrupt' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:869: warning: documented symbol 'void pcal95555::PCAL95555::SetInterruptCallback' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:875: warning: documented symbol 'bool pcal95555::PCAL95555::RegisterInterruptHandler' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:887: warning: documented symbol 'uint16_t pcal95555::PCAL95555::readPinStates' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:897: warning: documented symbol 'void pcal95555::PCAL95555::HandleInterrupt' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:966: warning: documented symbol 'bool pcal95555::PCAL95555::SetPinPolarity' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:981: warning: documented symbol 'bool pcal95555::PCAL95555::SetMultiplePolarities' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:992: warning: documented symbol 'bool pcal95555::PCAL95555::SetPolarities' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1020: warning: documented symbol 'bool pcal95555::PCAL95555::EnableInputLatch' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1035: warning: documented symbol 'bool pcal95555::PCAL95555::EnableMultipleInputLatches' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1047: warning: documented symbol 'bool pcal95555::PCAL95555::EnableInputLatches' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1075: warning: documented symbol 'uint16_t pcal95555::PCAL95555::GetErrorFlags' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1080: warning: documented symbol 'bool pcal95555::PCAL95555::HasError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1085: warning: documented symbol 'bool pcal95555::PCAL95555::HasAnyError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1090: warning: documented symbol 'void pcal95555::PCAL95555::ClearError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1095: warning: documented symbol 'void pcal95555::PCAL95555::ClearErrorFlags' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1100: warning: documented symbol 'void pcal95555::PCAL95555::setError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1105: warning: documented symbol 'void pcal95555::PCAL95555::clearError' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1111: warning: documented symbol 'bool pcal95555::PCAL95555::HasAgileIO' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1117: warning: documented symbol 'ChipVariant pcal95555::PCAL95555::GetChipVariant' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1123: warning: documented symbol 'bool pcal95555::PCAL95555::requireAgileIO' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1134: warning: documented symbol 'void pcal95555::PCAL95555::detectChipVariant' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1184: warning: documented symbol 'uint8_t pcal95555::PCAL95555::GetAddress' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1190: warning: documented symbol 'uint8_t pcal95555::PCAL95555::GetAddressBits' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1197: warning: documented symbol 'bool pcal95555::PCAL95555::changeAddressImpl' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1241: warning: documented symbol 'bool pcal95555::PCAL95555::ChangeAddress' was not declared or defined.
+/home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:1250: warning: documented symbol 'bool pcal95555::PCAL95555::ChangeAddress' was not declared or defined.
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/quickstart.md:141: warning: explicit link request to 'UnsupportedFeature' could not be resolved
 Doxygen version used: 1.10.0 (ebc57c6dd303a980bd19dd74b8b61c8f3f5180ca)
 Searching for include files...
@@ -79,8 +87,8 @@ Reading /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/installat
 Reading /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/platform_integration.md...
 Reading /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/quickstart.md...
 Reading /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/troubleshooting.md...
-Preprocessing /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp...
-Parsing file /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.cpp...
+Preprocessing /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp...
+Parsing file /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp...
 Building macro definition list...
 Building group list...
 Building directory list...

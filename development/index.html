@@ -463,12 +463,14 @@ when called on a PCA9555. You can check at runtime with:</p>
 24
 25
 26
+27
 </pre></td><td class="rouge-code"><pre>hf-pcal95555-driver/
 ├── inc/
 │   ├── pcal95555.hpp              # Main driver header (public API)
+│   ├── pcal95555_kconfig.hpp      # Kconfig compile-time configuration macros
 │   └── pcal95555_i2c_interface.hpp # CRTP I2C interface base class
 ├── src/
-│   └── pcal95555.cpp              # Template implementation (included by header)
+│   └── pcal95555.ipp              # Template implementation (included by header)
 ├── examples/
 │   └── esp32/
 │       ├── main/
@@ -525,10 +527,10 @@ when called on a PCA9555. You can check at runtime with:</p>
 </span>
 <span class="k">class</span> <span class="nc">MyI2c</span> <span class="o">:</span> <span class="k">public</span> <span class="n">pcal95555</span><span class="o">::</span><span class="n">I2cInterface</span><span class="o">&lt;</span><span class="n">MyI2c</span><span class="o">&gt;</span> <span class="p">{</span>
 <span class="nl">public:</span>
-    <span class="kt">bool</span> <span class="n">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">Write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
         <span class="c1">// Your platform I2C write implementation</span>
     <span class="p">}</span>
-    <span class="kt">bool</span> <span class="n">read</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">Read</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
         <span class="c1">// Your platform I2C read implementation</span>
     <span class="p">}</span>
     <span class="kt">bool</span> <span class="n">SetAddressPins</span><span class="p">(</span><span class="kt">bool</span> <span class="n">a0</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a1</span><span class="p">,</span> <span class="kt">bool</span> <span class="n">a2</span><span class="p">)</span> <span class="p">{</span>
@@ -1180,6 +1182,11 @@ release <strong>BOOT</strong>, then immediately run the flash command.</p>
       <td><code class="language-plaintext highlighter-rouge">UnsupportedFeature</code></td>
       <td>0x0010</td>
       <td>PCAL9555A feature called on PCA9555</td>
+    </tr>
+    <tr>
+      <td><code class="language-plaintext highlighter-rouge">InvalidAddress</code></td>
+      <td>0x0020</td>
+      <td>I2C address outside valid 0x20-0x27 range</td>
     </tr>
   </tbody>
 </table></div><hr />

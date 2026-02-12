@@ -1,14 +1,7 @@
 var searchData=
 [
-  ['management_0',['Address Management',['../md_docs_2api__reference.html#autotoc_md32',1,'']]],
-  ['memory_20efficiency_20strong_1',['3. &lt;strong&gt;Memory Efficiency&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md109',1,'']]],
-  ['messages_2',['Common Error Messages',['../md_docs_2troubleshooting.html#autotoc_md140',1,'']]],
-  ['methods_3',['Methods',['../md_docs_2api__reference.html#autotoc_md22',1,'']]],
-  ['minimal_20example_4',['Minimal Example',['../md_docs_2quickstart.html#autotoc_md129',1,'']]],
-  ['minimal_20wiring_20esp32_20s3_20pca9555_20pcal9555a_5',['Minimal wiring (ESP32-S3 + PCA9555/PCAL9555A)',['../index.html#autotoc_md14',1,'']]],
-  ['mode_20pcal9555a_20only_6',['Mode PCAL9555A only',['../md_docs_2api__reference.html#autotoc_md29',1,'Output Mode (PCAL9555A only)'],['../md_docs_2configuration.html#autotoc_md48',1,'Output Mode (PCAL9555A only)']]],
-  ['monitor_7',['Flash and Monitor',['../index.html#autotoc_md9',1,'']]],
-  ['more_20help_8',['Getting More Help',['../md_docs_2troubleshooting.html#autotoc_md147',1,'']]],
-  ['multiple_20devices_9',['Multiple Devices',['../md_docs_2hardware__setup.html#autotoc_md86',1,'']]],
-  ['multiple_20interrupts_10',['Configure Multiple Interrupts',['../md_docs_2examples.html#autotoc_md66',1,'']]]
+  ['need_20help_0',['💡 Need Help?',['../md_docs_2index.html#autotoc_md96',1,'']]],
+  ['next_20steps_1',['Next Steps',['../md_docs_2configuration.html#autotoc_md61',1,'Next Steps'],['../md_docs_2examples.html#autotoc_md73',1,'Next Steps'],['../md_docs_2hardware__setup.html#autotoc_md89',1,'Next Steps'],['../md_docs_2installation.html#autotoc_md103',1,'Next Steps'],['../md_docs_2platform__integration.html#autotoc_md126',1,'Next Steps'],['../md_docs_2quickstart.html#autotoc_md138',1,'Next Steps']]],
+  ['not_20detected_2',['Error: Device Not Detected',['../md_docs_2troubleshooting.html#autotoc_md141',1,'']]],
+  ['not_20work_3',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md148',1,'']]]
 ];

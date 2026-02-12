@@ -135,8 +135,9 @@ Dynamic Address Changes</h2>
 </div><!-- fragment --><p><b>Note</b>: Dynamic address changes require hardware support. If address pins are hardwired, <code>ChangeAddress()</code> will still update internal state but won't change hardware pins.</p>
 <h1><a class="anchor" id="autotoc_md41"></a>
 Kconfig Configuration (Optional)</h1>
-<p>If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration:</p>
-<p><b>Location</b>: <a href="../Kconfig"><code>Kconfig</code></a></p>
+<p>If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration.</p>
+<p>The Kconfig compile-time macros are defined in a dedicated header: <a href="../inc/pcal95555_kconfig.hpp"><code>inc/pcal95555_kconfig.hpp</code></a>. This file is automatically included by the main <code>pcal95555.hpp</code> header &ndash; no additional includes are needed.</p>
+<p><b>Kconfig file</b>: <a href="../Kconfig"><code>Kconfig</code></a></p>
 <h2><a class="anchor" id="autotoc_md42"></a>
 Configuration Options</h2>
 <ul>
@@ -221,7 +222,7 @@ ResetToDefault()</h2>
 <li>Interrupts: Masked (disabled)</li>
 <li>Polarity: Normal (not inverted)</li>
 </ul>
-<p><b>Location</b>: <a href="../src/pcal95555.cpp#L49"><code>src/pcal95555.cpp#L49</code></a></p>
+<p><b>Location</b>: <a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a></p>
 <h1><a class="anchor" id="autotoc_md52"></a>
 Chip Variant Configuration</h1>
 <p>The driver auto-detects the chip variant (PCA9555 vs PCAL9555A) during initialization. You can also force a specific variant via the constructor to skip the detection probe:</p>

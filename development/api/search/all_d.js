@@ -1,11 +1,15 @@
 var searchData=
 [
-  ['get_20interrupt_20status_0',['Get Interrupt Status',['../md_docs_2configuration.html#autotoc_md56',1,'']]],
-  ['getting_20more_20help_1',['Getting More Help',['../md_docs_2troubleshooting.html#autotoc_md147',1,'']]],
-  ['getting_20started_20strong_2',['&lt;strong&gt;Getting Started&lt;/strong&gt;',['../md_docs_2index.html#autotoc_md92',1,'']]],
-  ['git_20submodule_3',['Option 2: Git Submodule',['../md_docs_2installation.html#autotoc_md101',1,'']]],
-  ['global_20interrupt_20callback_4',['Global Interrupt Callback',['../md_docs_2examples.html#autotoc_md67',1,'']]],
-  ['gpio_20control_5',['Example 1: Basic GPIO Control',['../md_docs_2examples.html#autotoc_md63',1,'']]],
-  ['gpio_20pins_6',['GPIO Pins',['../md_docs_2hardware__setup.html#autotoc_md78',1,'']]],
-  ['guide_7',['Platform Integration Guide',['../md_docs_2platform__integration.html',1,'']]]
+  ['hal_0',['STM32 (HAL)',['../md_docs_2platform__integration.html#autotoc_md118',1,'']]],
+  ['handling_1',['Handling',['../md_docs_2api__reference.html#autotoc_md33',1,'Error Handling'],['../md_docs_2examples.html#autotoc_md65',1,'Example 3: Interrupt Handling']]],
+  ['hardware_20setup_2',['Hardware Setup',['../md_docs_2hardware__setup.html',1,'Hardware Setup'],['../index.html#autotoc_md13',1,'Hardware Setup']]],
+  ['have_20pca9555_20vs_20pcal9555a_3',['Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?',['../md_docs_2troubleshooting.html#autotoc_md151',1,'']]],
+  ['header_4',['Header',['../md_docs_2installation.html#autotoc_md102',1,'Including the Header'],['../md_docs_2quickstart.html#autotoc_md131',1,'Step 1: Include the Header']]],
+  ['help_5',['💡 Need Help?',['../md_docs_2index.html#autotoc_md96',1,'']]],
+  ['hf_20pcal95555_20documentation_6',['HF-PCAL95555 Documentation',['../md_docs_2index.html',1,'']]],
+  ['hf_20pcal95555_20driver_7',['HF-PCAL95555 Driver',['../index.html',1,'']]],
+  ['how_20crtp_20works_8',['How CRTP Works',['../md_docs_2platform__integration.html#autotoc_md111',1,'']]],
+  ['how_20do_20i_20check_20for_20errors_9',['Q: How do I check for errors?',['../md_docs_2troubleshooting.html#autotoc_md154',1,'']]],
+  ['how_20do_20i_20know_20which_20chip_20i_20have_20pca9555_20vs_20pcal9555a_10',['Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?',['../md_docs_2troubleshooting.html#autotoc_md151',1,'']]],
+  ['how_20do_20i_20use_20interrupts_11',['Q: How do I use interrupts?',['../md_docs_2troubleshooting.html#autotoc_md149',1,'']]]
 ];

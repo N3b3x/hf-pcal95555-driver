@@ -1,5 +1,8 @@
 var searchData=
 [
-  ['kconfig_0',['Using Kconfig',['../md_docs_2configuration.html#autotoc_md43',1,'']]],
-  ['kconfig_20configuration_20optional_1',['Kconfig Configuration (Optional)',['../md_docs_2configuration.html#autotoc_md41',1,'']]]
+  ['latch_20pcal9555a_20only_0',['Input Latch (PCAL9555A only)',['../md_docs_2api__reference.html#autotoc_md31',1,'']]],
+  ['layout_20recommendations_1',['Physical Layout Recommendations',['../md_docs_2hardware__setup.html#autotoc_md83',1,'']]],
+  ['led_20animation_20demo_20tt_20pcal95555_5fled_5fanimation_20tt_2',['LED Animation Demo (&lt;tt&gt;pcal95555_led_animation&lt;/tt&gt;)',['../index.html#autotoc_md12',1,'']]],
+  ['led_20animation_20demo_20wiring_3',['LED animation demo wiring',['../index.html#autotoc_md15',1,'']]],
+  ['levels_20are_20available_4',['Q: What drive strength levels are available?',['../md_docs_2troubleshooting.html#autotoc_md153',1,'']]]
 ];

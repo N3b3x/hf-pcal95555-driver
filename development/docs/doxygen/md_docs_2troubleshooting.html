@@ -155,46 +155,134 @@ Runtime Errors</h2>
 <li>[ ] Error flags are checked</li>
 </ul>
 <h2><a class="anchor" id="autotoc_md145"></a>
-Error: PCAL9555A Features Fail (UnsupportedFeature)</h2>
+Error: Invalid Address (InvalidAddress)</h2>
 <p><b>Symptoms:</b></p><ul>
-<li><code>SetPullEnable()</code>, <code>SetDriveStrength()</code>, <code>SetOutputMode()</code>, <code>EnableInputLatch()</code>, <code>ConfigureInterrupt()</code>, or <code>GetInterruptStatus()</code> return <code>false</code></li>
-<li>Error flags show <code>0x0010</code> (<code>UnsupportedFeature</code>)</li>
+<li>Constructor or <code>ChangeAddress()</code> sets <code>Error::InvalidAddress</code> (flag <code>0x0020</code>)</li>
+<li>Methods fail after providing an out-of-range address</li>
 </ul>
-<p><b>Cause:</b> The connected chip is a <b>PCA9555</b> (standard variant), not a PCAL9555A. These methods require the Agile I/O register bank (0x40-0x4F) that only exists on the PCAL9555A.</p>
+<p><b>Cause:</b> The I2C address provided is outside the valid range <b>0x20-0x27</b>. The PCA9555/PCAL9555A only responds to addresses in this range (determined by the A0-A2 hardware pins).</p>
 <p><b>Solutions:</b></p><ol type="1">
-<li><b>Check chip variant</b>: Use <code>HasAgileIO()</code> before calling PCAL9555A features: <div class="fragment"><div class="line"><span class="keywordflow">if</span> (gpio.HasAgileIO()) {</div>
-<div class="line">    gpio.SetDriveStrength(0, DriveStrength::Level2);</div>
-<div class="line">} <span class="keywordflow">else</span> {</div>
-<div class="line">    <span class="comment">// Use external components or skip this feature</span></div>
+<li><b>Check address parameter</b>: Ensure the address is between <code>0x20</code> and <code>0x27</code>: <div class="fragment"><div class="line"><span class="comment">// Valid: address in 0x20-0x27 range</span></div>
+<div class="line">PCAL95555 driver(bus, 0x20);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Invalid: will set Error::InvalidAddress</span></div>
+<div class="line">PCAL95555 driver(bus, 0x50);</div>
+</div><!-- fragment --></li>
+<li><b>Use pin-level constructor</b>: The pin-level constructor always computes a valid address: <div class="fragment"><div class="line">PCAL95555 driver(bus, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>); <span class="comment">// Always valid (0x20)</span></div>
+</div><!-- fragment --></li>
+<li><b>Check error flags</b>: After construction, verify no errors: <div class="fragment"><div class="line"><span class="keywordflow">if</span> (driver.GetErrorFlags() &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::InvalidAddress)) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Invalid I2C address!\n&quot;</span>);</div>
 <div class="line">}</div>
 </div><!-- fragment --></li>
-<li><b>Verify hardware</b>: Confirm your chip is actually a PCAL9555A (check part number marking)</li>
-<li><b>Use external components</b>: For PCA9555, use external pull-up resistors instead of internal ones</li>
 </ol>
 <h2><a class="anchor" id="autotoc_md146"></a>
-Error: I2C NACKs on Registers 0x40-0x4F During Init</h2>
+Error: ChipVariant Shows "Unknown"</h2>
 <p><b>Symptoms:</b></p><ul>
-<li>Log shows "I2C transaction unexpected nack detected" for registers 0x40-0x4F</li>
-<li>Driver still initializes successfully</li>
+<li><code>GetChipVariant()</code> returns <code>ChipVariant::Unknown</code></li>
+<li><code>HasAgileIO()</code> returns <code>false</code></li>
 </ul>
-<p><b>Cause:</b> This is <b>expected behavior</b> when a PCA9555 is connected. The auto-detection probe tries to access an Agile I/O register (0x4F). A NACK means the chip is a standard PCA9555. The driver detects this and sets <code>ChipVariant::PCA9555</code>.</p>
-<p><b>Resolution:</b> No action needed. This is normal. The NACK errors come from the ESP-IDF I2C driver and can be safely ignored.</p>
-<h1><a class="anchor" id="autotoc_md147"></a>
-Getting More Help</h1>
-<p>If you're still experiencing issues:</p>
-<ol type="1">
-<li>Check the <a class="el" href="md_docs_2api__reference.html">API Reference</a> for method details</li>
-<li>Review <a class="el" href="md_docs_2examples.html">Examples</a> for working code</li>
-<li>Search existing issues on GitHub</li>
-<li>Open a new issue with:<ul>
-<li>Description of the problem</li>
-<li>Steps to reproduce</li>
-<li>Hardware setup details</li>
-<li>Error messages/logs</li>
-<li>I2C bus analyzer output (if available) </li>
-</ul>
-</li>
+<p><b>Cause:</b> The 3-step chip detection probe could not confirm the chip type. This usually means the bus was unhealthy during initialization.</p>
+<p><b>Solutions:</b></p><ol type="1">
+<li>Check I2C pull-up resistors (4.7kΩ on SDA and SCL)</li>
+<li>Verify power supply is stable</li>
+<li>Ensure no other I2C master is on the bus</li>
+<li>Force the variant in the constructor to skip detection: <div class="fragment"><div class="line">PCAL95555 driver(bus, 0x20, pcal95555::ChipVariant::PCA9555);</div>
+</div><!-- fragment --></li>
 </ol>
+<h1><a class="anchor" id="autotoc_md147"></a>
+FAQ</h1>
+<h2><a class="anchor" id="autotoc_md148"></a>
+Q: Why do my pin writes not work?</h2>
+<p><b>A:</b> Common causes:</p><ol type="1">
+<li>Pin not configured as output: Call <code>SetPinDirection(pin, GPIODir::Output)</code> first</li>
+<li>Wrong pin number: Valid pins are 0-15</li>
+<li>I2C communication failure: Check I2C bus and connections</li>
+</ol>
+<h2><a class="anchor" id="autotoc_md149"></a>
+Q: How do I use interrupts?</h2>
+<p><b>A:</b> There are two ways to handle interrupts:</p>
+<p><b>Method 1: Per-pin callbacks (recommended)</b> </p><div class="fragment"><div class="line"><span class="comment">// Configure pin as input</span></div>
+<div class="line">gpio.SetPinDirection(pin, GPIODir::Input);</div>
+<div class="line">gpio.SetPullEnable(pin, <span class="keyword">true</span>);</div>
+<div class="line">gpio.EnableInputLatch(pin, <span class="keyword">true</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Enable interrupt (easy-to-use method)</span></div>
+<div class="line">gpio.ConfigureInterrupt(pin, InterruptState::Enabled);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Register per-pin callback</span></div>
+<div class="line">gpio.RegisterPinInterrupt(pin, InterruptEdge::Rising, [](uint16_t p, <span class="keywordtype">bool</span> state) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Pin %d interrupt!\n&quot;</span>, p);</div>
+<div class="line">});</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Register interrupt handler with I2C interface (for hardware INT pin)</span></div>
+<div class="line">gpio.RegisterInterruptHandler();</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Handle interrupt (called automatically if INT pin configured, or call manually)</span></div>
+<div class="line">gpio.HandleInterrupt();</div>
+</div><!-- fragment --><p><b>Method 2: Global callback</b> </p><div class="fragment"><div class="line">gpio.SetInterruptCallback([](uint16_t status) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Interrupt on pins: 0x%04X\n&quot;</span>, status);</div>
+<div class="line">});</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md150"></a>
+Q: Can I use multiple devices?</h2>
+<p><b>A:</b> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances. You can even mix PCA9555 and PCAL9555A on the same bus: </p><div class="fragment"><div class="line"><span class="comment">// First device: PCA9555 at 0x20</span></div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio1(&amp;i2c, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Second device: PCAL9555A at 0x21</span></div>
+<div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio2(&amp;i2c, <span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
+<div class="line"> </div>
+<div class="line"><span class="comment">// Each auto-detects its own chip variant</span></div>
+</div><!-- fragment --><p>You can also change the address dynamically if your I2C interface supports GPIO control: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (gpio1.ChangeAddress(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;Address changed to 0x%02X\n&quot;</span>, gpio1.GetAddress()); <span class="comment">// Now 0x21</span></div>
+<div class="line">}</div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md151"></a>
+Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?</h2>
+<p><b>A:</b> The driver auto-detects during initialization: </p><div class="fragment"><div class="line">gpio.EnsureInitialized();</div>
+<div class="line"><span class="keywordflow">if</span> (gpio.HasAgileIO()) {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;PCAL9555A (extended features available)\n&quot;</span>);</div>
+<div class="line">} <span class="keywordflow">else</span> {</div>
+<div class="line">    printf(<span class="stringliteral">&quot;PCA9555 (standard GPIO only)\n&quot;</span>);</div>
+<div class="line">}</div>
+</div><!-- fragment --><p> You can also check the chip marking. PCA9555 has part number "PCA9555"; PCAL9555A has "PCAL9555A".</p>
+<h2><a class="anchor" id="autotoc_md152"></a>
+Q: What's the difference between pull-up and pull-down?</h2>
+<p><b>A:</b></p><ul>
+<li><b>Pull-up</b>: Resistor connects pin to VDD (default high when floating)</li>
+<li><b>Pull-down</b>: Resistor connects pin to GND (default low when floating)</li>
+</ul>
+<p>Choose based on your circuit requirements.</p>
+<h2><a class="anchor" id="autotoc_md153"></a>
+Q: What drive strength levels are available?</h2>
+<p><b>A:</b> The driver supports four drive strength levels:</p><ul>
+<li><code>Level0</code>: 25% drive strength (¼)</li>
+<li><code>Level1</code>: 50% drive strength (½)</li>
+<li><code>Level2</code>: 75% drive strength (¾)</li>
+<li><code>Level3</code>: 100% drive strength (full)</li>
+</ul>
+<p>Example: </p><div class="fragment"><div class="line">gpio.SetDriveStrength(pin, DriveStrength::Level1); <span class="comment">// 50% strength</span></div>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md154"></a>
+Q: How do I check for errors?</h2>
+<p><b>A:</b> Use error flags to check for errors: </p><div class="fragment"><div class="line">uint16_t errors = gpio.GetErrorFlags();</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::I2CReadFail)) {</div>
+<div class="line">    <span class="comment">// I2C read failed (also set by ReadPins() on failure)</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::I2CWriteFail)) {</div>
+<div class="line">    <span class="comment">// I2C write failed</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::InvalidPin)) {</div>
+<div class="line">    <span class="comment">// Invalid pin number (&gt;= 16)</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::UnsupportedFeature)) {</div>
+<div class="line">    <span class="comment">// PCAL9555A feature called on PCA9555</span></div>
+<div class="line">}</div>
+<div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::InvalidAddress)) {</div>
+<div class="line">    <span class="comment">// I2C address outside valid 0x20-0x27 range</span></div>
+<div class="line">}</div>
+<div class="line">gpio.ClearErrorFlags(); <span class="comment">// Clear all errors</span></div>
+<div class="line"><span class="comment">// Or clear selectively: gpio.ClearErrorFlags(0x0001); // Clear only InvalidPin</span></div>
+</div><!-- fragment --><blockquote class="doxtable">
+<p>&zwj;<b>Note:</b> <code>ReadPins()</code> now properly reports <code>Error::I2CReadFail</code> when the underlying I2C read fails, instead of silently returning empty results. </p>
+</blockquote>
+<p><b>Navigation</b> ⬅️ <a class="el" href="md_docs_2examples.html">Examples</a> | <a class="el" href="md_docs_2index.html">Back to Index</a> </p>
 </div></div><!-- contents -->
 </div><!-- PageDoc -->
 <!-- start footer part -->

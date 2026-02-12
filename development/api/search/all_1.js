@@ -1,9 +1,8 @@
 var searchData=
 [
-  ['1_20implement_20the_20i2c_20interface_20for_20your_20platform_0',['1. Implement the I2C interface for your platform',['../index.html#autotoc_md4',1,'']]],
-  ['1_20strong_20zero_20runtime_20overhead_20strong_1',['1. &lt;strong&gt;Zero Runtime Overhead&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md107',1,'']]],
-  ['1_3a_20basic_20gpio_20control_2',['Example 1: Basic GPIO Control',['../md_docs_2examples.html#autotoc_md63',1,'']]],
-  ['1_3a_20copy_20files_3',['Option 1: Copy Files',['../md_docs_2installation.html#autotoc_md100',1,'']]],
-  ['1_3a_20create_20your_20implementation_20class_4',['Step 1: Create Your Implementation Class',['../md_docs_2platform__integration.html#autotoc_md115',1,'']]],
-  ['1_3a_20include_20the_20header_5',['Step 1: Include the Header',['../md_docs_2quickstart.html#autotoc_md131',1,'']]]
+  ['2_20create_20the_20driver_20and_20use_20it_0',['2. Create the driver and use it',['../index.html#autotoc_md5',1,'']]],
+  ['2_20strong_20compile_20time_20polymorphism_20strong_1',['2. &lt;strong&gt;Compile-Time Polymorphism&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md108',1,'']]],
+  ['2_3a_20git_20submodule_2',['Option 2: Git Submodule',['../md_docs_2installation.html#autotoc_md101',1,'']]],
+  ['2_3a_20implement_20the_20i2c_20interface_3',['Step 2: Implement the I2C Interface',['../md_docs_2quickstart.html#autotoc_md132',1,'']]],
+  ['2_3a_20platform_20specific_20examples_4',['Step 2: Platform-Specific Examples',['../md_docs_2platform__integration.html#autotoc_md116',1,'']]]
 ];

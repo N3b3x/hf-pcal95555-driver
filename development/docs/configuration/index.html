@@ -452,9 +452,11 @@
 </h2>
     
 
-<p>If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration:</p>
+<p>If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration.</p>
 
-<p><strong>Location</strong>: <a href="/hf-pcal95555-driver/development/Kconfig"><code class="language-plaintext highlighter-rouge">Kconfig</code></a></p>
+<p>The Kconfig compile-time macros are defined in a dedicated header: <a href="../inc/pcal95555_kconfig.hpp"><code class="language-plaintext highlighter-rouge">inc/pcal95555_kconfig.hpp</code></a>. This file is automatically included by the main <code class="language-plaintext highlighter-rouge">pcal95555.hpp</code> header – no additional includes are needed.</p>
+
+<p><strong>Kconfig file</strong>: <a href="/hf-pcal95555-driver/development/Kconfig"><code class="language-plaintext highlighter-rouge">Kconfig</code></a></p>
 <h3 id="configuration-options">
   
   
@@ -654,7 +656,7 @@ return <code class="language-plaintext highlighter-rouge">false</code> and set <
   <li>Polarity: Normal (not inverted)</li>
 </ul>
 
-<p><strong>Location</strong>: <a href="../src/pcal95555.cpp#L49"><code class="language-plaintext highlighter-rouge">src/pcal95555.cpp#L49</code></a></p>
+<p><strong>Location</strong>: <a href="../src/pcal95555.ipp"><code class="language-plaintext highlighter-rouge">src/pcal95555.ipp</code></a></p>
 <h2 id="chip-variant-configuration">
   
   

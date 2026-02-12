@@ -92,10 +92,11 @@ Integration</h1>
 Option 1: Copy Files</h2>
 <p>Copy the following files into your project:</p>
 <div class="fragment"><div class="line">inc/</div>
-<div class="line">  └── pcal95555.hpp</div>
+<div class="line">  ├── pcal95555.hpp</div>
+<div class="line">  └── pcal95555_kconfig.hpp</div>
 <div class="line">src/</div>
-<div class="line">  └── pcal95555.cpp</div>
-</div><!-- fragment --><p><b>Note</b>: The driver uses a header-only template design where <code>pcal95555.cpp</code> is included by <code>pcal95555.hpp</code>. You typically only need to include the header file in your project.</p>
+<div class="line">  └── pcal95555.ipp</div>
+</div><!-- fragment --><p><b>Note</b>: The driver uses a header-only template design where <code>pcal95555.ipp</code> is included by <code>pcal95555.hpp</code>. Kconfig compile-time configuration macros live in <code>pcal95555_kconfig.hpp</code> (also included automatically). You typically only need to include the main header file in your project.</p>
 <h2><a class="anchor" id="autotoc_md101"></a>
 Option 2: Git Submodule</h2>
 <div class="fragment"><div class="line">cd your-project</div>

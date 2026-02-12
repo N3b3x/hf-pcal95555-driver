@@ -537,7 +537,7 @@
 5
 6
 7
-</pre></td><td class="rouge-code"><pre><span class="kt">bool</span> <span class="nf">write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
+</pre></td><td class="rouge-code"><pre><span class="kt">bool</span> <span class="nf">Write</span><span class="p">(</span><span class="kt">uint8_t</span> <span class="n">addr</span><span class="p">,</span> <span class="kt">uint8_t</span> <span class="n">reg</span><span class="p">,</span> <span class="k">const</span> <span class="kt">uint8_t</span> <span class="o">*</span><span class="n">data</span><span class="p">,</span> <span class="kt">size_t</span> <span class="n">len</span><span class="p">)</span> <span class="p">{</span>
     <span class="n">printf</span><span class="p">(</span><span class="s">"I2C Write: addr=0x%02X, reg=0x%02X, len=%zu</span><span class="se">\n</span><span class="s">"</span><span class="p">,</span> <span class="n">addr</span><span class="p">,</span> <span class="n">reg</span><span class="p">,</span> <span class="n">len</span><span class="p">);</span>
     <span class="c1">// ... your implementation</span>
     <span class="kt">bool</span> <span class="n">result</span> <span class="o">=</span> <span class="cm">/* ... */</span><span class="p">;</span>
@@ -589,6 +589,55 @@
     <span class="p">}</span>
 <span class="p">}</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
+<h3 id="error-invalid-address-invalidaddress">
+  
+  
+    <a href="#error-invalid-address-invalidaddress" class="anchor-heading" aria-labelledby="error-invalid-address-invalidaddress"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Error: Invalid Address (InvalidAddress)
+  
+  
+</h3>
+    
+
+<p><strong>Symptoms:</strong></p>
+<ul>
+  <li>Constructor or <code class="language-plaintext highlighter-rouge">ChangeAddress()</code> sets <code class="language-plaintext highlighter-rouge">Error::InvalidAddress</code> (flag <code class="language-plaintext highlighter-rouge">0x0020</code>)</li>
+  <li>Methods fail after providing an out-of-range address</li>
+</ul>
+
+<p><strong>Cause:</strong>
+The I2C address provided is outside the valid range <strong>0x20-0x27</strong>. The PCA9555/PCAL9555A
+only responds to addresses in this range (determined by the A0-A2 hardware pins).</p>
+
+<p><strong>Solutions:</strong></p>
+<ol>
+  <li><strong>Check address parameter</strong>: Ensure the address is between <code class="language-plaintext highlighter-rouge">0x20</code> and <code class="language-plaintext highlighter-rouge">0x27</code>:
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+4
+5
+</pre></td><td class="rouge-code"><pre><span class="c1">// Valid: address in 0x20-0x27 range</span>
+<span class="n">PCAL95555</span> <span class="nf">driver</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x20</span><span class="p">);</span>
+
+<span class="c1">// Invalid: will set Error::InvalidAddress</span>
+<span class="n">PCAL95555</span> <span class="nf">driver</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="mh">0x50</span><span class="p">);</span>
+</pre></td></tr></tbody></table></div></code></pre></div>    </div>
+  </li>
+  <li><strong>Use pin-level constructor</strong>: The pin-level constructor always computes a valid address:
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+</pre></td><td class="rouge-code"><pre><span class="n">PCAL95555</span> <span class="nf">driver</span><span class="p">(</span><span class="n">bus</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">,</span> <span class="nb">false</span><span class="p">);</span> <span class="c1">// Always valid (0x20)</span>
+</pre></td></tr></tbody></table></div></code></pre></div>    </div>
+  </li>
+  <li><strong>Check error flags</strong>: After construction, verify no errors:
+    <div class="language-cpp highlighter-rouge"><div class="highlight"><pre class="highlight"><code><div class="table-wrapper"><table class="rouge-table"><tbody><tr><td class="rouge-gutter gl"><pre class="lineno">1
+2
+3
+</pre></td><td class="rouge-code"><pre><span class="k">if</span> <span class="p">(</span><span class="n">driver</span><span class="p">.</span><span class="n">GetErrorFlags</span><span class="p">()</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">InvalidAddress</span><span class="p">))</span> <span class="p">{</span>
+    <span class="n">printf</span><span class="p">(</span><span class="s">"Invalid I2C address!</span><span class="se">\n</span><span class="s">"</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></td></tr></tbody></table></div></code></pre></div>    </div>
+  </li>
+</ol><hr />
 <h3 id="error-pcal9555a-features-fail-unsupportedfeature">
   
   
@@ -879,9 +928,12 @@ I2C driver and can be safely ignored.</p><hr />
 13
 14
 15
+16
+17
+18
 </pre></td><td class="rouge-code"><pre><span class="kt">uint16_t</span> <span class="n">errors</span> <span class="o">=</span> <span class="n">gpio</span><span class="p">.</span><span class="n">GetErrorFlags</span><span class="p">();</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CReadFail</span><span class="p">))</span> <span class="p">{</span>
-    <span class="c1">// I2C read failed</span>
+    <span class="c1">// I2C read failed (also set by ReadPins() on failure)</span>
 <span class="p">}</span>
 <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">I2CWriteFail</span><span class="p">))</span> <span class="p">{</span>
     <span class="c1">// I2C write failed</span>
@@ -892,9 +944,17 @@ I2C driver and can be safely ignored.</p><hr />
 <span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">UnsupportedFeature</span><span class="p">))</span> <span class="p">{</span>
     <span class="c1">// PCAL9555A feature called on PCA9555</span>
 <span class="p">}</span>
+<span class="k">if</span> <span class="p">(</span><span class="n">errors</span> <span class="o">&amp;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">Error</span><span class="o">::</span><span class="n">InvalidAddress</span><span class="p">))</span> <span class="p">{</span>
+    <span class="c1">// I2C address outside valid 0x20-0x27 range</span>
+<span class="p">}</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">ClearErrorFlags</span><span class="p">();</span> <span class="c1">// Clear all errors</span>
 <span class="c1">// Or clear selectively: gpio.ClearErrorFlags(0x0001); // Clear only InvalidPin</span>
-</pre></td></tr></tbody></table></div></code></pre></div></div><hr />
+</pre></td></tr></tbody></table></div></code></pre></div></div>
+
+<blockquote>
+  <p><strong>Note:</strong> <code class="language-plaintext highlighter-rouge">ReadPins()</code> now properly reports <code class="language-plaintext highlighter-rouge">Error::I2CReadFail</code> when the underlying
+I2C read fails, instead of silently returning empty results.</p>
+</blockquote><hr />
 <h2 id="getting-more-help">
   
   
