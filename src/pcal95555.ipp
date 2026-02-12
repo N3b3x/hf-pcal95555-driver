@@ -1,3 +1,8 @@
+/**
+ * @file pcal95555.ipp
+ * @brief Template implementation of PCAL95555 I/O expander driver
+ * @copyright Copyright (c) 2024-2025 HardFOC. All rights reserved.
+ */
 #ifndef PCAL95555_IMPL
 #define PCAL95555_IMPL
 

@@ -1,21 +1,9 @@
 /**
  * @file pcal95555_kconfig.hpp
  * @brief ESP-IDF Kconfig default macros for PCAL95555 driver initialization
- *
- * This header provides default values for the CONFIG_PCAL95555_* macros used by
- * the InitFromConfig() method. These macros can be overridden by ESP-IDF's Kconfig
- * system or by defining them before including this header.
- *
- * @note This file is automatically included by pcal95555.hpp. Non-ESP-IDF users
- *       who don't use InitFromConfig() will see these macros defined but never used.
- *
- * @author Nebiyu Tadesse
- * @date 2025-05-21
- * @version 1.0
+ * @copyright Copyright (c) 2024-2025 HardFOC. All rights reserved.
  */
-#ifndef PCAL95555_KCONFIG_HPP
-#define PCAL95555_KCONFIG_HPP
-
+#pragma once
 // NOLINTBEGIN(cppcoreguidelines-macro-usage) - Kconfig macros for ESP-IDF integration
 
 #ifndef CONFIG_PCAL95555_INIT_FROM_KCONFIG
@@ -310,5 +298,3 @@
 #endif
 
 // NOLINTEND(cppcoreguidelines-macro-usage)
-
-#endif // PCAL95555_KCONFIG_HPP

@@ -51,7 +51,7 @@ extern "C" {
 }
 #endif
 
-using PCAL95555Driver = pcal95555::PCAL95555<Esp32Pcal9555Bus>;
+using PCAL95555Driver = pcal95555::PCAL95555<Esp32Pcal9555I2cBus>;
 
 static const char* g_TAG = "LED_Anim";
 
@@ -80,7 +80,7 @@ static constexpr bool A2_LEVEL = false;
 //=============================================================================
 // GLOBALS
 //=============================================================================
-static std::unique_ptr<Esp32Pcal9555Bus> g_bus;
+static std::unique_ptr<Esp32Pcal9555I2cBus> g_bus;
 static std::unique_ptr<PCAL95555Driver> g_driver;
 
 //=============================================================================
@@ -430,7 +430,7 @@ static void anim_alternating_flash(uint32_t speed_ms) {
 static bool init_hardware() {
   ESP_LOGI(g_TAG, "Initializing I2C bus...");
 
-  Esp32Pcal9555Bus::I2CConfig config;
+  Esp32Pcal9555I2cBus::I2CConfig config;
   config.port = I2C_NUM_0;
   config.sda_pin = GPIO_NUM_4;
   config.scl_pin = GPIO_NUM_5;
@@ -440,7 +440,7 @@ static bool init_hardware() {
   config.a1_pin = GPIO_NUM_48;
   config.a2_pin = GPIO_NUM_47;
 
-  g_bus = CreateEsp32Pcal9555Bus(config);
+  g_bus = CreateEsp32Pcal9555I2cBus(config);
   if (!g_bus || !g_bus->IsInitialized()) {
     ESP_LOGE(g_TAG, "Failed to initialize I2C bus");
     return false;

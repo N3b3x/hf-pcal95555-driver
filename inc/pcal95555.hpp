@@ -1,41 +1,9 @@
 /**
  * @file pcal95555.hpp
  * @brief Driver for the PCA9555 and PCAL9555A 16-bit I/O expanders with I²C interface
- *
- * This header provides a comprehensive C++ interface for controlling both the
- * NXP PCA9555 and PCAL9555A (PCAL95555AHF) 16-bit I/O expanders. The driver
- * auto-detects the chip variant during initialization and enables/disables
- * features accordingly.
- *
- * Supported features:
- *   - Setting I/O directions (input/output) [PCA9555 + PCAL9555A]
- *   - Reading and writing pin states [PCA9555 + PCAL9555A]
- *   - Polarity inversion [PCA9555 + PCAL9555A]
- *   - Configuring pull-up/pull-down resistors [PCAL9555A only]
- *   - Managing interrupt mask/status [PCAL9555A only]
- *   - Setting drive strength [PCAL9555A only]
- *   - Setting output modes (push-pull/open-drain) [PCAL9555A only]
- *   - Input latching [PCAL9555A only]
- *
- * The PCAL9555A is a pin-to-pin, software-backward-compatible superset of the
- * PCA9555. It adds "Agile I/O" features via extended registers (0x40-0x4F).
- * Methods that require these extended registers will return false and set
- * Error::UnsupportedFeature when a standard PCA9555 is detected.
- *
- * The implementation uses an abstract I2C interface that must be provided by
- * the user to accommodate different hardware platforms and I2C libraries.
- *
- * @author Nebiyu Tadesse
- * @date 2025-05-21
- * @version 2.0
- *
- * @note This driver supports the PCA9555 and PCAL9555A/PCAL95555AHF devices
- *       with 16 GPIO pins divided into two 8-bit ports (PORT_0 and PORT_1).
- * @note The chip variant is auto-detected during initialization. Use
- *       HasAgileIO() or GetChipVariant() to query the detected variant.
+ * @copyright Copyright (c) 2024-2025 HardFOC. All rights reserved.
  */
-#ifndef PCAL95555_HPP
-#define PCAL95555_HPP
+#pragma once
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -1082,5 +1050,3 @@ private:
 #undef PCAL95555_HEADER_INCLUDED
 
 } // namespace pcal95555
-
-#endif // PCAL95555_HPP

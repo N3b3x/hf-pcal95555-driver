@@ -1,19 +1,9 @@
 /**
  * @file pcal95555_i2c_interface.hpp
  * @brief CRTP-based I2C interface for PCAL95555 driver
- *
- * This header defines the hardware-agnostic I2C communication interface
- * using the CRTP (Curiously Recurring Template Pattern) for compile-time
- * polymorphism. Platform-specific implementations should inherit from this
- * template with themselves as the template parameter.
- *
- * @author Nebiyu Tadesse
- * @date 2025-05-21
- * @version 1.0
+ * @copyright Copyright (c) 2024-2025 HardFOC. All rights reserved.
  */
-#ifndef PCAL95555_I2C_INTERFACE_HPP
-#define PCAL95555_I2C_INTERFACE_HPP
-
+#pragma once
 #include <cstddef>
 #include <cstdint>
 #include <functional>
@@ -189,6 +179,3 @@ protected:
 };
 
 } // namespace pcal95555
-
-#endif // PCAL95555_I2C_INTERFACE_HPP
-
