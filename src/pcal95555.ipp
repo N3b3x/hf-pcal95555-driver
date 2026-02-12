@@ -882,7 +882,7 @@ bool pcal95555::PCAL95555<I2cType>::RegisterInterruptHandler() noexcept {
   });
 }
 
-// Read current pin states
+// Read current pin states (private helper)
 template <typename I2cType>
 uint16_t pcal95555::PCAL95555<I2cType>::readPinStates() noexcept {
   uint8_t port0 = 0;
@@ -890,6 +890,15 @@ uint16_t pcal95555::PCAL95555<I2cType>::readPinStates() noexcept {
   readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_0), port0);
   readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_1), port1);
   return (uint16_t(port1) << 8) | port0;
+}
+
+// Read all 16 pin input states (public API)
+template <typename I2cType>
+uint16_t pcal95555::PCAL95555<I2cType>::ReadAllInputs() noexcept {
+  if (!EnsureInitialized()) {
+    return 0;
+  }
+  return readPinStates();
 }
 
 // Handle interrupt - read status, check conditions, call callbacks

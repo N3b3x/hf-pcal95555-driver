@@ -450,6 +450,22 @@ public:
   std::vector<std::pair<uint16_t, bool>> ReadPins(std::initializer_list<uint16_t> pins) noexcept;
 
   /**
+   * @brief Read all 16 pin input states in a single operation.
+   *
+   * Reads both INPUT_PORT_0 and INPUT_PORT_1 registers in two I2C transactions
+   * and returns a 16-bit mask where bit N represents the state of pin N.
+   *
+   * @return 16-bit mask with current input states (bit N = pin N level).
+   *         Returns 0 on I2C failure (check GetErrorFlags() to distinguish
+   *         all-low from error).
+   *
+   * @example
+   *   uint16_t all_states = driver.ReadAllInputs();
+   *   bool pin5_high = (all_states >> 5) & 1;
+   */
+  uint16_t ReadAllInputs() noexcept;
+
+  /**
    * @brief Enable or disable the pull-up/pull-down resistor on a pin.
    *
    * @param pin Zero-based pin index (0-15).
