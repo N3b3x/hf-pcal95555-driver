@@ -65,4 +65,4 @@ include($ENV{IDF_PATH}/tools/cmake/project.cmake)
 # Project Configuration
 # =============================================================================
 # Set project name based on app type for unique identification
-project(esp32_pcal9555_${APP_TYPE}_app)
+project(esp32_pcal95555_${APP_TYPE}_app)

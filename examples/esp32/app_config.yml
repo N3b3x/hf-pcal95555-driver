@@ -114,7 +114,7 @@ build_config:
       defines: ["NDEBUG", "PCAL9555_RELEASE"]
 
   build_directory_pattern: "build-app-{app_type}-type-{build_type}-target-{target}-idf-{idf_version}"
-  project_name_pattern: "esp32_pcal9555_{app_type}_app"
+  project_name_pattern: "esp32_pcal95555_{app_type}_app"
 
 ci_config:
   # CI build timeout
