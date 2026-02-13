@@ -5,7 +5,7 @@ description: "Hardware-agnostic PCAL95555 GPIO expander driver with I2C interfac
 
 maintainers:
   - "HardFOC"
-license: "MIT"
+license: "GPL-3.0"
 
 url: https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf
 repository: https://github.com/N3b3x/hf-pcal95555-driver
