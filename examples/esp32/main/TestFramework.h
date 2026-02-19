@@ -37,9 +37,12 @@ extern "C" {
 // providing visual feedback for test progression on oscilloscope/logic analyzer
 
 // Global GPIO14 test indicator state
-static bool g_test_progress_initialized = false;
-static bool g_test_progress_state = false;
-static constexpr gpio_num_t TEST_PROGRESS_PIN = GPIO_NUM_14;
+// Use inline variables (C++17) so that every translation unit shares the same
+// instance. Plain 'static' would give each TU its own copy, causing the inline
+// helper functions below to operate on silently independent state (ODR issue).
+inline bool g_test_progress_initialized = false;
+inline bool g_test_progress_state = false;
+inline constexpr gpio_num_t TEST_PROGRESS_PIN = GPIO_NUM_14;
 
 // GPIO14 test indicator functions implemented inline in this header
 

@@ -4,17 +4,19 @@
  * @copyright Copyright (c) 2024-2025 HardFOC. All rights reserved.
  */
 #pragma once
+#include <array>
 #include <cstddef>
 #include <cstdint>
 #include <functional>
 #include <initializer_list>
 #include <utility>
-#include <vector>
 #include <stdio.h> // NOLINT(modernize-deprecated-headers) - For FILE* used by ESP-IDF headers
 #include <string.h> // NOLINT(modernize-deprecated-headers) - For C string functions (must be before namespace)
 
 #include "pcal95555_i2c_interface.hpp"
+
 #include "pcal95555_kconfig.hpp"
+#include "pcal95555_version.h"
 
 /** PCAL95555 register map (all control registers). */
 /**
@@ -120,6 +122,75 @@ inline constexpr Error operator~(Error e) noexcept {
 }
 
 namespace pcal95555 {
+
+/**
+ * @brief Fixed-capacity result container for multi-pin read operations.
+ *
+ * Stores up to 16 pin/value pairs on the stack, avoiding heap allocation.
+ * The PCAL95555 has exactly 16 GPIO pins, so 16 is the hard upper bound.
+ *
+ * Supports range-based for loops and structured bindings:
+ * @code
+ *   auto results = driver.ReadPins({0, 5, 10});
+ *   for (const auto& [pin, value] : results) {
+ *       printf("Pin %d: %s\n", pin, value ? "HIGH" : "LOW");
+ *   }
+ * @endcode
+ */
+struct PinReadResult {
+  /// Maximum number of entries (constrained by hardware: 16 GPIO pins).
+  static constexpr uint8_t kMaxPins = 16;
+
+  /// Pin number / value pairs.
+  std::array<std::pair<uint8_t, bool>, kMaxPins> data{};
+
+  /// Number of valid entries in data[].
+  uint8_t count = 0;
+
+  // -- Container-like API --------------------------------------------------
+
+  /// Number of populated entries.
+  [[nodiscard]] uint8_t size() const noexcept { return count; }
+
+  /// True when no entries have been added.
+  [[nodiscard]] bool empty() const noexcept { return count == 0; }
+
+  /// Access entry by index (no bounds check).
+  [[nodiscard]] const std::pair<uint8_t, bool>& operator[](uint8_t i) const noexcept {
+    return data[i];
+  }
+
+  /// Append a pin/value pair.  Silently drops entries beyond kMaxPins.
+  void push_back(uint8_t pin, bool value) noexcept {
+    if (count < kMaxPins) {
+      data[count++] = {pin, value};
+    }
+  }
+
+  // -- Lookup API ----------------------------------------------------------
+
+  /// Check whether a pin number is already stored in the result set.
+  [[nodiscard]] bool contains(uint8_t pin) const noexcept {
+    for (uint8_t i = 0; i < count; ++i) {
+      if (data[i].first == pin) return true;
+    }
+    return false;
+  }
+
+  /// Look up a pin's read result by pin number.
+  /// @return Pointer to the {pin, value} pair, or nullptr if not found.
+  [[nodiscard]] const std::pair<uint8_t, bool>* find(uint8_t pin) const noexcept {
+    for (uint8_t i = 0; i < count; ++i) {
+      if (data[i].first == pin) return &data[i];
+    }
+    return nullptr;
+  }
+
+  // -- Iterator support for range-based for --------------------------------
+  using iterator       = typename std::array<std::pair<uint8_t, bool>, kMaxPins>::const_iterator;
+  [[nodiscard]] iterator begin() const noexcept { return data.begin(); }
+  [[nodiscard]] iterator end()   const noexcept { return data.begin() + count; }
+};
 
 /**
  * @enum ChipVariant
@@ -237,6 +308,48 @@ public:
   explicit PCAL95555(I2cType* bus, uint8_t address,
                      ChipVariant variant = ChipVariant::Unknown);
 
+  // ---- Version Information (compile-time, static) ----
+
+  /**
+   * @brief Get the compiled driver version as a string.
+   *
+   * Returns the version that was compiled into the binary, in
+   * "MAJOR.MINOR.PATCH" format. This is a static method — it can be
+   * called without a driver instance.
+   *
+   * @return Null-terminated version string, e.g. "1.0.0".
+   *
+   * @example
+   *   ESP_LOGI("APP", "PCAL95555 driver v%s", PCAL95555::GetDriverVersion());
+   */
+  static constexpr const char* GetDriverVersion() noexcept {
+    return HF_PCAL95555_VERSION_STRING;
+  }
+
+  /**
+   * @brief Get the compiled driver major version number.
+   * @return Major version (incremented on breaking API changes).
+   */
+  static constexpr uint8_t GetDriverVersionMajor() noexcept {
+    return HF_PCAL95555_VERSION_MAJOR;
+  }
+
+  /**
+   * @brief Get the compiled driver minor version number.
+   * @return Minor version (incremented on new features, backward-compatible).
+   */
+  static constexpr uint8_t GetDriverVersionMinor() noexcept {
+    return HF_PCAL95555_VERSION_MINOR;
+  }
+
+  /**
+   * @brief Get the compiled driver patch version number.
+   * @return Patch version (incremented on bug fixes).
+   */
+  static constexpr uint8_t GetDriverVersionPatch() noexcept {
+    return HF_PCAL95555_VERSION_PATCH;
+  }
+
   /**
    * @brief Configure retry mechanism for I2C transactions.
    *
@@ -310,7 +423,7 @@ public:
    * @param dir Direction enum: Input or Output.
    * @return true on success; false on I2C failure.
    */
-  bool SetPinDirection(uint16_t pin, GPIODir dir) noexcept;
+  bool SetPinDirection(uint8_t pin, GPIODir dir) noexcept;
 
   /**
    * @brief Set the direction for multiple GPIO pins at once using a bitmask.
@@ -338,7 +451,7 @@ public:
    *       {10, GPIODir::Output}
    *   });
    */
-  bool SetDirections(std::initializer_list<std::pair<uint16_t, GPIODir>> configs) noexcept;
+  bool SetDirections(std::initializer_list<std::pair<uint8_t, GPIODir>> configs) noexcept;
 
   /**
    * @brief Read the current logical level of a GPIO pin.
@@ -346,7 +459,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @return true if pin is high; false if pin is low or on read error.
    */
-  bool ReadPin(uint16_t pin) noexcept;
+  bool ReadPin(uint8_t pin) noexcept;
 
   /**
    * @brief Write a logical level to a GPIO output pin.
@@ -355,7 +468,7 @@ public:
    * @param value true to drive high, false to drive low.
    * @return true if write succeeded; false on I2C failure.
    */
-  bool WritePin(uint16_t pin, bool value) noexcept;
+  bool WritePin(uint8_t pin, bool value) noexcept;
 
   /**
    * @brief Set the output level for multiple GPIO pins at once using a bitmask.
@@ -384,7 +497,7 @@ public:
    * @param pin Zero-based pin index (0-15).
    * @return true on success; false on I2C failure.
    */
-  bool TogglePin(uint16_t pin) noexcept;
+  bool TogglePin(uint8_t pin) noexcept;
 
   /**
    * @brief Write values to multiple GPIO output pins at once.
@@ -400,13 +513,18 @@ public:
    *       {10, true}
    *   });
    */
-  bool WritePins(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
+  bool WritePins(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept;
 
   /**
    * @brief Read values from multiple GPIO input pins at once.
    *
+   * Reads both input port registers in a single I2C burst, then extracts
+   * the requested pin values.  The result is a stack-allocated
+   * @ref PinReadResult (max 16 entries) — no heap allocation occurs.
+   *
    * @param pins Initializer list of pin numbers to read: {pin1, pin2, pin3, ...}
-   * @return Vector of pin/value pairs. Pins that failed to read will have value=false.
+   * @return PinReadResult containing pin/value pairs.  Empty on I2C failure.
+   *         Pins outside 0-15 are included with value=false.
    *
    * @example
    *   // Read pins 0, 5, and 10
@@ -415,7 +533,7 @@ public:
    *       printf("Pin %d: %s\n", pin, value ? "HIGH" : "LOW");
    *   }
    */
-  std::vector<std::pair<uint16_t, bool>> ReadPins(std::initializer_list<uint16_t> pins) noexcept;
+  PinReadResult ReadPins(std::initializer_list<uint8_t> pins) noexcept;
 
   /**
    * @brief Read all 16 pin input states in a single operation.
@@ -441,7 +559,7 @@ public:
    * @return true on success; false on I2C failure.
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool SetPullEnable(uint16_t pin, bool enable) noexcept;
+  bool SetPullEnable(uint8_t pin, bool enable) noexcept;
 
   /**
    * @brief Configure pull resistor enable/disable for multiple pins at once.
@@ -458,7 +576,7 @@ public:
    *   });
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool SetPullEnables(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
+  bool SetPullEnables(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept;
 
   /**
    * @brief Select internal pull-up or pull-down resistor direction.
@@ -468,7 +586,7 @@ public:
    * @return true on success; false on I2C failure.
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool SetPullDirection(uint16_t pin, bool pull_up) noexcept;
+  bool SetPullDirection(uint8_t pin, bool pull_up) noexcept;
 
   /**
    * @brief Configure pull resistor direction for multiple pins at once.
@@ -485,7 +603,7 @@ public:
    *   });
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
+  bool SetPullDirections(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept;
 
   /**
    * @brief Read the current pull resistor configuration from hardware registers.
@@ -510,7 +628,7 @@ public:
    * @return true on success; false on I2C failure.
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool SetDriveStrength(uint16_t pin, DriveStrength level) noexcept;
+  bool SetDriveStrength(uint8_t pin, DriveStrength level) noexcept;
 
   /**
    * @brief Configure drive strength for multiple pins at once.
@@ -527,7 +645,7 @@ public:
    *   });
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool SetDriveStrengths(std::initializer_list<std::pair<uint16_t, DriveStrength>> configs) noexcept;
+  bool SetDriveStrengths(std::initializer_list<std::pair<uint8_t, DriveStrength>> configs) noexcept;
 
   /**
    * @brief Enable or disable interrupt on a single pin.
@@ -544,7 +662,7 @@ public:
    *   driver.ConfigureInterrupt(3, InterruptState::Disabled);
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool ConfigureInterrupt(uint16_t pin, InterruptState state) noexcept;
+  bool ConfigureInterrupt(uint8_t pin, InterruptState state) noexcept;
 
   /**
    * @brief Configure interrupts for multiple pins at once.
@@ -568,7 +686,7 @@ public:
    *   });
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs) noexcept;
+  bool ConfigureInterrupts(std::initializer_list<std::pair<uint8_t, InterruptState>> configs) noexcept;
 
   /**
    * @brief Enable or disable interrupts on multiple pins using a bitmask.
@@ -613,7 +731,7 @@ public:
    * @param polarity Polarity::Normal or Polarity::Inverted.
    * @return true on success; false on I2C failure.
    */
-  bool SetPinPolarity(uint16_t pin, Polarity polarity) noexcept;
+  bool SetPinPolarity(uint8_t pin, Polarity polarity) noexcept;
 
   /**
    * @brief Configure input polarity for multiple pins using a bitmask.
@@ -641,7 +759,7 @@ public:
    *       {10, Polarity::Normal}
    *   });
    */
-  bool SetPolarities(std::initializer_list<std::pair<uint16_t, Polarity>> configs) noexcept;
+  bool SetPolarities(std::initializer_list<std::pair<uint8_t, Polarity>> configs) noexcept;
 
   /**
    * @brief Enable or disable the input latch for a single pin.
@@ -651,7 +769,7 @@ public:
    * @return true on success; false on I2C failure.
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool EnableInputLatch(uint16_t pin, bool enable) noexcept;
+  bool EnableInputLatch(uint8_t pin, bool enable) noexcept;
 
   /**
    * @brief Enable or disable input latch for multiple pins using a bitmask.
@@ -681,7 +799,7 @@ public:
    *   });
    * @note Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555.
    */
-  bool EnableInputLatches(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept;
+  bool EnableInputLatches(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept;
 
   /**
    * @brief Register a callback for a specific pin interrupt.
@@ -701,17 +819,17 @@ public:
    *
    * @example
    *   // Register callback for pin 5 on rising edge
-   *   driver.RegisterPinInterrupt(5, InterruptEdge::Rising, [](uint16_t pin, bool state) {
+   *   driver.RegisterPinInterrupt(5, InterruptEdge::Rising, [](uint8_t pin, bool state) {
    *       ESP_LOGI("APP", "Pin %d went HIGH", pin);
    *   });
    *
    *   // Register callback for pin 3 on both edges
-   *   driver.RegisterPinInterrupt(3, InterruptEdge::Both, [](uint16_t pin, bool state) {
+   *   driver.RegisterPinInterrupt(3, InterruptEdge::Both, [](uint8_t pin, bool state) {
    *       ESP_LOGI("APP", "Pin %d changed to %s", pin, state ? "HIGH" : "LOW");
    *   });
    */
-  bool RegisterPinInterrupt(uint16_t pin, InterruptEdge edge,
-                            std::function<void(uint16_t pin, bool state)> callback);
+  bool RegisterPinInterrupt(uint8_t pin, InterruptEdge edge,
+                            std::function<void(uint8_t pin, bool state)> callback);
 
   /**
    * @brief Unregister callback for a specific pin interrupt.
@@ -719,7 +837,7 @@ public:
    * @param pin Pin number (0-15) to unregister callback for.
    * @return true if callback was unregistered; false if pin was invalid or had no callback.
    */
-  bool UnregisterPinInterrupt(uint16_t pin) noexcept;
+  bool UnregisterPinInterrupt(uint8_t pin) noexcept;
 
   /**
    * @brief Register a global callback to be invoked on any GPIO interrupt.
@@ -760,7 +878,7 @@ public:
    *   auto driver = std::make_unique<PCAL95555Driver>(bus.get(), false, false, false);
    *   driver->SetPinDirection(5, GPIODir::Input);
    *   driver->ConfigureInterrupt(5, InterruptState::Enabled);  // Enable interrupt on pin 5
-   *   driver->RegisterPinInterrupt(5, InterruptEdge::Rising, [](uint16_t pin, bool state) {
+   *   driver->RegisterPinInterrupt(5, InterruptEdge::Rising, [](uint8_t pin, bool state) {
    *       ESP_LOGI("APP", "Pin %d interrupt!", pin);
    *   });
    *   driver->RegisterInterruptHandler();  // Register with I2C interface
@@ -924,7 +1042,7 @@ private:
    * @brief Structure to store pin interrupt callback information.
    */
   struct PinInterruptCallback {
-    std::function<void(uint16_t pin, bool state)> callback;
+    std::function<void(uint8_t pin, bool state)> callback;
     InterruptEdge edge;
     bool registered;
 
@@ -999,7 +1117,7 @@ private:
    * Selects the correct port register based on pin number, reads, modifies the bit,
    * and writes back. Does NOT validate pin or call EnsureInitialized().
    */
-  bool modifySinglePinRegister(uint8_t reg0, uint8_t reg1, uint16_t pin, bool bit_value) noexcept;
+  bool modifySinglePinRegister(uint8_t reg0, uint8_t reg1, uint8_t pin, bool bit_value) noexcept;
 
   /**
    * @brief Batch mask read-modify-write on a dual-port register pair.
@@ -1048,5 +1166,11 @@ private:
 // NOLINTNEXTLINE(bugprone-suspicious-include) - Intentional: template implementation file
 #include "../src/pcal95555.ipp"
 #undef PCAL95555_HEADER_INCLUDED
+
+
+// Public API: Get driver version string
+inline const char* GetDriverVersion() noexcept {
+  return HF_PCAL95555_VERSION_STRING;
+}
 
 } // namespace pcal95555

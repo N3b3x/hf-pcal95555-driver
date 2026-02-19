@@ -253,7 +253,7 @@ bool pcal95555::PCAL95555<I2cType>::writeDualPort(uint8_t reg0, uint8_t reg1,
 
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::modifySinglePinRegister(uint8_t reg0, uint8_t reg1,
-                                                             uint16_t pin, bool bit_value) noexcept {
+                                                             uint8_t pin, bool bit_value) noexcept {
   uint8_t reg = (pin < 8) ? reg0 : reg1;
   uint8_t bit = pin % 8;
   uint8_t val = 0;
@@ -286,7 +286,7 @@ bool pcal95555::PCAL95555<I2cType>::modifyDualPortByMask(uint8_t reg0, uint8_t r
 // ---- Direction configuration ----
 
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPinDirection(uint16_t pin, GPIODir dir) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPinDirection(uint8_t pin, GPIODir dir) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -313,7 +313,7 @@ bool pcal95555::PCAL95555<I2cType>::SetMultipleDirections(uint16_t mask, GPIODir
 
 // Configure direction for multiple pins with individual settings
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetDirections(std::initializer_list<std::pair<uint16_t, GPIODir>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetDirections(std::initializer_list<std::pair<uint8_t, GPIODir>> configs) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -342,7 +342,7 @@ bool pcal95555::PCAL95555<I2cType>::SetDirections(std::initializer_list<std::pai
 
 // Read input port registers and return bit
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::ReadPin(uint16_t pin) noexcept {
+bool pcal95555::PCAL95555<I2cType>::ReadPin(uint8_t pin) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -362,7 +362,7 @@ bool pcal95555::PCAL95555<I2cType>::ReadPin(uint16_t pin) noexcept {
 
 // Write output port registers
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::WritePin(uint16_t pin, bool value) noexcept {
+bool pcal95555::PCAL95555<I2cType>::WritePin(uint8_t pin, bool value) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -389,7 +389,7 @@ bool pcal95555::PCAL95555<I2cType>::SetMultipleOutputs(uint16_t mask, bool value
 }
 
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::TogglePin(uint16_t pin) noexcept {
+bool pcal95555::PCAL95555<I2cType>::TogglePin(uint8_t pin) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -411,7 +411,7 @@ bool pcal95555::PCAL95555<I2cType>::TogglePin(uint16_t pin) noexcept {
 
 // Write multiple pins
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::WritePins(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::WritePins(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -438,10 +438,10 @@ bool pcal95555::PCAL95555<I2cType>::WritePins(std::initializer_list<std::pair<ui
                         static_cast<uint8_t>(Pcal95555Reg::OUTPUT_PORT_1), port0, port1);
 }
 
-// Read multiple pins
+// Read multiple pins (zero heap allocation — uses stack-based PinReadResult)
 template <typename I2cType>
-std::vector<std::pair<uint16_t, bool>> pcal95555::PCAL95555<I2cType>::ReadPins(std::initializer_list<uint16_t> pins) noexcept {
-  std::vector<std::pair<uint16_t, bool>> results;
+pcal95555::PinReadResult pcal95555::PCAL95555<I2cType>::ReadPins(std::initializer_list<uint8_t> pins) noexcept {
+  PinReadResult results;
   if (!EnsureInitialized()) {
     return results;  // Return empty results if not initialized
   }
@@ -457,11 +457,13 @@ std::vector<std::pair<uint16_t, bool>> pcal95555::PCAL95555<I2cType>::ReadPins(s
     return results;
   }
 
-  // Extract values for each requested pin
-  for (uint16_t pin : pins) {
+  // Extract values for each requested pin (skip duplicates)
+  for (uint8_t pin : pins) {
+    if (results.contains(pin)) continue;  // Deduplicate repeated pins
+
     if (pin >= 16) {
       // Invalid pin - add with false value
-      results.emplace_back(pin, false);
+      results.push_back(pin, false);
       continue;
     }
 
@@ -472,7 +474,7 @@ std::vector<std::pair<uint16_t, bool>> pcal95555::PCAL95555<I2cType>::ReadPins(s
     } else {
       value = (port1 & (1 << bit)) != 0;
     }
-    results.emplace_back(pin, value);
+    results.push_back(pin, value);
   }
 
   return results;
@@ -480,7 +482,7 @@ std::vector<std::pair<uint16_t, bool>> pcal95555::PCAL95555<I2cType>::ReadPins(s
 
 // Pull-up/down control
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPullEnable(uint16_t pin, bool enable) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPullEnable(uint8_t pin, bool enable) noexcept {
   if (!EnsureInitialized() || !requireAgileIO()) {
     return false;
   }
@@ -495,7 +497,7 @@ bool pcal95555::PCAL95555<I2cType>::SetPullEnable(uint16_t pin, bool enable) noe
 }
 
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPullDirection(uint16_t pin, bool pull_up) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPullDirection(uint8_t pin, bool pull_up) noexcept {
   if (!EnsureInitialized() || !requireAgileIO()) {
     return false;
   }
@@ -511,7 +513,7 @@ bool pcal95555::PCAL95555<I2cType>::SetPullDirection(uint16_t pin, bool pull_up)
 
 // Configure pull enable for multiple pins
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPullEnables(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPullEnables(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept {
   if (!EnsureInitialized() || !requireAgileIO()) {
     return false;
   }
@@ -540,7 +542,7 @@ bool pcal95555::PCAL95555<I2cType>::SetPullEnables(std::initializer_list<std::pa
 
 // Configure pull direction for multiple pins
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPullDirections(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPullDirections(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept {
   if (!EnsureInitialized() || !requireAgileIO()) {
     return false;
   }
@@ -599,7 +601,7 @@ bool pcal95555::PCAL95555<I2cType>::GetPullConfiguration(uint16_t& enable_mask,
 
 // Drive strength (2 bits per pin)
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetDriveStrength(uint16_t pin, DriveStrength level) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetDriveStrength(uint8_t pin, DriveStrength level) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -627,7 +629,7 @@ bool pcal95555::PCAL95555<I2cType>::SetDriveStrength(uint16_t pin, DriveStrength
 
 // Configure drive strength for multiple pins
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetDriveStrengths(std::initializer_list<std::pair<uint16_t, DriveStrength>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetDriveStrengths(std::initializer_list<std::pair<uint8_t, DriveStrength>> configs) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -651,7 +653,7 @@ bool pcal95555::PCAL95555<I2cType>::SetDriveStrengths(std::initializer_list<std:
 
   // Update values for each pin
   for (const auto& config : configs) {
-    uint16_t pin = config.first;
+    uint8_t pin = config.first;
     DriveStrength level = config.second;
 
     if (pin >= 16) {
@@ -692,7 +694,7 @@ bool pcal95555::PCAL95555<I2cType>::SetDriveStrengths(std::initializer_list<std:
 
 // Configure interrupt for a single pin
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupt(uint16_t pin, InterruptState state) noexcept {
+bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupt(uint8_t pin, InterruptState state) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -731,7 +733,7 @@ bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupt(uint16_t pin, InterruptSt
 
 // Configure interrupts for multiple pins
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupts(std::initializer_list<std::pair<uint16_t, InterruptState>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupts(std::initializer_list<std::pair<uint8_t, InterruptState>> configs) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -753,7 +755,7 @@ bool pcal95555::PCAL95555<I2cType>::ConfigureInterrupts(std::initializer_list<st
 
   // Update mask for each pin configuration
   for (const auto& config : configs) {
-    uint16_t pin = config.first;
+    uint8_t pin = config.first;
     InterruptState state = config.second;
 
     if (pin >= 16) {
@@ -821,8 +823,8 @@ bool pcal95555::PCAL95555<I2cType>::SetOutputMode(bool port_0_open_drain, bool p
 
 // Register pin interrupt callback
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::RegisterPinInterrupt(uint16_t pin, InterruptEdge edge,
-                                                         std::function<void(uint16_t, bool)> callback) {
+bool pcal95555::PCAL95555<I2cType>::RegisterPinInterrupt(uint8_t pin, InterruptEdge edge,
+                                                         std::function<void(uint8_t, bool)> callback) {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -849,7 +851,7 @@ bool pcal95555::PCAL95555<I2cType>::RegisterPinInterrupt(uint16_t pin, Interrupt
 
 // Unregister pin interrupt callback
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::UnregisterPinInterrupt(uint16_t pin) noexcept {
+bool pcal95555::PCAL95555<I2cType>::UnregisterPinInterrupt(uint8_t pin) noexcept {
   // No I2C communication needed, but check initialization for consistency
   if (!EnsureInitialized()) {
     return false;
@@ -935,7 +937,7 @@ void pcal95555::PCAL95555<I2cType>::HandleInterrupt() noexcept {
   }
 
   // Process each pin that triggered an interrupt
-  for (uint16_t pin = 0; pin < 16; ++pin) {
+  for (uint8_t pin = 0; pin < 16; ++pin) {
     // Check if this pin triggered an interrupt
     if ((interrupt_status & (1U << pin)) == 0) {
       continue;  // Pin didn't trigger interrupt
@@ -977,7 +979,7 @@ void pcal95555::PCAL95555<I2cType>::HandleInterrupt() noexcept {
 }
 
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPinPolarity(uint16_t pin, Polarity polarity) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPinPolarity(uint8_t pin, Polarity polarity) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -1003,7 +1005,7 @@ bool pcal95555::PCAL95555<I2cType>::SetMultiplePolarities(uint16_t mask, Polarit
 
 // Configure polarity for multiple pins with individual settings
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::SetPolarities(std::initializer_list<std::pair<uint16_t, Polarity>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::SetPolarities(std::initializer_list<std::pair<uint8_t, Polarity>> configs) noexcept {
   if (!EnsureInitialized()) {
     return false;
   }
@@ -1031,7 +1033,7 @@ bool pcal95555::PCAL95555<I2cType>::SetPolarities(std::initializer_list<std::pai
 }
 
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::EnableInputLatch(uint16_t pin, bool enable) noexcept {
+bool pcal95555::PCAL95555<I2cType>::EnableInputLatch(uint8_t pin, bool enable) noexcept {
   if (!EnsureInitialized() || !requireAgileIO()) {
     return false;
   }
@@ -1058,7 +1060,7 @@ bool pcal95555::PCAL95555<I2cType>::EnableMultipleInputLatches(uint16_t mask, bo
 
 // Configure input latch for multiple pins with individual settings
 template <typename I2cType>
-bool pcal95555::PCAL95555<I2cType>::EnableInputLatches(std::initializer_list<std::pair<uint16_t, bool>> configs) noexcept {
+bool pcal95555::PCAL95555<I2cType>::EnableInputLatches(std::initializer_list<std::pair<uint8_t, bool>> configs) noexcept {
   if (!EnsureInitialized() || !requireAgileIO()) {
     return false;
   }

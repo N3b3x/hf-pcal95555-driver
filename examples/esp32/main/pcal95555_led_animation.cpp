@@ -70,7 +70,7 @@ static constexpr int PATTERN_REPEATS = 2;
 static constexpr int INTER_PATTERN_DELAY_MS = 500;
 
 /// Total number of GPIO pins on the expander
-static constexpr uint16_t NUM_PINS = 16;
+static constexpr uint8_t NUM_PINS = 16;
 
 // I2C address pin configuration
 static constexpr bool A0_LEVEL = false;
@@ -134,7 +134,7 @@ static void anim_sequential_chase(uint32_t speed_ms) {
 
   for (int rep = 0; rep < PATTERN_REPEATS; ++rep) {
     // Forward
-    for (uint16_t i = 0; i < NUM_PINS; ++i) {
+    for (uint8_t i = 0; i < NUM_PINS; ++i) {
       set_leds(1U << i);
       delay_ms(speed_ms);
     }
@@ -157,7 +157,7 @@ static void anim_bounce(uint32_t speed_ms) {
 
   for (int rep = 0; rep < PATTERN_REPEATS * 3; ++rep) {
     // Forward
-    for (uint16_t i = 0; i < NUM_PINS; ++i) {
+    for (uint8_t i = 0; i < NUM_PINS; ++i) {
       set_leds(1U << i);
       delay_ms(speed_ms);
     }
@@ -313,7 +313,7 @@ static void anim_buildup_teardown(uint32_t speed_ms) {
   for (int rep = 0; rep < PATTERN_REPEATS; ++rep) {
     uint16_t pattern = 0;
     // Build up
-    for (uint16_t i = 0; i < NUM_PINS; ++i) {
+    for (uint8_t i = 0; i < NUM_PINS; ++i) {
       pattern |= (1U << i);
       set_leds(pattern);
       delay_ms(speed_ms);
@@ -322,7 +322,7 @@ static void anim_buildup_teardown(uint32_t speed_ms) {
     delay_ms(speed_ms * 2); // Hold all-on briefly
 
     // Tear down
-    for (uint16_t i = 0; i < NUM_PINS; ++i) {
+    for (uint8_t i = 0; i < NUM_PINS; ++i) {
       pattern &= ~(1U << i);
       set_leds(pattern);
       delay_ms(speed_ms);
@@ -353,7 +353,7 @@ static void anim_accel_scan() {
 
   for (int s = 0; s < num_speeds; ++s) {
     // One full forward scan at this speed
-    for (uint16_t i = 0; i < NUM_PINS; ++i) {
+    for (uint8_t i = 0; i < NUM_PINS; ++i) {
       set_leds(1U << i);
       delay_ms(speeds[s]);
     }
@@ -473,7 +473,7 @@ static bool init_hardware() {
   ESP_LOGI(g_TAG, "I2C address: 0x%02X", g_driver->GetAddress());
 
   // Configure all 16 pins as outputs
-  for (uint16_t pin = 0; pin < NUM_PINS; ++pin) {
+  for (uint8_t pin = 0; pin < NUM_PINS; ++pin) {
     if (!g_driver->SetPinDirection(pin, GPIODir::Output)) {
       ESP_LOGE(g_TAG, "Failed to set pin %d as output", pin);
       return false;
@@ -494,11 +494,18 @@ static bool init_hardware() {
 // MAIN
 //=============================================================================
 
+
 extern "C" void app_main(void) {
   ESP_LOGI(g_TAG, "╔══════════════════════════════════════════════════════════════╗");
   ESP_LOGI(g_TAG, "║        PCA9555 / PCAL9555A  LED Animation Demo             ║");
   ESP_LOGI(g_TAG, "║              HardFOC GPIO Expander Driver                   ║");
+  ESP_LOGI(g_TAG, "║         Driver Version: %-37s ║", PCAL95555Driver::GetDriverVersion());
   ESP_LOGI(g_TAG, "╚══════════════════════════════════════════════════════════════╝");
+  ESP_LOGI(g_TAG, "Driver version: %s (major=%d, minor=%d, patch=%d)",
+           PCAL95555Driver::GetDriverVersion(),
+           PCAL95555Driver::GetDriverVersionMajor(),
+           PCAL95555Driver::GetDriverVersionMinor(),
+           PCAL95555Driver::GetDriverVersionPatch());
 
   delay_ms(500);
 
