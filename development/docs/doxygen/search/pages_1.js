@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['configuration_0',['Configuration',['../md_docs_2configuration.html',1,'']]]
+  ['cmake_20integration_20guide_0',['PCAL95555 — CMake Integration Guide',['../md_docs_2cmake__integration.html',1,'']]],
+  ['configuration_1',['Configuration',['../md_docs_2configuration.html',1,'']]]
 ];

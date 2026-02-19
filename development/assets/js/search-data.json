@@ -496,965 +496,1056 @@
     
     "relUrl": "/docs/api_reference/"
   },"71": {
+    "doc": "⚙️ CMake Integration",
+    "title": "PCAL95555 — CMake Integration Guide",
+    "content": "How to consume the PCAL95555 driver in your CMake or ESP-IDF project. Build contract architecture, variable naming conventions, porting guide, and templates for new drivers are documented at the HAL level: CMake Build Contract. This page covers only the PCAL95555-specific integration steps. ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#pcal95555--cmake-integration-guide",
+    
+    "relUrl": "/docs/cmake_integration/#pcal95555--cmake-integration-guide"
+  },"72": {
+    "doc": "⚙️ CMake Integration",
+    "title": "Quick Start (Generic CMake)",
+    "content": " ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#quick-start-generic-cmake",
+    
+    "relUrl": "/docs/cmake_integration/#quick-start-generic-cmake"
+  },"73": {
+    "doc": "⚙️ CMake Integration",
+    "title": "Option A — Git Submodule (recommended)",
+    "content": "| 1 2 3 . | # From your project root git submodule add https://github.com/N3b3x/hf-pcal95555-driver.git external/hf-pcal95555-driver git submodule update --init --recursive . | . In your top-level CMakeLists.txt: . | 1 2 3 4 . | add_subdirectory(external/hf-pcal95555-driver) add_executable(my_app main.cpp) target_link_libraries(my_app PRIVATE hf::pcal95555) . | . The hf::pcal95555 alias target provides the header include paths, C++20 compile feature, and generated version header automatically. ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#option-a--git-submodule-recommended",
+    
+    "relUrl": "/docs/cmake_integration/#option-a--git-submodule-recommended"
+  },"74": {
+    "doc": "⚙️ CMake Integration",
+    "title": "Option B — Cloned / Vendored Copy",
+    "content": "Same as above — just point add_subdirectory() at wherever you placed the driver checkout: . | 1 2 . | add_subdirectory(${CMAKE_CURRENT_SOURCE_DIR}/third_party/hf-pcal95555-driver) target_link_libraries(my_app PRIVATE hf::pcal95555) . | . ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#option-b--cloned--vendored-copy",
+    
+    "relUrl": "/docs/cmake_integration/#option-b--cloned--vendored-copy"
+  },"75": {
+    "doc": "⚙️ CMake Integration",
+    "title": "Option C — Installed Package (find_package)",
+    "content": "If the driver has been installed to a system or prefix path: . | 1 2 3 4 . | # Install from source cmake -B build -DCMAKE_INSTALL_PREFIX=/opt/hf-drivers cmake --build build cmake --install build . | . Then in the consuming project: . | 1 2 . | find_package(hf_pcal95555 REQUIRED) target_link_libraries(my_app PRIVATE hf::pcal95555) . | . CMake will locate the package via hf_pcal95555Config.cmake installed in &lt;prefix&gt;/lib/cmake/hf_pcal95555/. ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#option-c--installed-package-find_package",
+    
+    "relUrl": "/docs/cmake_integration/#option-c--installed-package-find_package"
+  },"76": {
+    "doc": "⚙️ CMake Integration",
+    "title": "ESP-IDF Integration",
+    "content": "The driver ships with an ESP-IDF component wrapper in examples/esp32/components/hf_pcal95555/. ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#esp-idf-integration",
+    
+    "relUrl": "/docs/cmake_integration/#esp-idf-integration"
+  },"77": {
+    "doc": "⚙️ CMake Integration",
+    "title": "1. Reference the Component",
+    "content": "Option 1 — Symlink or copy the wrapper: . | 1 2 3 4 5 6 7 8 . | your-esp-project/ ├── CMakeLists.txt ├── main/ │ ├── CMakeLists.txt │ └── app_main.cpp └── components/ └── hf_pcal95555/ └── CMakeLists.txt ← copy from driver's examples/esp32/components/ . | . Option 2 — Use EXTRA_COMPONENT_DIRS: . | 1 2 . | # In your project-level CMakeLists.txt, before include($ENV{IDF_PATH}/...) set(EXTRA_COMPONENT_DIRS \"${CMAKE_CURRENT_LIST_DIR}/../path/to/hf-pcal95555-driver/examples/esp32/components\") . | . ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#1-reference-the-component",
+    
+    "relUrl": "/docs/cmake_integration/#1-reference-the-component"
+  },"78": {
+    "doc": "⚙️ CMake Integration",
+    "title": "2. Override the Driver Root (if needed)",
+    "content": "The component wrapper auto-detects the driver root via a relative path. If your directory layout differs, override it: . | 1 . | set(HF_PCAL95555_ROOT \"/absolute/path/to/hf-pcal95555-driver\" CACHE PATH \"\") . | . ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#2-override-the-driver-root-if-needed",
+    
+    "relUrl": "/docs/cmake_integration/#2-override-the-driver-root-if-needed"
+  },"79": {
+    "doc": "⚙️ CMake Integration",
+    "title": "3. Require the Component",
+    "content": "In your main/CMakeLists.txt: . | 1 2 3 4 5 6 . | idf_component_register( SRCS \"app_main.cpp\" INCLUDE_DIRS \".\" REQUIRES hf_pcal95555 driver ) target_compile_features(${COMPONENT_LIB} PRIVATE cxx_std_20) . | . ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#3-require-the-component",
+    
+    "relUrl": "/docs/cmake_integration/#3-require-the-component"
+  },"80": {
+    "doc": "⚙️ CMake Integration",
+    "title": "4. Include and Use",
+    "content": "| 1 2 3 4 5 6 . | #include \"pcal95555.hpp\" #include \"pcal95555_version.h\" // optional — version macros // Create your platform I2C implementation, then: pcal95555::PCAL95555&lt;MyI2cBus&gt; driver(&amp;bus, /*a0=*/false, /*a1=*/false, /*a2=*/false); driver.EnsureInitialized(); . | . ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#4-include-and-use",
+    
+    "relUrl": "/docs/cmake_integration/#4-include-and-use"
+  },"81": {
+    "doc": "⚙️ CMake Integration",
+    "title": "PCAL95555-Specific Build Variables",
+    "content": "These variables are defined in cmake/hf_pcal95555_build_settings.cmake: . | Variable | Value | . | HF_PCAL95555_TARGET_NAME | hf_pcal95555 | . | HF_PCAL95555_VERSION | Current MAJOR.MINOR.PATCH | . | HF_PCAL95555_PUBLIC_INCLUDE_DIRS | inc/ + generated header dir | . | HF_PCAL95555_SOURCE_FILES | \"\" (header-only) | . | HF_PCAL95555_IDF_REQUIRES | driver | . For the full variable naming convention and how the 3-layer CMake contract works, see the CMake Build Contract. ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#pcal95555-specific-build-variables",
+    
+    "relUrl": "/docs/cmake_integration/#pcal95555-specific-build-variables"
+  },"82": {
+    "doc": "⚙️ CMake Integration",
+    "title": "Version Header",
+    "content": "The build system generates pcal95555_version.h from inc/pcal95555_version.h.in at configure time. It provides: . | 1 2 3 4 . | #define HF_PCAL95555_VERSION_MAJOR 1 #define HF_PCAL95555_VERSION_MINOR 0 #define HF_PCAL95555_VERSION_PATCH 0 #define HF_PCAL95555_VERSION_STRING \"1.0.0\" . | . Include it in your application to verify at runtime which version is compiled in: . | 1 2 . | #include \"pcal95555_version.h\" printf(\"PCAL95555 driver v%s\\n\", HF_PCAL95555_VERSION_STRING); . | . Navigation ⬅️ Back to Documentation Index | CMake Build Contract ↗ . ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/#version-header",
+    
+    "relUrl": "/docs/cmake_integration/#version-header"
+  },"83": {
+    "doc": "⚙️ CMake Integration",
+    "title": "⚙️ CMake Integration",
+    "content": " ",
+    "url": "/hf-pcal95555-driver/development/docs/cmake_integration/",
+    
+    "relUrl": "/docs/cmake_integration/"
+  },"84": {
     "doc": "⚙️ Configuration",
     "title": "Configuration",
     "content": "This guide covers all configuration options available for the PCAL95555 driver. ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#configuration",
     
     "relUrl": "/docs/configuration/#configuration"
-  },"72": {
+  },"85": {
     "doc": "⚙️ Configuration",
     "title": "I2C Address Configuration",
     "content": "The PCA9555 / PCAL9555A I2C address is configured via hardware pins A0-A2. Each pin represents one bit of the 3-bit address field. Both chip variants use the same address scheme. | Pin | Address Bit | Description | . | A0 | Bit 0 | Least significant address bit | . | A1 | Bit 1 |   | . | A2 | Bit 2 | Most significant address bit | . Default I2C address: 0x20 (all address pins to GND) . Address Range: 0x20 to 0x27 (7-bit I2C addresses) . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#i2c-address-configuration",
     
     "relUrl": "/docs/configuration/#i2c-address-configuration"
-  },"73": {
+  },"86": {
     "doc": "⚙️ Configuration",
     "title": "Address Pin Configuration Table",
     "content": "| A2 | A1 | A0 | I2C Address (7-bit) | Constructor Call | . | LOW | LOW | LOW | 0x20 (default) | PCAL95555(bus, false, false, false) | . | LOW | LOW | HIGH | 0x21 | PCAL95555(bus, true, false, false) | . | LOW | HIGH | LOW | 0x22 | PCAL95555(bus, false, true, false) | . | LOW | HIGH | HIGH | 0x23 | PCAL95555(bus, true, true, false) | . | HIGH | LOW | LOW | 0x24 | PCAL95555(bus, false, false, true) | . | HIGH | LOW | HIGH | 0x25 | PCAL95555(bus, true, false, true) | . | HIGH | HIGH | LOW | 0x26 | PCAL95555(bus, false, true, true) | . | HIGH | HIGH | HIGH | 0x27 | PCAL95555(bus, true, true, true) | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#address-pin-configuration-table",
     
     "relUrl": "/docs/configuration/#address-pin-configuration-table"
-  },"74": {
+  },"87": {
     "doc": "⚙️ Configuration",
     "title": "Dynamic Address Changes",
     "content": "If your I2C interface supports GPIO control of address pins (via SetAddressPins()), you can change the address dynamically: . Option 1: Using address directly (recommended) . | 1 2 3 4 5 6 7 8 9 . | // Change address to 0x21 if (gpio.ChangeAddress(0x21)) { printf(\"Address changed to 0x%02X\\n\", gpio.GetAddress()); // 0x21 } // Change address to 0x25 if (gpio.ChangeAddress(0x25)) { printf(\"Address changed to 0x%02X\\n\", gpio.GetAddress()); // 0x25 } . | . Option 2: Using pin levels . | 1 2 3 4 . | // Change address to 0x21 (A0=HIGH, A1=LOW, A2=LOW) if (gpio.ChangeAddress(true, false, false)) { printf(\"Address changed to 0x%02X\\n\", gpio.GetAddress()); // 0x21 } . | . Get current address and address bits: . | 1 2 . | uint8_t addr = gpio.GetAddress(); // Returns current address (e.g., 0x21) uint8_t bits = gpio.GetAddressBits(); // Returns address bits (e.g., 1 = binary 001) . | . Note: Dynamic address changes require hardware support. If address pins are hardwired, ChangeAddress() will still update internal state but won’t change hardware pins. ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#dynamic-address-changes",
     
     "relUrl": "/docs/configuration/#dynamic-address-changes"
-  },"75": {
+  },"88": {
     "doc": "⚙️ Configuration",
     "title": "Kconfig Configuration (Optional)",
     "content": "If your project uses Kconfig (e.g., ESP-IDF), the driver supports compile-time configuration. The Kconfig compile-time macros are defined in a dedicated header: inc/pcal95555_kconfig.hpp. This file is automatically included by the main pcal95555.hpp header – no additional includes are needed. Kconfig file: Kconfig . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#kconfig-configuration-optional",
     
     "relUrl": "/docs/configuration/#kconfig-configuration-optional"
-  },"76": {
+  },"89": {
     "doc": "⚙️ Configuration",
     "title": "Configuration Options",
     "content": ". | Per-pin direction: Configure each pin as input (1) or output (0) | Per-pin pull-up/pull-down: Enable pull resistors and select direction | Per-pin initial output: Set initial output state | Port open-drain: Configure ports for open-drain or push-pull mode | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#configuration-options",
     
     "relUrl": "/docs/configuration/#configuration-options"
-  },"77": {
+  },"90": {
     "doc": "⚙️ Configuration",
     "title": "Using Kconfig",
     "content": ". | Run idf.py menuconfig (or your Kconfig tool) | Navigate to component configuration | Configure per-pin settings as needed | Use InitFromConfig() to apply settings: | . | 1 . | gpio.InitFromConfig(); // Apply Kconfig settings . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#using-kconfig",
     
     "relUrl": "/docs/configuration/#using-kconfig"
-  },"78": {
+  },"91": {
     "doc": "⚙️ Configuration",
     "title": "Runtime Configuration",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#runtime-configuration",
     
     "relUrl": "/docs/configuration/#runtime-configuration"
-  },"79": {
+  },"92": {
     "doc": "⚙️ Configuration",
     "title": "Pin Direction",
     "content": "Set individual pin direction: . | 1 2 3 4 5 6 7 8 . | // Set pin 0 as output gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); // Set pin 1 as input gpio.SetPinDirection(1, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input); // Set multiple pins at once gpio.SetMultipleDirections(0x000F, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); // Pins 0-3 . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#pin-direction",
     
     "relUrl": "/docs/configuration/#pin-direction"
-  },"80": {
+  },"93": {
     "doc": "⚙️ Configuration",
     "title": "Pull Resistors (PCAL9555A only)",
     "content": "Note: These features require the PCAL9555A. On a standard PCA9555, these methods return false and set Error::UnsupportedFeature. Check with HasAgileIO() first. | 1 2 3 4 5 6 7 8 9 . | if (gpio.HasAgileIO()) { // Enable pull-up on pin 0 gpio.SetPullEnable(0, true); gpio.SetPullDirection(0, true); // true = pull-up, false = pull-down // Enable pull-down on pin 1 gpio.SetPullEnable(1, true); gpio.SetPullDirection(1, false); } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#pull-resistors-pcal9555a-only",
     
     "relUrl": "/docs/configuration/#pull-resistors-pcal9555a-only"
-  },"81": {
+  },"94": {
     "doc": "⚙️ Configuration",
     "title": "Drive Strength (PCAL9555A only)",
     "content": "Note: Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555. | 1 . | gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Level3); // Full strength . | . Drive Strength Levels: . | Level0: 25% drive strength (¼) | Level1: 50% drive strength (½) | Level2: 75% drive strength (¾) | Level3: 100% drive strength (full) | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#drive-strength-pcal9555a-only",
     
     "relUrl": "/docs/configuration/#drive-strength-pcal9555a-only"
-  },"82": {
+  },"95": {
     "doc": "⚙️ Configuration",
     "title": "Output Mode (PCAL9555A only)",
     "content": "Note: Requires PCAL9555A. Returns false with Error::UnsupportedFeature on PCA9555. | 1 2 . | // Set PORT_0 to open-drain, PORT_1 to push-pull gpio.SetOutputMode(true, false); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#output-mode-pcal9555a-only",
     
     "relUrl": "/docs/configuration/#output-mode-pcal9555a-only"
-  },"83": {
+  },"96": {
     "doc": "⚙️ Configuration",
     "title": "Polarity Inversion",
     "content": "Invert input polarity: . | 1 2 3 4 5 . | // Invert pin 0 polarity gpio.SetPinPolarity(0, pcal95555::PCAL95555&lt;MyI2c&gt;::Polarity::Inverted); // Invert multiple pins gpio.SetMultiplePolarities(0x00FF, pcal95555::PCAL95555&lt;MyI2c&gt;::Polarity::Inverted); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#polarity-inversion",
     
     "relUrl": "/docs/configuration/#polarity-inversion"
-  },"84": {
+  },"97": {
     "doc": "⚙️ Configuration",
     "title": "Default Configuration",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#default-configuration",
     
     "relUrl": "/docs/configuration/#default-configuration"
-  },"85": {
+  },"98": {
     "doc": "⚙️ Configuration",
     "title": "ResetToDefault()",
     "content": "Resets all registers to power-on defaults: . | 1 . | gpio.ResetToDefault(); . | . Default State: . | All pins: Inputs with pull-ups enabled | Drive strength: Full | Output mode: Push-pull | Interrupts: Masked (disabled) | Polarity: Normal (not inverted) | . Location: src/pcal95555.ipp . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#resettodefault",
     
     "relUrl": "/docs/configuration/#resettodefault"
-  },"86": {
+  },"99": {
     "doc": "⚙️ Configuration",
     "title": "Chip Variant Configuration",
     "content": "The driver auto-detects the chip variant (PCA9555 vs PCAL9555A) during initialization. You can also force a specific variant via the constructor to skip the detection probe: . | 1 2 3 4 5 6 7 8 . | // Auto-detect (default) pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); // Force PCA9555 mode (skips Agile I/O probe -- avoids NACK on known PCA9555) pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20, pcal95555::ChipVariant::PCA9555); // Force PCAL9555A mode pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20, pcal95555::ChipVariant::PCAL9555A); . | . Query the detected variant at runtime: . | 1 2 3 4 5 . | if (gpio.HasAgileIO()) { // PCAL9555A features available } auto variant = gpio.GetChipVariant(); // ChipVariant::Unknown, ChipVariant::PCA9555, or ChipVariant::PCAL9555A . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#chip-variant-configuration",
     
     "relUrl": "/docs/configuration/#chip-variant-configuration"
-  },"87": {
+  },"100": {
     "doc": "⚙️ Configuration",
     "title": "Interrupt Configuration",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#interrupt-configuration",
     
     "relUrl": "/docs/configuration/#interrupt-configuration"
-  },"88": {
+  },"101": {
     "doc": "⚙️ Configuration",
     "title": "Basic Interrupt Setup",
     "content": "| 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 . | // Enable interrupt on pin 5 (recommended method) gpio.ConfigureInterrupt(5, InterruptState::Enabled); // Disable interrupt on pin 3 gpio.ConfigureInterrupt(3, InterruptState::Disabled); // Configure multiple pins at once gpio.ConfigureInterrupts({ {0, InterruptState::Enabled}, {5, InterruptState::Enabled}, {10, InterruptState::Enabled}, {3, InterruptState::Disabled} }); // Set global interrupt callback (optional) gpio.SetInterruptCallback([](uint16_t status) { printf(\"Interrupt on pins: 0x%04X\\n\", status); }); // Handle interrupt (call from ISR or polling) gpio.HandleInterrupt(); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#basic-interrupt-setup",
     
     "relUrl": "/docs/configuration/#basic-interrupt-setup"
-  },"89": {
+  },"102": {
     "doc": "⚙️ Configuration",
     "title": "Per-Pin Interrupt Callbacks",
     "content": "| 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 . | // Register callback for specific pin with edge detection gpio.RegisterPinInterrupt(5, InterruptEdge::Rising, [](uint16_t pin, bool state) { printf(\"Pin %d went HIGH\\n\", pin); }); // Register callback for falling edge gpio.RegisterPinInterrupt(3, InterruptEdge::Falling, [](uint16_t pin, bool state) { printf(\"Pin %d went LOW\\n\", pin); }); // Register callback for both edges gpio.RegisterPinInterrupt(7, InterruptEdge::Both, [](uint16_t pin, bool state) { printf(\"Pin %d changed to %s\\n\", pin, state ? \"HIGH\" : \"LOW\"); }); // Register interrupt handler with I2C interface (for hardware interrupts) gpio.RegisterInterruptHandler(); // Sets up INT pin handling . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#per-pin-interrupt-callbacks",
     
     "relUrl": "/docs/configuration/#per-pin-interrupt-callbacks"
-  },"90": {
+  },"103": {
     "doc": "⚙️ Configuration",
     "title": "Get Interrupt Status",
     "content": "| 1 2 3 . | uint16_t status = gpio.GetInterruptStatus(); // Check which pins triggered interrupt // Reading this register clears the interrupt condition . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#get-interrupt-status",
     
     "relUrl": "/docs/configuration/#get-interrupt-status"
-  },"91": {
+  },"104": {
     "doc": "⚙️ Configuration",
     "title": "Recommended Settings",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#recommended-settings",
     
     "relUrl": "/docs/configuration/#recommended-settings"
-  },"92": {
+  },"105": {
     "doc": "⚙️ Configuration",
     "title": "For Input Pins",
     "content": "| 1 2 3 . | gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input); gpio.SetPullEnable(pin, true); gpio.SetPullDirection(pin, true); // Pull-up . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#for-input-pins",
     
     "relUrl": "/docs/configuration/#for-input-pins"
-  },"93": {
+  },"106": {
     "doc": "⚙️ Configuration",
     "title": "For Output Pins",
     "content": "| 1 2 3 . | gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); gpio.SetDriveStrength(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Level3); // Full strength gpio.WritePin(pin, false); // Set initial state . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#for-output-pins",
     
     "relUrl": "/docs/configuration/#for-output-pins"
-  },"94": {
+  },"107": {
     "doc": "⚙️ Configuration",
     "title": "For Interrupt-Driven Inputs",
     "content": "| 1 2 3 4 5 . | gpio.SetPinDirection(pin, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input); gpio.SetPullEnable(pin, true); gpio.SetPullDirection(pin, true); gpio.EnableInputLatch(pin, true); // Latch input changes gpio.ConfigureInterrupt(pin, InterruptState::Enabled); // Enable interrupt for this pin . | . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#for-interrupt-driven-inputs",
     
     "relUrl": "/docs/configuration/#for-interrupt-driven-inputs"
-  },"95": {
+  },"108": {
     "doc": "⚙️ Configuration",
     "title": "Next Steps",
     "content": ". | See Examples for configuration examples | Review API Reference for all configuration methods | . Navigation ⬅️ Platform Integration | Next: API Reference ➡️ | Back to Index . ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/#next-steps",
     
     "relUrl": "/docs/configuration/#next-steps"
-  },"96": {
+  },"109": {
     "doc": "⚙️ Configuration",
     "title": "⚙️ Configuration",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/configuration/",
     
     "relUrl": "/docs/configuration/"
-  },"97": {
+  },"110": {
     "doc": "💡 Examples",
     "title": "Examples",
     "content": "This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver. ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#examples",
     
     "relUrl": "/docs/examples/#examples"
-  },"98": {
+  },"111": {
     "doc": "💡 Examples",
     "title": "Example 1: Basic GPIO Control",
     "content": "This example shows basic input/output operations. | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 . | #include \"pcal95555.hpp\" // Implement I2C interface (see platform_integration.md) class MyI2c : public pcal95555::I2cInterface&lt;MyI2c&gt; { // ... implement Write() and Read() }; MyI2c i2c; // Option 1: Using address directly (recommended) pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); // Address 0x20 (default) // Option 2: Using pin levels // pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false); void app_main(void) { // Initialize driver (lazy initialization happens automatically, but explicit is clearer) if (!gpio.EnsureInitialized()) { ESP_LOGE(\"APP\", \"Failed to initialize PCAL95555\"); return; } gpio.ResetToDefault(); // Configure pin 0 as output gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); gpio.WritePin(0, true); // Configure pin 1 as input gpio.SetPinDirection(1, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input); bool value = gpio.ReadPin(1); } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-1-basic-gpio-control",
     
     "relUrl": "/docs/examples/#example-1-basic-gpio-control"
-  },"99": {
+  },"112": {
     "doc": "💡 Examples",
     "title": "Explanation",
     "content": ". | Reset: Put device in known state | Configure: Set pin directions | Use: Read and write pin states | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#explanation",
     
     "relUrl": "/docs/examples/#explanation"
-  },"100": {
+  },"113": {
     "doc": "💡 Examples",
     "title": "Example 2: Multiple Pins Configuration",
     "content": "This example demonstrates configuring multiple pins at once with individual settings. | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 . | // Configure multiple pins with individual directions gpio.SetDirections({ {0, GPIODir::Output}, {1, GPIODir::Input}, {5, GPIODir::Output}, {10, GPIODir::Input} }); // Write to multiple pins at once gpio.WritePins({ {0, true}, {5, false}, {10, true} }); // Read multiple pins at once auto results = gpio.ReadPins({0, 1, 5, 10}); for (const auto&amp; [pin, value] : results) { printf(\"Pin %d: %s\\n\", pin, value ? \"HIGH\" : \"LOW\"); } // Configure pull resistors for multiple pins gpio.SetPullEnables({ {1, true}, // Enable pull on pin 1 {10, true} // Enable pull on pin 10 }); gpio.SetPullDirections({ {1, true}, // Pull-up on pin 1 {10, false} // Pull-down on pin 10 }); // Configure drive strength for multiple pins gpio.SetDriveStrengths({ {0, DriveStrength::Level3}, // Full strength {5, DriveStrength::Level1} // 50% strength }); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-2-multiple-pins-configuration",
     
     "relUrl": "/docs/examples/#example-2-multiple-pins-configuration"
-  },"101": {
+  },"114": {
     "doc": "💡 Examples",
     "title": "Example 3: Interrupt Handling",
     "content": "This example shows how to use interrupts with per-pin callbacks. | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 . | // Configure pin 8 as input with interrupt gpio.SetPinDirection(8, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input); gpio.SetPullEnable(8, true); gpio.SetPullDirection(8, true); // Pull-up gpio.EnableInputLatch(8, true); gpio.ConfigureInterrupt(8, InterruptState::Enabled); // Enable interrupt // Register per-pin callback for rising edge gpio.RegisterPinInterrupt(8, InterruptEdge::Rising, [](uint16_t pin, bool state) { printf(\"Pin %d interrupt: went HIGH\\n\", pin); }); // Register interrupt handler with I2C interface (for hardware INT pin) gpio.RegisterInterruptHandler(); // Sets up INT pin handling // In your main loop or ISR (if using polling) gpio.HandleInterrupt(); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-3-interrupt-handling",
     
     "relUrl": "/docs/examples/#example-3-interrupt-handling"
-  },"102": {
+  },"115": {
     "doc": "💡 Examples",
     "title": "Configure Multiple Interrupts",
     "content": "| 1 2 3 4 5 6 7 . | // Configure interrupts for multiple pins at once gpio.ConfigureInterrupts({ {0, InterruptState::Enabled}, // Enable on pin 0 {5, InterruptState::Enabled}, // Enable on pin 5 {10, InterruptState::Enabled}, // Enable on pin 10 {3, InterruptState::Disabled} // Disable on pin 3 }); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#configure-multiple-interrupts",
     
     "relUrl": "/docs/examples/#configure-multiple-interrupts"
-  },"103": {
+  },"116": {
     "doc": "💡 Examples",
     "title": "Global Interrupt Callback",
     "content": "| 1 2 3 4 5 . | // Set global callback for all interrupts gpio.SetInterruptCallback([](uint16_t status) { printf(\"Interrupt on pins: 0x%04X\\n\", status); // Handle interrupt }); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#global-interrupt-callback",
     
     "relUrl": "/docs/examples/#global-interrupt-callback"
-  },"104": {
+  },"117": {
     "doc": "💡 Examples",
     "title": "Example 4: Pull Resistors (PCAL9555A only)",
     "content": "This example demonstrates pull resistor configuration. These methods require the PCAL9555A and return false with Error::UnsupportedFeature on a standard PCA9555. | 1 2 3 4 5 6 7 8 9 . | // Check chip variant first if (!gpio.HasAgileIO()) { printf(\"PCA9555 detected -- pull resistors require external components\\n\"); } else { // Configure pin as input with pull-down gpio.SetPinDirection(5, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input); gpio.SetPullEnable(5, true); gpio.SetPullDirection(5, false); // Pull-down } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-4-pull-resistors-pcal9555a-only",
     
     "relUrl": "/docs/examples/#example-4-pull-resistors-pcal9555a-only"
-  },"105": {
+  },"118": {
     "doc": "💡 Examples",
     "title": "Example 5: Drive Strength (PCAL9555A only)",
     "content": "This example shows drive strength configuration. Requires PCAL9555A. | 1 2 3 4 5 . | if (gpio.HasAgileIO()) { // Set pin as output with reduced drive strength gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Level1); // 50% strength } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-5-drive-strength-pcal9555a-only",
     
     "relUrl": "/docs/examples/#example-5-drive-strength-pcal9555a-only"
-  },"106": {
+  },"119": {
     "doc": "💡 Examples",
     "title": "Example 6: Address Management",
     "content": "This example shows how to work with I2C addresses. | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 . | // Option 1: Create driver using address directly (recommended) pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x21); // Address 0x21 // Option 2: Create driver using pin levels // pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, true, false, false); // A0=HIGH -&gt; 0x21 // Get current address uint8_t addr = gpio.GetAddress(); // Returns 0x21 uint8_t bits = gpio.GetAddressBits(); // Returns 1 (binary: 001) // Change address dynamically using address value (if I2C interface supports GPIO control) if (gpio.ChangeAddress(0x20)) { printf(\"Address changed to 0x%02X\\n\", gpio.GetAddress()); // Now 0x20 } // Change address using pin levels if (gpio.ChangeAddress(false, false, false)) { printf(\"Address changed to 0x%02X\\n\", gpio.GetAddress()); // Now 0x20 } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-6-address-management",
     
     "relUrl": "/docs/examples/#example-6-address-management"
-  },"107": {
+  },"120": {
     "doc": "💡 Examples",
     "title": "Example 7: Error Handling",
     "content": "This example shows error handling, retry configuration, and UnsupportedFeature detection. | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 . | // Configure retry mechanism gpio.SetRetries(3); // Retry up to 3 times on I2C failure // Perform operations gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); gpio.WritePin(0, true); // Check for errors uint16_t errors = gpio.GetErrorFlags(); if (errors != 0) { if (errors &amp; static_cast&lt;uint16_t&gt;(Error::I2CReadFail)) { printf(\"I2C read failed\\n\"); } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::I2CWriteFail)) { printf(\"I2C write failed\\n\"); } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::InvalidPin)) { printf(\"Invalid pin number\\n\"); } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::UnsupportedFeature)) { printf(\"Feature requires PCAL9555A (this is a PCA9555)\\n\"); } // Clear all errors gpio.ClearErrorFlags(); // Or clear only specific flags // gpio.ClearErrorFlags(static_cast&lt;uint16_t&gt;(Error::InvalidPin)); } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-7-error-handling",
     
     "relUrl": "/docs/examples/#example-7-error-handling"
-  },"108": {
+  },"121": {
     "doc": "💡 Examples",
     "title": "Example 8: Chip Variant Detection",
     "content": "This example shows how to check which chip is connected and conditionally use features. | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 . | // After initialization (auto or explicit) gpio.EnsureInitialized(); // Method 1: Boolean check if (gpio.HasAgileIO()) { printf(\"PCAL9555A detected -- full feature set available\\n\"); gpio.SetPullEnable(0, true); gpio.SetDriveStrength(0, DriveStrength::Level3); } else { printf(\"PCA9555 detected -- standard GPIO only\\n\"); // Use external pull-up resistors instead } // Method 2: Variant enum auto variant = gpio.GetChipVariant(); switch (variant) { case pcal95555::ChipVariant::PCA9555: printf(\"Standard PCA9555\\n\"); break; case pcal95555::ChipVariant::PCAL9555A: printf(\"Enhanced PCAL9555A with Agile I/O\\n\"); break; default: printf(\"Unknown variant (detection may have failed)\\n\"); break; } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#example-8-chip-variant-detection",
     
     "relUrl": "/docs/examples/#example-8-chip-variant-detection"
-  },"109": {
+  },"122": {
     "doc": "💡 Examples",
     "title": "Running the Examples",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#running-the-examples",
     
     "relUrl": "/docs/examples/#running-the-examples"
-  },"110": {
+  },"123": {
     "doc": "💡 Examples",
     "title": "ESP32",
     "content": "Two example applications are available in examples/esp32: . | 1 2 3 4 5 6 7 8 9 . | cd examples/esp32 # Comprehensive test suite (tests all 43 API methods) ./scripts/build_app.sh pcal95555_comprehensive_test Debug ./scripts/flash_app.sh flash_monitor pcal95555_comprehensive_test Debug # LED animation demo (16-LED patterns) ./scripts/build_app.sh pcal95555_led_animation Debug ./scripts/flash_app.sh flash_monitor pcal95555_led_animation Debug . | . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#esp32",
     
     "relUrl": "/docs/examples/#esp32"
-  },"111": {
+  },"124": {
     "doc": "💡 Examples",
     "title": "Other Platforms",
     "content": "Adapt the I2C interface implementation for your platform (see Platform Integration) and compile with your platform’s toolchain. ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#other-platforms",
     
     "relUrl": "/docs/examples/#other-platforms"
-  },"112": {
+  },"125": {
     "doc": "💡 Examples",
     "title": "Next Steps",
     "content": ". | Review the API Reference for method details | Check Troubleshooting if you encounter issues | Explore the examples directory for more examples | . Navigation ⬅️ API Reference | Next: Troubleshooting ➡️ | Back to Index . ",
     "url": "/hf-pcal95555-driver/development/docs/examples/#next-steps",
     
     "relUrl": "/docs/examples/#next-steps"
-  },"113": {
+  },"126": {
     "doc": "💡 Examples",
     "title": "💡 Examples",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/examples/",
     
     "relUrl": "/docs/examples/"
-  },"114": {
+  },"127": {
     "doc": "🔌 Hardware Setup",
     "title": "Hardware Setup",
     "content": "This guide covers the physical connections and hardware requirements for the PCA9555 and PCAL9555A chips. Both are pin-compatible – the same wiring works for either variant. The driver auto-detects which chip is connected. ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#hardware-setup",
     
     "relUrl": "/docs/hardware_setup/#hardware-setup"
-  },"115": {
+  },"128": {
     "doc": "🔌 Hardware Setup",
     "title": "Pin Connections",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#pin-connections",
     
     "relUrl": "/docs/hardware_setup/#pin-connections"
-  },"116": {
+  },"129": {
     "doc": "🔌 Hardware Setup",
     "title": "Basic I2C Connections",
     "content": "| 1 2 3 4 5 6 . | MCU PCA9555 / PCAL9555A ────────────────────────────────── 3.3V ────── VDD GND ────── GND SCL ────── SCL (with 4.7kΩ pull-up to 3.3V) SDA ────── SDA (with 4.7kΩ pull-up to 3.3V) . | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#basic-i2c-connections",
     
     "relUrl": "/docs/hardware_setup/#basic-i2c-connections"
-  },"117": {
+  },"130": {
     "doc": "🔌 Hardware Setup",
     "title": "Pin Descriptions",
     "content": "| Pin | Name | Description | Required | . | VDD | Power | 1.65V to 5.5V power supply (typically 3.3V) | Yes | . | GND | Ground | Ground reference | Yes | . | SCL | Clock | I2C clock line | Yes | . | SDA | Data | I2C data line | Yes | . | A0-A2 | Address | I2C address selection pins | No (for single device) | . | INT | Interrupt | Interrupt output (optional) | No | . | RESET | Reset | Hardware reset (optional) | No | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#pin-descriptions",
     
     "relUrl": "/docs/hardware_setup/#pin-descriptions"
-  },"118": {
+  },"131": {
     "doc": "🔌 Hardware Setup",
     "title": "GPIO Pins",
     "content": "The PCA9555 / PCAL9555A provides 16 GPIO pins organized into two ports: . | PORT_0: Pins 0-7 (P0.0 through P0.7) | PORT_1: Pins 8-15 (P1.0 through P1.7) | . Each pin can be configured as: . | Input or output (PCA9555 + PCAL9555A) | With or without pull-up/pull-down resistor (PCAL9555A only) | Push-pull or open-drain output per port (PCAL9555A only) | Interrupt enabled or disabled (PCAL9555A only; software callbacks work on both) | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#gpio-pins",
     
     "relUrl": "/docs/hardware_setup/#gpio-pins"
-  },"119": {
+  },"132": {
     "doc": "🔌 Hardware Setup",
     "title": "Power Requirements",
     "content": ". | Supply Voltage: 1.65V to 5.5V (3.3V typical) | Current Consumption: . | Active: ~100 µA typical | Standby: &lt; 1 µA | . | Power Supply: Stable, low-noise supply recommended | Decoupling: 100 nF ceramic capacitor close to VDD pin recommended | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#power-requirements",
     
     "relUrl": "/docs/hardware_setup/#power-requirements"
-  },"120": {
+  },"133": {
     "doc": "🔌 Hardware Setup",
     "title": "I2C Configuration",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#i2c-configuration",
     
     "relUrl": "/docs/hardware_setup/#i2c-configuration"
-  },"121": {
+  },"134": {
     "doc": "🔌 Hardware Setup",
     "title": "Address Configuration",
     "content": "The I/O expander I2C address is determined by pins A0-A2: . | A2 | A1 | A0 | I2C Address (7-bit) | . | 0 | 0 | 0 | 0x20 (default) | . | 0 | 0 | 1 | 0x21 | . | 0 | 1 | 0 | 0x22 | . | 0 | 1 | 1 | 0x23 | . | 1 | 0 | 0 | 0x24 | . | 1 | 0 | 1 | 0x25 | . | 1 | 1 | 0 | 0x26 | . | 1 | 1 | 1 | 0x27 | . Default: All address pins to GND = 0x20 (used in examples) . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#address-configuration",
     
     "relUrl": "/docs/hardware_setup/#address-configuration"
-  },"122": {
+  },"135": {
     "doc": "🔌 Hardware Setup",
     "title": "I2C Bus Configuration",
     "content": ". | Speed: Up to 400 kHz (Fast Mode) . | Standard Mode: 100 kHz | Fast Mode: 400 kHz (most common) | . | Pull-up Resistors: 4.7 kΩ on SCL and SDA (required for I2C) | Bus Voltage: Must match VDD (typically 3.3V) | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#i2c-bus-configuration",
     
     "relUrl": "/docs/hardware_setup/#i2c-bus-configuration"
-  },"123": {
+  },"136": {
     "doc": "🔌 Hardware Setup",
     "title": "Physical Layout Recommendations",
     "content": ". | Trace Length: Keep I2C traces short (&lt; 10 cm recommended) | Ground Plane: Use a ground plane for noise reduction | Decoupling: Place 100 nF ceramic capacitor within 1 cm of VDD pin | Routing: Route clock and data lines away from noise sources | Multiple Devices: When using multiple expanders, use proper bus termination | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#physical-layout-recommendations",
     
     "relUrl": "/docs/hardware_setup/#physical-layout-recommendations"
-  },"124": {
+  },"137": {
     "doc": "🔌 Hardware Setup",
     "title": "Example Wiring Diagram",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#example-wiring-diagram",
     
     "relUrl": "/docs/hardware_setup/#example-wiring-diagram"
-  },"125": {
+  },"138": {
     "doc": "🔌 Hardware Setup",
     "title": "Single Device",
     "content": "| 1 2 3 4 5 6 7 8 9 10 . | PCA9555 / PCAL9555A ┌─────────┐ 3.3V ───────┤ VDD │ GND ───────┤ GND │ SCL ───────┤ SCL │─── 4.7kΩ ─── 3.3V SDA ───────┤ SDA │─── 4.7kΩ ─── 3.3V │ │ │ P0.0-7 │─── GPIO pins (PORT_0) │ P1.0-7 │─── GPIO pins (PORT_1) └─────────┘ . | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#single-device",
     
     "relUrl": "/docs/hardware_setup/#single-device"
-  },"126": {
+  },"139": {
     "doc": "🔌 Hardware Setup",
     "title": "Multiple Devices",
     "content": "| 1 2 3 4 5 6 7 . | MCU SCL ──┬─── Device #1 (A0=0, Addr=0x20) SCL │ └─── Device #2 (A0=1, Addr=0x21) SCL MCU SDA ──┬─── Device #1 SDA │ └─── Device #2 SDA . | . Note: You can mix PCA9555 and PCAL9555A devices on the same I2C bus. Each driver instance auto-detects its chip variant independently. ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#multiple-devices",
     
     "relUrl": "/docs/hardware_setup/#multiple-devices"
-  },"127": {
+  },"140": {
     "doc": "🔌 Hardware Setup",
     "title": "Interrupt Pin (Optional)",
     "content": "The INT pin provides hardware interrupt notification: . | Type: Open-drain output | Requires: External pull-up resistor (typically 10kΩ to 3.3V) | Usage: Connect to a GPIO input on your MCU for interrupt-driven I/O | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#interrupt-pin-optional",
     
     "relUrl": "/docs/hardware_setup/#interrupt-pin-optional"
-  },"128": {
+  },"141": {
     "doc": "🔌 Hardware Setup",
     "title": "Reset Pin (Optional)",
     "content": "The RESET pin provides hardware reset: . | Type: Active-low input | Usage: Connect to MCU GPIO for software reset capability | Default: Leave floating (internal pull-up enables device) | . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#reset-pin-optional",
     
     "relUrl": "/docs/hardware_setup/#reset-pin-optional"
-  },"129": {
+  },"142": {
     "doc": "🔌 Hardware Setup",
     "title": "Next Steps",
     "content": ". | Verify connections with a multimeter | Use an I2C scanner to verify device detection at expected address | Proceed to Quick Start to test the connection | Review Platform Integration for software setup | . Navigation ⬅️ Quick Start | Next: Platform Integration ➡️ | Back to Index . ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#next-steps",
     
     "relUrl": "/docs/hardware_setup/#next-steps"
-  },"130": {
+  },"143": {
     "doc": "🔌 Hardware Setup",
     "title": "🔌 Hardware Setup",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/",
     
     "relUrl": "/docs/hardware_setup/"
-  },"131": {
+  },"144": {
     "doc": "📚 Documentation",
     "title": "HF-PCAL95555 Documentation",
     "content": "Welcome! This directory contains step-by-step guides for installing, building, and using the HF-PCAL95555 library – a hardware-agnostic C++ driver for the PCA9555 and PCAL9555A 16-bit I/O expanders. The driver auto-detects which chip variant is connected and enables features accordingly. Standard PCA9555 features work on both chips; PCAL9555A-only features (pull resistors, drive strength, input latch, interrupt mask/status, output mode) degrade gracefully on a PCA9555. ",
     "url": "/hf-pcal95555-driver/development/docs/#hf-pcal95555-documentation",
     
     "relUrl": "/docs/#hf-pcal95555-documentation"
-  },"132": {
+  },"145": {
     "doc": "📚 Documentation",
     "title": "📚 Documentation Structure",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/#-documentation-structure",
     
     "relUrl": "/docs/#-documentation-structure"
-  },"133": {
+  },"146": {
     "doc": "📚 Documentation",
     "title": "Getting Started",
     "content": ". | 🛠️ Installation – How to integrate the driver into your project | ⚡ Quick Start – Minimal working example to get you running | 🔌 Hardware Setup – Wiring diagrams and pin connections | . ",
     "url": "/hf-pcal95555-driver/development/docs/#getting-started",
     
     "relUrl": "/docs/#getting-started"
-  },"134": {
+  },"147": {
     "doc": "📚 Documentation",
     "title": "Integration",
     "content": ". | 🔧 Platform Integration – Implement the CRTP I2C interface for your platform | ⚙️ Configuration – Configuration options and Kconfig settings | . ",
     "url": "/hf-pcal95555-driver/development/docs/#integration",
     
     "relUrl": "/docs/#integration"
-  },"135": {
+  },"148": {
     "doc": "📚 Documentation",
     "title": "Reference",
     "content": ". | 📖 API Reference – Complete API documentation (43 methods) | 💡 Examples – Detailed example walkthroughs (comprehensive test + LED animation) | . ",
     "url": "/hf-pcal95555-driver/development/docs/#reference",
     
     "relUrl": "/docs/#reference"
-  },"136": {
+  },"149": {
     "doc": "📚 Documentation",
     "title": "Troubleshooting",
     "content": ". | 🐛 Troubleshooting – Common issues and solutions | . ",
     "url": "/hf-pcal95555-driver/development/docs/#troubleshooting",
     
     "relUrl": "/docs/#troubleshooting"
-  },"137": {
+  },"150": {
     "doc": "📚 Documentation",
     "title": "🚀 Quick Start Path",
     "content": "New to PCAL95555? Follow this recommended path: . | Start with Installation to integrate the driver | Follow Hardware Setup to wire your I/O expander | Read Quick Start for a minimal working example | Check Platform Integration to implement the I2C interface | Explore Examples for more advanced usage | . ",
     "url": "/hf-pcal95555-driver/development/docs/#-quick-start-path",
     
     "relUrl": "/docs/#-quick-start-path"
-  },"138": {
+  },"151": {
     "doc": "📚 Documentation",
     "title": "💡 Need Help?",
     "content": ". | 🐛 Found a bug? Check the Troubleshooting guide | ❓ Have questions? Review the API Reference | 📝 Want to contribute? See the contributing guidelines in the main README | . Navigation ➡️ Installation . ",
     "url": "/hf-pcal95555-driver/development/docs/#-need-help",
     
     "relUrl": "/docs/#-need-help"
-  },"139": {
+  },"152": {
     "doc": "📚 Documentation",
     "title": "📚 Documentation",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/",
     
     "relUrl": "/docs/"
-  },"140": {
+  },"153": {
     "doc": "🛠️ Installation",
     "title": "Installation",
     "content": "This guide covers how to integrate the PCAL95555 driver into your project. ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#installation",
     
     "relUrl": "/docs/installation/#installation"
-  },"141": {
+  },"154": {
     "doc": "🛠️ Installation",
     "title": "Prerequisites",
     "content": "Before installing the driver, ensure you have: . | C++17 Compiler: GCC 7+, Clang 5+, or MSVC 2017+ | I2C Interface: Your platform’s I2C driver (ESP-IDF, STM32 HAL, Arduino Wire, etc.) | Compatible chip: PCA9555 or PCAL9555A (the driver auto-detects which variant is connected) | . ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#prerequisites",
     
     "relUrl": "/docs/installation/#prerequisites"
-  },"142": {
+  },"155": {
     "doc": "🛠️ Installation",
     "title": "Integration",
     "content": "This driver is a header-only template library designed to be integrated directly into your project. There’s no separate build step required. ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#integration",
     
     "relUrl": "/docs/installation/#integration"
-  },"143": {
+  },"156": {
     "doc": "🛠️ Installation",
     "title": "Option 1: Copy Files",
     "content": "Copy the following files into your project: . | 1 2 3 4 5 . | inc/ ├── pcal95555.hpp └── pcal95555_kconfig.hpp src/ └── pcal95555.ipp . | . Note: The driver uses a header-only template design where pcal95555.ipp is included by pcal95555.hpp. Kconfig compile-time configuration macros live in pcal95555_kconfig.hpp (also included automatically). You typically only need to include the main header file in your project. ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#option-1-copy-files",
     
     "relUrl": "/docs/installation/#option-1-copy-files"
-  },"144": {
+  },"157": {
     "doc": "🛠️ Installation",
     "title": "Option 2: Git Submodule",
     "content": "| 1 2 . | cd your-project git submodule add https://github.com/N3b3x/hf-pcal95555-driver.git drivers/pcal95555 . | . Then add to your include path: . | 1 . | target_include_directories(your_target PRIVATE drivers/pcal95555/inc) . | . ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#option-2-git-submodule",
     
     "relUrl": "/docs/installation/#option-2-git-submodule"
-  },"145": {
+  },"158": {
     "doc": "🛠️ Installation",
     "title": "Including the Header",
     "content": "Simply include the header in your code: . | 1 . | #include \"pcal95555.hpp\" . | . The implementation is included automatically via the header file. ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#including-the-header",
     
     "relUrl": "/docs/installation/#including-the-header"
-  },"146": {
+  },"159": {
     "doc": "🛠️ Installation",
     "title": "Next Steps",
     "content": ". | Follow the Quick Start guide to create your first application | Review Hardware Setup for wiring instructions | Check Platform Integration to implement the I2C interface | . Navigation ⬅️ Back to Index | Next: Quick Start ➡️ . ",
     "url": "/hf-pcal95555-driver/development/docs/installation/#next-steps",
     
     "relUrl": "/docs/installation/#next-steps"
-  },"147": {
+  },"160": {
     "doc": "🛠️ Installation",
     "title": "🛠️ Installation",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/installation/",
     
     "relUrl": "/docs/installation/"
-  },"148": {
+  },"161": {
     "doc": "🔧 Platform Integration",
     "title": "Platform Integration Guide",
     "content": "This guide explains how to implement the hardware abstraction interface for the PCAL95555 driver on your platform. ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#platform-integration-guide",
     
     "relUrl": "/docs/platform_integration/#platform-integration-guide"
-  },"149": {
+  },"162": {
     "doc": "🔧 Platform Integration",
     "title": "Understanding CRTP (Curiously Recurring Template Pattern)",
     "content": "The PCAL95555 driver uses CRTP (Curiously Recurring Template Pattern) for hardware abstraction. This design choice provides several critical benefits for embedded systems: . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#understanding-crtp-curiously-recurring-template-pattern",
     
     "relUrl": "/docs/platform_integration/#understanding-crtp-curiously-recurring-template-pattern"
-  },"150": {
+  },"163": {
     "doc": "🔧 Platform Integration",
     "title": "Why CRTP Instead of Virtual Functions?",
     "content": "1. Zero Runtime Overhead . | Virtual functions: Require a vtable lookup (indirect call) = ~5-10 CPU cycles overhead per call | CRTP: Direct function calls = 0 overhead, compiler can inline | Impact: In time-critical embedded code, this matters significantly | . 2. Compile-Time Polymorphism . | Virtual functions: Runtime dispatch - the compiler cannot optimize across the abstraction boundary | CRTP: Compile-time dispatch - full optimization, dead code elimination, constant propagation | Impact: Smaller code size, faster execution | . 3. Memory Efficiency . | Virtual functions: Each object needs a vtable pointer (4-8 bytes) | CRTP: No vtable pointer needed | Impact: Critical in memory-constrained systems (many MCUs have &lt;64KB RAM) | . 4. Type Safety . | Virtual functions: Runtime errors if method not implemented | CRTP: Compile-time errors if method not implemented | Impact: Catch bugs at compile time, not in the field | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#why-crtp-instead-of-virtual-functions",
     
     "relUrl": "/docs/platform_integration/#why-crtp-instead-of-virtual-functions"
-  },"151": {
+  },"164": {
     "doc": "🔧 Platform Integration",
     "title": "How CRTP Works",
     "content": "| 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 . | // Base template class (from pcal95555_i2c_interface.hpp) template &lt;typename Derived&gt; class I2cInterface { public: bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { // Cast 'this' to Derived* and call the derived implementation return static_cast&lt;Derived*&gt;(this)-&gt;Write(addr, reg, data, len); } bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) { return static_cast&lt;Derived*&gt;(this)-&gt;Read(addr, reg, data, len); } }; // Your implementation class MyI2c : public pcal95555::I2cInterface&lt;MyI2c&gt; { public: // This method is called directly (no virtual overhead) bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { // Your platform-specific I2C code } bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) { // Your platform-specific I2C code } }; . | . The key insight: static_cast&lt;Derived*&gt;(this) allows the base class to call methods on the derived class at compile time, not runtime. ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#how-crtp-works",
     
     "relUrl": "/docs/platform_integration/#how-crtp-works"
-  },"152": {
+  },"165": {
     "doc": "🔧 Platform Integration",
     "title": "Performance Comparison",
     "content": "| Aspect | Virtual Functions | CRTP | . | Function call overhead | ~5-10 cycles | 0 cycles (inlined) | . | Code size | Larger (vtables) | Smaller (optimized) | . | Memory per object | +4-8 bytes (vptr) | 0 bytes | . | Compile-time checks | No | Yes | . | Optimization | Limited | Full | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#performance-comparison",
     
     "relUrl": "/docs/platform_integration/#performance-comparison"
-  },"153": {
+  },"166": {
     "doc": "🔧 Platform Integration",
     "title": "Interface Definition",
     "content": "The PCAL95555 driver requires you to implement the I2cInterface template: . Location: inc/pcal95555.hpp#L437 . | 1 2 3 4 5 6 7 . | template &lt;typename Derived&gt; class I2cInterface { public: // Required methods (implement both) bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len); bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len); }; . | . Required Methods (must be implemented): . | Write(): Write len bytes from data to register reg at I2C address addr (7-bit address) | Read(): Read len bytes into data from register reg at I2C address addr (7-bit address) | EnsureInitialized(): Ensure I2C bus is initialized and ready for communication | All return true on success, false on failure (NACK, timeout, etc.) | . Optional Methods (can be overridden for additional functionality): . | SetAddressPins(): Control A2-A0 address pins via GPIO (returns false by default if not supported) | RegisterInterruptHandler(): Register interrupt handler for INT pin (returns false by default if not supported) | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#interface-definition",
     
     "relUrl": "/docs/platform_integration/#interface-definition"
-  },"154": {
+  },"167": {
     "doc": "🔧 Platform Integration",
     "title": "Implementation Steps",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#implementation-steps",
     
     "relUrl": "/docs/platform_integration/#implementation-steps"
-  },"155": {
+  },"168": {
     "doc": "🔧 Platform Integration",
     "title": "Step 1: Create Your Implementation Class",
     "content": "| 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 49 50 51 . | #include \"pcal95555.hpp\" class MyPlatformI2c : public pcal95555::I2cInterface&lt;MyPlatformI2c&gt; { private: // Your platform-specific members i2c_handle_t i2c_handle_; public: // Constructor MyPlatformI2c(i2c_handle_t handle) : i2c_handle_(handle) {} // Implement required methods (NO virtual keyword!) bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { // Your I2C write implementation return true; } bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) { // Your I2C read implementation return true; } // Required: Ensure I2C bus is initialized and ready bool EnsureInitialized() { if (initialized_) { return true; // Already initialized } // Initialize I2C hardware, configure pins, set up bus, etc. // ... initialized_ = true; return true; } // Optional: Override to support dynamic address pin control bool SetAddressPins(bool a0_level, bool a1_level, bool a2_level) { // Set GPIO pins connected to A2-A0 address pins // Return true if supported, false if not supported (hardwired) return false; // Default: not supported } // Optional: Override to support hardware interrupt handling bool RegisterInterruptHandler(std::function&lt;void()&gt; handler) { // Set up GPIO interrupt for INT pin // Call handler() when INT pin fires // Return true if supported, false if not supported return false; // Default: not supported } private: bool initialized_ = false; // Track initialization state }; . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#step-1-create-your-implementation-class",
     
     "relUrl": "/docs/platform_integration/#step-1-create-your-implementation-class"
-  },"156": {
+  },"169": {
     "doc": "🔧 Platform Integration",
     "title": "Step 2: Platform-Specific Examples",
     "content": "ESP32 (ESP-IDF) . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 . | #include \"driver/i2c.h\" #include \"pcal95555.hpp\" class Esp32I2cBus : public pcal95555::I2cInterface&lt;Esp32I2cBus&gt; { public: bool Write(uint8_t addr, uint8_t reg, const uint8_t* data, size_t len) { i2c_cmd_handle_t cmd = i2c_cmd_link_create(); i2c_master_start(cmd); i2c_master_write_byte(cmd, (addr &lt;&lt; 1) | I2C_MASTER_WRITE, true); i2c_master_write_byte(cmd, reg, true); i2c_master_write(cmd, (uint8_t*)data, len, true); i2c_master_stop(cmd); esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000 / portTICK_PERIOD_MS); i2c_cmd_link_delete(cmd); return ret == ESP_OK; } bool Read(uint8_t addr, uint8_t reg, uint8_t* data, size_t len) { i2c_cmd_handle_t cmd = i2c_cmd_link_create(); i2c_master_start(cmd); i2c_master_write_byte(cmd, (addr &lt;&lt; 1) | I2C_MASTER_WRITE, true); i2c_master_write_byte(cmd, reg, true); i2c_master_start(cmd); i2c_master_write_byte(cmd, (addr &lt;&lt; 1) | I2C_MASTER_READ, true); i2c_master_read(cmd, data, len, I2C_MASTER_LAST_NACK); i2c_master_stop(cmd); esp_err_t ret = i2c_master_cmd_begin(I2C_NUM_0, cmd, 1000 / portTICK_PERIOD_MS); i2c_cmd_link_delete(cmd); return ret == ESP_OK; } }; . | . STM32 (HAL) . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 . | #include \"stm32f4xx_hal.h\" #include \"pcal95555.hpp\" extern I2C_HandleTypeDef hi2c1; class STM32I2cBus : public pcal95555::I2cInterface&lt;STM32I2cBus&gt; { public: bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { // STM32 HAL uses 8-bit address (7-bit &lt;&lt; 1) return HAL_I2C_Mem_Write(&amp;hi2c1, addr &lt;&lt; 1, reg, I2C_MEMADD_SIZE_8BIT, (uint8_t*)data, len, HAL_MAX_DELAY) == HAL_OK; } bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) { return HAL_I2C_Mem_Read(&amp;hi2c1, addr &lt;&lt; 1, reg, I2C_MEMADD_SIZE_8BIT, data, len, HAL_MAX_DELAY) == HAL_OK; } }; . | . Arduino . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 . | #include &lt;Wire.h&gt; #include \"pcal95555.hpp\" class ArduinoI2cBus : public pcal95555::I2cInterface&lt;ArduinoI2cBus&gt; { public: bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { Wire.beginTransmission(addr); Wire.write(reg); Wire.write(data, len); return Wire.endTransmission() == 0; } bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) { Wire.beginTransmission(addr); Wire.write(reg); if (Wire.endTransmission(false) != 0) return false; Wire.requestFrom(addr, len); for (size_t i = 0; i &lt; len &amp;&amp; Wire.available(); i++) { data[i] = Wire.read(); } return true; } }; . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#step-2-platform-specific-examples",
     
     "relUrl": "/docs/platform_integration/#step-2-platform-specific-examples"
-  },"157": {
+  },"170": {
     "doc": "🔧 Platform Integration",
     "title": "Common Pitfalls",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#common-pitfalls",
     
     "relUrl": "/docs/platform_integration/#common-pitfalls"
-  },"158": {
+  },"171": {
     "doc": "🔧 Platform Integration",
     "title": "❌ Don’t Use Virtual Functions",
     "content": "| 1 2 3 4 5 6 7 . | // WRONG - defeats the purpose of CRTP class MyI2c : public pcal95555::I2cInterface&lt;MyI2c&gt; { public: virtual bool Write(...) override { // ❌ Virtual keyword not needed // ... } }; . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#-dont-use-virtual-functions",
     
     "relUrl": "/docs/platform_integration/#-dont-use-virtual-functions"
-  },"159": {
+  },"172": {
     "doc": "🔧 Platform Integration",
     "title": "✅ Correct CRTP Implementation",
     "content": "| 1 2 3 4 5 6 7 . | // CORRECT - no virtual keyword class MyI2c : public pcal95555::I2cInterface&lt;MyI2c&gt; { public: bool Write(...) { // ✅ Direct implementation // ... } }; . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#-correct-crtp-implementation",
     
     "relUrl": "/docs/platform_integration/#-correct-crtp-implementation"
-  },"160": {
+  },"173": {
     "doc": "🔧 Platform Integration",
     "title": "❌ Don’t Forget the Template Parameter",
     "content": "| 1 2 3 4 . | // WRONG - missing template parameter class MyI2c : public pcal95555::I2cInterface { // ❌ Compiler error // ... }; . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#-dont-forget-the-template-parameter",
     
     "relUrl": "/docs/platform_integration/#-dont-forget-the-template-parameter"
-  },"161": {
+  },"174": {
     "doc": "🔧 Platform Integration",
     "title": "✅ Correct Template Parameter",
     "content": "| 1 2 3 4 . | // CORRECT - pass your class as template parameter class MyI2c : public pcal95555::I2cInterface&lt;MyI2c&gt; { // ✅ // ... }; . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#-correct-template-parameter",
     
     "relUrl": "/docs/platform_integration/#-correct-template-parameter"
-  },"162": {
+  },"175": {
     "doc": "🔧 Platform Integration",
     "title": "Testing Your Implementation",
     "content": "After implementing the interface, test it: . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 . | MyPlatformI2c i2c; // Constructor takes A0, A1, A2 pin levels (all LOW = address 0x20, default) // Optional: pass ChipVariant to skip auto-detection pcal95555::PCAL95555&lt;MyPlatformI2c&gt; gpio(&amp;i2c, false, false, false); gpio.ResetToDefault(); // Check which chip variant was detected if (gpio.HasAgileIO()) { printf(\"PCAL9555A detected - full feature set\\n\"); } else { printf(\"PCA9555 detected - standard GPIO only\\n\"); } gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyPlatformI2c&gt;::GPIODir::Output); gpio.WritePin(0, true); bool value = gpio.ReadPin(1); // Interface works! . | . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#testing-your-implementation",
     
     "relUrl": "/docs/platform_integration/#testing-your-implementation"
-  },"163": {
+  },"176": {
     "doc": "🔧 Platform Integration",
     "title": "Next Steps",
     "content": ". | See Configuration for driver configuration options | Check Examples for complete usage examples | Review API Reference for all available methods | . Navigation ⬅️ Hardware Setup | Next: Configuration ➡️ | Back to Index . ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/#next-steps",
     
     "relUrl": "/docs/platform_integration/#next-steps"
-  },"164": {
+  },"177": {
     "doc": "🔧 Platform Integration",
     "title": "🔧 Platform Integration",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/platform_integration/",
     
     "relUrl": "/docs/platform_integration/"
-  },"165": {
+  },"178": {
     "doc": "⚡ Quick Start",
     "title": "Quick Start",
     "content": "This guide will get you up and running with the PCAL95555 driver in just a few steps. ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#quick-start",
     
     "relUrl": "/docs/quickstart/#quick-start"
-  },"166": {
+  },"179": {
     "doc": "⚡ Quick Start",
     "title": "Prerequisites",
     "content": ". | Driver installed | Hardware wired | I2C interface implemented | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#prerequisites",
     
     "relUrl": "/docs/quickstart/#prerequisites"
-  },"167": {
+  },"180": {
     "doc": "⚡ Quick Start",
     "title": "Minimal Example",
     "content": "Here’s a complete working example: . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 33 34 35 36 37 38 39 40 41 42 43 44 45 46 47 48 . | #include \"pcal95555.hpp\" // 1. Implement the I2C interface class MyI2c : public pcal95555::I2cInterface&lt;MyI2c&gt; { public: bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { // Your I2C write implementation return true; } bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) { // Your I2C read implementation return true; } }; // 2. Create instances MyI2c i2c; // Option 1: Using address directly (recommended) pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); // Address 0x20 (default) // Option 2: Using pin levels // pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false); // A0=LOW, A1=LOW, A2=LOW -&gt; 0x20 // Option 3: Force chip variant (skip auto-detection) // pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20, pcal95555::ChipVariant::PCA9555); // 3. Initialize (lazy initialization - happens automatically on first use) // You can also explicitly initialize: if (!gpio.EnsureInitialized()) { // Handle initialization failure return; } // Reset to default state gpio.ResetToDefault(); // all pins become inputs with pull-ups // 4. Check chip variant (auto-detected during init) if (gpio.HasAgileIO()) { // PCAL9555A detected -- pull resistors, drive strength, etc. available } else { // PCA9555 detected -- standard GPIO only } // 5. Configure and use gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); gpio.WritePin(0, true); bool input = gpio.ReadPin(1); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#minimal-example",
     
     "relUrl": "/docs/quickstart/#minimal-example"
-  },"168": {
+  },"181": {
     "doc": "⚡ Quick Start",
     "title": "Step-by-Step Explanation",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#step-by-step-explanation",
     
     "relUrl": "/docs/quickstart/#step-by-step-explanation"
-  },"169": {
+  },"182": {
     "doc": "⚡ Quick Start",
     "title": "Step 1: Include the Header",
     "content": "| 1 . | #include \"pcal95555.hpp\" . | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#step-1-include-the-header",
     
     "relUrl": "/docs/quickstart/#step-1-include-the-header"
-  },"170": {
+  },"183": {
     "doc": "⚡ Quick Start",
     "title": "Step 2: Implement the I2C Interface",
     "content": "You need to implement the I2cInterface for your platform. See Platform Integration for detailed examples for ESP32, STM32, and Arduino. The interface requires two methods: . | Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) - Write data to a register | Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) - Read data from a register | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#step-2-implement-the-i2c-interface",
     
     "relUrl": "/docs/quickstart/#step-2-implement-the-i2c-interface"
-  },"171": {
+  },"184": {
     "doc": "⚡ Quick Start",
     "title": "Step 3: Create Driver Instance",
     "content": "You can create the driver instance in two ways: . Option 1: Using I2C address directly (recommended) . | 1 2 . | MyI2c i2c; pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, 0x20); // Address 0x20 (default) . | . Option 2: Using address pin levels . | 1 2 3 . | MyI2c i2c; // Constructor takes A2, A1, A0 pin levels (all LOW = address 0x20, default) pcal95555::PCAL95555&lt;MyI2c&gt; gpio(&amp;i2c, false, false, false); . | . Constructor Parameters: . Using address (Option 1): . | Pointer to your I2C interface implementation | I2C address (0x20 to 0x27). Address bits are calculated automatically. | . Using pin levels (Option 2): . | Pointer to your I2C interface implementation | A0 pin level (true = HIGH/VDD, false = LOW/GND) | A1 pin level (true = HIGH/VDD, false = LOW/GND) | A2 pin level (true = HIGH/VDD, false = LOW/GND) | . The I2C address is calculated automatically: base address 0x20 + (A2«2 | A1«1 | A0). For example: . | Address 0x20 → A0=LOW, A1=LOW, A2=LOW (default) | Address 0x21 → A0=HIGH, A1=LOW, A2=LOW | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#step-3-create-driver-instance",
     
     "relUrl": "/docs/quickstart/#step-3-create-driver-instance"
-  },"172": {
+  },"185": {
     "doc": "⚡ Quick Start",
     "title": "Step 4: Initialize",
     "content": "The driver uses lazy initialization - it initializes automatically on first use. However, you can explicitly initialize: . | 1 2 3 4 5 6 7 8 . | // Explicit initialization (optional) if (!gpio.EnsureInitialized()) { // Handle initialization failure return; } // Reset to default state gpio.ResetToDefault(); . | . Lazy Initialization: . | The driver initializes automatically when you call any method that requires I2C communication | Initialization includes setting address pins, verifying I2C communication, auto-detecting the chip variant (PCA9555 vs PCAL9555A), and initializing internal state | If initialization fails, methods return false or appropriate error values | You can call EnsureInitialized() explicitly to verify initialization before use | . Chip Variant Detection: . | The driver automatically probes the Agile I/O register bank to determine if the chip is a PCA9555 or PCAL9555A | Use HasAgileIO() to check if PCAL9555A features are available | Use GetChipVariant() to get the specific variant enum | PCAL9555A-only methods return false and set Error::UnsupportedFeature on a PCA9555 | . ResetToDefault() puts the device in a known state (all pins as inputs with pull-ups enabled on PCAL9555A). ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#step-4-initialize",
     
     "relUrl": "/docs/quickstart/#step-4-initialize"
-  },"173": {
+  },"186": {
     "doc": "⚡ Quick Start",
     "title": "Step 5: Configure and Use Pins",
     "content": "| 1 2 3 4 5 6 7 8 . | // Set pin 0 as output gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output); // Write to pin 0 gpio.WritePin(0, true); // Read from pin 1 (input) bool value = gpio.ReadPin(1); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#step-5-configure-and-use-pins",
     
     "relUrl": "/docs/quickstart/#step-5-configure-and-use-pins"
-  },"174": {
+  },"187": {
     "doc": "⚡ Quick Start",
     "title": "Expected Output",
     "content": "When running this example: . | Pin 0 should be set high (if connected to an LED, it should light up) | Pin 1 value should be read correctly | No error messages should appear | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#expected-output",
     
     "relUrl": "/docs/quickstart/#expected-output"
-  },"175": {
+  },"188": {
     "doc": "⚡ Quick Start",
     "title": "Troubleshooting",
     "content": "If you encounter issues: . | Compilation errors: Check that you’ve implemented all required I2C interface methods | Initialization fails: Verify hardware connections and I2C address | No response: Check I2C bus and pull-up resistors | See: Troubleshooting for common issues | . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#troubleshooting",
     
     "relUrl": "/docs/quickstart/#troubleshooting"
-  },"176": {
+  },"189": {
     "doc": "⚡ Quick Start",
     "title": "Next Steps",
     "content": ". | Explore Examples for more advanced usage | Review the API Reference for all available methods | Check Configuration for customization options | . Navigation ⬅️ Installation | Next: Hardware Setup ➡️ | Back to Index . ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/#next-steps",
     
     "relUrl": "/docs/quickstart/#next-steps"
-  },"177": {
+  },"190": {
     "doc": "⚡ Quick Start",
     "title": "⚡ Quick Start",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/quickstart/",
     
     "relUrl": "/docs/quickstart/"
-  },"178": {
+  },"191": {
     "doc": "🐛 Troubleshooting",
     "title": "Troubleshooting",
     "content": "This guide helps you diagnose and resolve common issues when using the PCAL95555 driver. ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#troubleshooting",
     
     "relUrl": "/docs/troubleshooting/#troubleshooting"
-  },"179": {
+  },"192": {
     "doc": "🐛 Troubleshooting",
     "title": "Common Error Messages",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#common-error-messages",
     
     "relUrl": "/docs/troubleshooting/#common-error-messages"
-  },"180": {
+  },"193": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: Device Not Detected",
     "content": "Symptoms: . | ResetToDefault() or other operations fail | No response from device | . Causes: . | Wrong I2C address | Hardware connections incorrect | Pull-up resistors missing | . Solutions: . | Check I2C address: . | Default is 0x20 (all A0-A2 pins to GND) | Use I2C scanner to verify device address | Update address pin levels in constructor if different: | 1 2 . | // For address 0x21: A0=HIGH, A1=LOW, A2=LOW PCAL95555 driver(bus, true, false, false); . | . | Use GetAddress() to verify current address: | 1 2 . | uint8_t addr = driver.GetAddress(); printf(\"Current address: 0x%02X\\n\", addr); . | . | . | Verify hardware connections: . | Check SDA/SCL connections | Verify 4.7kΩ pull-up resistors on SCL and SDA | Ensure power connections (VDD and GND) | . | Test I2C bus: . | Verify I2C bus is properly initialized | Check I2C bus speed (try 100 kHz if 400 kHz fails) | . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-device-not-detected",
     
     "relUrl": "/docs/troubleshooting/#error-device-not-detected"
-  },"181": {
+  },"194": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: Invalid Pin",
     "content": "Symptoms: . | Methods return false | Pin operations fail | . Causes: . | Pin number &gt;= 16 | Invalid pin parameter | . Solutions: . | 1 2 3 4 . | // Valid pins are 0-15 if (pin &lt; 16) { gpio.SetPinDirection(pin, dir); } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-invalid-pin",
     
     "relUrl": "/docs/troubleshooting/#error-invalid-pin"
-  },"182": {
+  },"195": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: I2C Communication Failures",
     "content": "Symptoms: . | Operations fail intermittently | Timeout errors | . Solutions: . | Increase retries: | 1 . | gpio.SetRetries(3); // Default is 0 . | . | Check bus speed: Reduce I2C speed if using long wires . | Verify signal integrity: Check for noise on I2C lines | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-i2c-communication-failures",
     
     "relUrl": "/docs/troubleshooting/#error-i2c-communication-failures"
-  },"183": {
+  },"196": {
     "doc": "🐛 Troubleshooting",
     "title": "Hardware Issues",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#hardware-issues",
     
     "relUrl": "/docs/troubleshooting/#hardware-issues"
-  },"184": {
+  },"197": {
     "doc": "🐛 Troubleshooting",
     "title": "Device Not Responding",
     "content": "Symptoms: . | No response to I2C commands | Initialization fails | . Checklist: . | Verify power supply voltage (1.65V-5.5V) | Check all connections are secure | Verify pull-up resistors (4.7kΩ) on SCL and SDA | Check I2C address configuration (A0-A2 pins) | Use I2C scanner to detect device address | Verify ground connection | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#device-not-responding",
     
     "relUrl": "/docs/troubleshooting/#device-not-responding"
-  },"185": {
+  },"198": {
     "doc": "🐛 Troubleshooting",
     "title": "Incorrect Pin States",
     "content": "Symptoms: . | Pins don’t respond to writes | Reads return wrong values | . Checklist: . | Verify pin direction is set correctly | Check pin is configured as output before writing | Verify pull resistors are configured if needed | Check for external loads affecting pin state | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#incorrect-pin-states",
     
     "relUrl": "/docs/troubleshooting/#incorrect-pin-states"
-  },"186": {
+  },"199": {
     "doc": "🐛 Troubleshooting",
     "title": "Software Issues",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#software-issues",
     
     "relUrl": "/docs/troubleshooting/#software-issues"
-  },"187": {
+  },"200": {
     "doc": "🐛 Troubleshooting",
     "title": "Compilation Errors",
     "content": "Error: “No matching function” . Solution: . | Ensure you’ve implemented all required I2cInterface methods | Check method signatures match exactly | . Error: “Undefined reference” . Solution: . | Verify you’re including the header file | Check include paths are correct | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#compilation-errors",
     
     "relUrl": "/docs/troubleshooting/#compilation-errors"
-  },"188": {
+  },"201": {
     "doc": "🐛 Troubleshooting",
     "title": "Runtime Errors",
     "content": "Initialization Fails . Checklist: . | I2C interface is properly implemented | I2C bus is initialized | Hardware connections are correct | I2C address matches hardware configuration | . Pin Operations Fail . Checklist: . | Pin number is valid (0-15) | Pin direction is set correctly | I2C communication is working | Error flags are checked | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#runtime-errors",
     
     "relUrl": "/docs/troubleshooting/#runtime-errors"
-  },"189": {
+  },"202": {
     "doc": "🐛 Troubleshooting",
     "title": "Debugging Tips",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#debugging-tips",
     
     "relUrl": "/docs/troubleshooting/#debugging-tips"
-  },"190": {
+  },"203": {
     "doc": "🐛 Troubleshooting",
     "title": "Enable Debug Output",
     "content": "Add debug prints to your I2C interface: . | 1 2 3 4 5 6 7 . | bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) { printf(\"I2C Write: addr=0x%02X, reg=0x%02X, len=%zu\\n\", addr, reg, len); // ... your implementation bool result = /* ... */; printf(\"Result: %s\\n\", result ? \"OK\" : \"FAIL\"); return result; } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#enable-debug-output",
     
     "relUrl": "/docs/troubleshooting/#enable-debug-output"
-  },"191": {
+  },"204": {
     "doc": "🐛 Troubleshooting",
     "title": "Check Error Flags",
     "content": "| 1 2 3 . | gpio.ClearErrorFlags(); // Clear all errors // Perform operation // Check if errors occurred . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#check-error-flags",
     
     "relUrl": "/docs/troubleshooting/#check-error-flags"
-  },"192": {
+  },"205": {
     "doc": "🐛 Troubleshooting",
     "title": "Use I2C Scanner",
     "content": "Scan the I2C bus to verify device detection: . | 1 2 3 4 5 6 7 8 . | void i2c_scanner() { for (uint8_t addr = 0x08; addr &lt; 0x78; addr++) { // Try to communicate with address if (/* device responds */) { printf(\"Device found at 0x%02X\\n\", addr); } } } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#use-i2c-scanner",
     
     "relUrl": "/docs/troubleshooting/#use-i2c-scanner"
-  },"193": {
+  },"206": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: Invalid Address (InvalidAddress)",
     "content": "Symptoms: . | Constructor or ChangeAddress() sets Error::InvalidAddress (flag 0x0020) | Methods fail after providing an out-of-range address | . Cause: The I2C address provided is outside the valid range 0x20-0x27. The PCA9555/PCAL9555A only responds to addresses in this range (determined by the A0-A2 hardware pins). Solutions: . | Check address parameter: Ensure the address is between 0x20 and 0x27: | 1 2 3 4 5 . | // Valid: address in 0x20-0x27 range PCAL95555 driver(bus, 0x20); // Invalid: will set Error::InvalidAddress PCAL95555 driver(bus, 0x50); . | . | Use pin-level constructor: The pin-level constructor always computes a valid address: | 1 . | PCAL95555 driver(bus, false, false, false); // Always valid (0x20) . | . | Check error flags: After construction, verify no errors: | 1 2 3 . | if (driver.GetErrorFlags() &amp; static_cast&lt;uint16_t&gt;(Error::InvalidAddress)) { printf(\"Invalid I2C address!\\n\"); } . | . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-invalid-address-invalidaddress",
     
     "relUrl": "/docs/troubleshooting/#error-invalid-address-invalidaddress"
-  },"194": {
+  },"207": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: PCAL9555A Features Fail (UnsupportedFeature)",
     "content": "Symptoms: . | SetPullEnable(), SetDriveStrength(), SetOutputMode(), EnableInputLatch(), ConfigureInterrupt(), or GetInterruptStatus() return false | Error flags show 0x0010 (UnsupportedFeature) | . Cause: The connected chip is a PCA9555 (standard variant), not a PCAL9555A. These methods require the Agile I/O register bank (0x40-0x4F) that only exists on the PCAL9555A. Solutions: . | Check chip variant: Use HasAgileIO() before calling PCAL9555A features: | 1 2 3 4 5 . | if (gpio.HasAgileIO()) { gpio.SetDriveStrength(0, DriveStrength::Level2); } else { // Use external components or skip this feature } . | . | Verify hardware: Confirm your chip is actually a PCAL9555A (check part number marking) | Use external components: For PCA9555, use external pull-up resistors instead of internal ones | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-pcal9555a-features-fail-unsupportedfeature",
     
     "relUrl": "/docs/troubleshooting/#error-pcal9555a-features-fail-unsupportedfeature"
-  },"195": {
+  },"208": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: ChipVariant Shows “Unknown”",
     "content": "Symptoms: . | GetChipVariant() returns ChipVariant::Unknown | HasAgileIO() returns false | . Cause: The 3-step chip detection probe could not confirm the chip type. This usually means the bus was unhealthy during initialization. Solutions: . | Check I2C pull-up resistors (4.7kΩ on SDA and SCL) | Verify power supply is stable | Ensure no other I2C master is on the bus | Force the variant in the constructor to skip detection: | 1 . | PCAL95555 driver(bus, 0x20, pcal95555::ChipVariant::PCA9555); . | . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-chipvariant-shows-unknown",
     
     "relUrl": "/docs/troubleshooting/#error-chipvariant-shows-unknown"
-  },"196": {
+  },"209": {
     "doc": "🐛 Troubleshooting",
     "title": "Error: I2C NACKs on Registers 0x40-0x4F During Init",
     "content": "Symptoms: . | Log shows “I2C transaction unexpected nack detected” for registers 0x40-0x4F | Driver still initializes successfully | . Cause: This is expected behavior when a PCA9555 is connected. The auto-detection probe tries to access an Agile I/O register (0x4F). A NACK means the chip is a standard PCA9555. The driver detects this and sets ChipVariant::PCA9555. Resolution: No action needed. This is normal. The NACK errors come from the ESP-IDF I2C driver and can be safely ignored. ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#error-i2c-nacks-on-registers-0x40-0x4f-during-init",
     
     "relUrl": "/docs/troubleshooting/#error-i2c-nacks-on-registers-0x40-0x4f-during-init"
-  },"197": {
+  },"210": {
     "doc": "🐛 Troubleshooting",
     "title": "FAQ",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#faq",
     
     "relUrl": "/docs/troubleshooting/#faq"
-  },"198": {
+  },"211": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: Why do my pin writes not work?",
     "content": "A: Common causes: . | Pin not configured as output: Call SetPinDirection(pin, GPIODir::Output) first | Wrong pin number: Valid pins are 0-15 | I2C communication failure: Check I2C bus and connections | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-why-do-my-pin-writes-not-work",
     
     "relUrl": "/docs/troubleshooting/#q-why-do-my-pin-writes-not-work"
-  },"199": {
+  },"212": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: How do I use interrupts?",
     "content": "A: There are two ways to handle interrupts: . Method 1: Per-pin callbacks (recommended) . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 . | // Configure pin as input gpio.SetPinDirection(pin, GPIODir::Input); gpio.SetPullEnable(pin, true); gpio.EnableInputLatch(pin, true); // Enable interrupt (easy-to-use method) gpio.ConfigureInterrupt(pin, InterruptState::Enabled); // Register per-pin callback gpio.RegisterPinInterrupt(pin, InterruptEdge::Rising, [](uint16_t p, bool state) { printf(\"Pin %d interrupt!\\n\", p); }); // Register interrupt handler with I2C interface (for hardware INT pin) gpio.RegisterInterruptHandler(); // Handle interrupt (called automatically if INT pin configured, or call manually) gpio.HandleInterrupt(); . | . Method 2: Global callback . | 1 2 3 . | gpio.SetInterruptCallback([](uint16_t status) { printf(\"Interrupt on pins: 0x%04X\\n\", status); }); . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-how-do-i-use-interrupts",
     
     "relUrl": "/docs/troubleshooting/#q-how-do-i-use-interrupts"
-  },"200": {
+  },"213": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: Can I use multiple devices?",
     "content": "A: Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances. You can even mix PCA9555 and PCAL9555A on the same bus: . | 1 2 3 4 5 6 7 . | // First device: PCA9555 at 0x20 pcal95555::PCAL95555&lt;MyI2c&gt; gpio1(&amp;i2c, false, false, false); // Second device: PCAL9555A at 0x21 pcal95555::PCAL95555&lt;MyI2c&gt; gpio2(&amp;i2c, true, false, false); // Each auto-detects its own chip variant . | . You can also change the address dynamically if your I2C interface supports GPIO control: . | 1 2 3 . | if (gpio1.ChangeAddress(true, false, false)) { printf(\"Address changed to 0x%02X\\n\", gpio1.GetAddress()); // Now 0x21 } . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-can-i-use-multiple-devices",
     
     "relUrl": "/docs/troubleshooting/#q-can-i-use-multiple-devices"
-  },"201": {
+  },"214": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?",
     "content": "A: The driver auto-detects during initialization: . | 1 2 3 4 5 6 . | gpio.EnsureInitialized(); if (gpio.HasAgileIO()) { printf(\"PCAL9555A (extended features available)\\n\"); } else { printf(\"PCA9555 (standard GPIO only)\\n\"); } . | . You can also check the chip marking. PCA9555 has part number “PCA9555”; PCAL9555A has “PCAL9555A”. ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-how-do-i-know-which-chip-i-have-pca9555-vs-pcal9555a",
     
     "relUrl": "/docs/troubleshooting/#q-how-do-i-know-which-chip-i-have-pca9555-vs-pcal9555a"
-  },"202": {
+  },"215": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: What’s the difference between pull-up and pull-down?",
     "content": "A: . | Pull-up: Resistor connects pin to VDD (default high when floating) | Pull-down: Resistor connects pin to GND (default low when floating) | . Choose based on your circuit requirements. ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-whats-the-difference-between-pull-up-and-pull-down",
     
     "relUrl": "/docs/troubleshooting/#q-whats-the-difference-between-pull-up-and-pull-down"
-  },"203": {
+  },"216": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: What drive strength levels are available?",
     "content": "A: The driver supports four drive strength levels: . | Level0: 25% drive strength (¼) | Level1: 50% drive strength (½) | Level2: 75% drive strength (¾) | Level3: 100% drive strength (full) | . Example: . | 1 . | gpio.SetDriveStrength(pin, DriveStrength::Level1); // 50% strength . | . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-what-drive-strength-levels-are-available",
     
     "relUrl": "/docs/troubleshooting/#q-what-drive-strength-levels-are-available"
-  },"204": {
+  },"217": {
     "doc": "🐛 Troubleshooting",
     "title": "Q: How do I check for errors?",
     "content": "A: Use error flags to check for errors: . | 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 . | uint16_t errors = gpio.GetErrorFlags(); if (errors &amp; static_cast&lt;uint16_t&gt;(Error::I2CReadFail)) { // I2C read failed (also set by ReadPins() on failure) } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::I2CWriteFail)) { // I2C write failed } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::InvalidPin)) { // Invalid pin number (&gt;= 16) } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::UnsupportedFeature)) { // PCAL9555A feature called on PCA9555 } if (errors &amp; static_cast&lt;uint16_t&gt;(Error::InvalidAddress)) { // I2C address outside valid 0x20-0x27 range } gpio.ClearErrorFlags(); // Clear all errors // Or clear selectively: gpio.ClearErrorFlags(0x0001); // Clear only InvalidPin . | . Note: ReadPins() now properly reports Error::I2CReadFail when the underlying I2C read fails, instead of silently returning empty results. ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#q-how-do-i-check-for-errors",
     
     "relUrl": "/docs/troubleshooting/#q-how-do-i-check-for-errors"
-  },"205": {
+  },"218": {
     "doc": "🐛 Troubleshooting",
     "title": "Getting More Help",
     "content": "If you’re still experiencing issues: . | Check the API Reference for method details | Review Examples for working code | Search existing issues on GitHub | Open a new issue with: . | Description of the problem | Steps to reproduce | Hardware setup details | Error messages/logs | I2C bus analyzer output (if available) | . | . Navigation ⬅️ Examples | Back to Index . ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/#getting-more-help",
     
     "relUrl": "/docs/troubleshooting/#getting-more-help"
-  },"206": {
+  },"219": {
     "doc": "🐛 Troubleshooting",
     "title": "🐛 Troubleshooting",
     "content": " ",
     "url": "/hf-pcal95555-driver/development/docs/troubleshooting/",
     
     "relUrl": "/docs/troubleshooting/"
-  },"207": {
+  },"220": {
     "doc": "PCAL95555 Comprehensive Test Suite Documentation",
     "title": "PCAL95555 Comprehensive Test Suite Documentation",
     "content": "# PCAL95555 Comprehensive Test Suite Documentation ## Overview The comprehensive test suite (`pcal95555_comprehensive_test`) validates **all 43 public API methods** of the PCAL95555 driver across **20 test sections**. It supports both the standard **PCA9555** and the enhanced **PCAL9555A** -- the chip variant is auto-detected during initialization, and PCAL9555A-only tests are automatically **skipped** (not failed) when a standard PCA9555 is detected. ## Test Configuration ### Hardware Target - **MCU**: ESP32-S3 - **I2C Frequency**: 400 kHz - **Default I2C Address**: 0x20 (A2=LOW, A1=LOW, A0=LOW) ### Pin Configuration | Signal | ESP32-S3 GPIO | Chip Pin | Function |--------|---------------|----------|----------| SDA | GPIO4 | SDA | I2C Data Line | SCL | GPIO5 | SCL | I2C Clock Line | INT | GPIO7 | INT | Interrupt Output (open-drain) | A0 | GPIO45 | A0 | Address Bit 0 (controlled by MCU) | A1 | GPIO48 | A1 | Address Bit 1 (controlled by MCU) | A2 | GPIO47 | A2 | Address Bit 2 (controlled by MCU) | Test Indicator | GPIO14 | - | Visual test progress indicator | ### Address Pin Control The test suite uses GPIO-controlled address pins, allowing dynamic address configuration: - **A0**: Controlled via GPIO45 - **A1**: Controlled via GPIO48 - **A2**: Controlled via GPIO47 The driver automatically sets these pins during initialization. --- ## Chip Variant Handling During the \"Driver Init\" test, the driver performs a 3-step sandwich detection: 1. Read `INPUT_PORT_0` (0x00) to verify bus health 2. Probe `OUTPUT_CONF` (0x4F) for Agile I/O support 3. Read `INPUT_PORT_0` (0x00) again to confirm bus recovery The detected variant is logged: ``` Detected chip variant: PCA9555 (standard) Agile I/O support: NO ``` or ``` Detected chip variant: PCAL9555A (Agile I/O) Agile I/O support: YES ``` Tests requiring PCAL9555A log a skip message: ``` Skipping: Pull resistor config requires PCAL9555A (detected PCA9555) ``` --- ## Test Sections ### 1. Initialization Tests #### `test_i2c_bus_initialization()` **Purpose**: Validates I2C bus setup and configuration. **What it tests**: - I2C master bus creation - GPIO pin configuration for SDA/SCL - Address pin GPIO configuration (A0, A1, A2) **Expected Result**: I2C bus successfully initialized with all pins configured. #### `test_driver_initialization()` **Purpose**: Validates driver initialization, chip variant detection, and default state. **What it tests**: - Driver instance creation (address pin constructor) - I2C communication verification - Chip variant auto-detection (PCA9555 vs PCAL9555A) - `HasAgileIO()` and `GetChipVariant()` queries - Reset to default state - Error flag checking and clearing **Expected Result**: Driver initialized, chip variant detected and logged. --- ### 2. GPIO Direction Tests #### `test_single_pin_direction()` **Tests**: `SetPinDirection()` for each pin (0-15), input and output modes. #### `test_multiple_pin_direction()` **Tests**: `SetMultipleDirections()` using 16-bit mask for port-level direction control. --- ### 3. GPIO Read/Write Tests #### `test_pin_write()` **Tests**: `WritePin()` -- writing HIGH and LOW to individual pins. #### `test_pin_read()` **Tests**: `ReadPin()` -- reading all 16 pins sequentially. #### `test_pin_toggle()` **Tests**: `TogglePin()` -- toggling pin state multiple times with verification. --- ### 4. Pull Resistor Tests (PCAL9555A only) #### `test_pull_resistor_config()` **Tests**: `SetPullEnable()`, `SetPullDirection()` -- per-pin pull-up/pull-down configuration. **Auto-skip**: Returns `true` with skip message on PCA9555. --- ### 5. Drive Strength Tests (PCAL9555A only) #### `test_drive_strength()` **Tests**: `SetDriveStrength()` -- all 4 levels (Level0-Level3) on individual pins. **Auto-skip**: Returns `true` with skip message on PCA9555. --- ### 6. Output Mode Tests (PCAL9555A only) #### `test_output_mode()` **Tests**: `SetOutputMode()` -- push-pull and open-drain per port and both ports. **Auto-skip**: Returns `true` with skip message on PCA9555. --- ### 7. Polarity Tests #### `test_polarity_inversion()` **Tests**: `SetPinPolarity()`, `SetMultiplePolarities()` -- normal and inverted polarity, single pin and mask-based. --- ### 8. Input Latch Tests (PCAL9555A only) #### `test_input_latch()` **Tests**: `EnableInputLatch()`, `EnableMultipleInputLatches()` -- per-pin and mask-based latch enable/disable. **Auto-skip**: Returns `true` with skip message on PCA9555. --- ### 9. Interrupt Tests (partially PCAL9555A only) #### `test_interrupt_mask_config()` (PCAL9555A) **Tests**: `ConfigureInterruptMask()` -- 16-bit interrupt mask register. #### `test_interrupt_status()` (PCAL9555A) **Tests**: `GetInterruptStatus()` -- reading and clearing interrupt status. #### `test_pin_interrupt_callbacks()` **Tests**: `RegisterPinInterrupt()`, `SetInterruptCallback()` -- per-pin callbacks with edge detection (Rising, Falling, Both). #### `test_interrupt_handler_registration()` **Tests**: `RegisterInterruptHandler()` -- hardware INT pin setup. Passes even without INT pin connected. #### `test_interrupt_callback_unregistration()` **Tests**: `UnregisterPinInterrupt()` -- callback removal and double-unregister safety. #### `test_interrupt_config()` (PCAL9555A) **Tests**: Combined interrupt mask + status reading. --- ### 10. Port Operation Tests #### `test_port_operations()` **Tests**: `SetMultipleDirections()`, `WritePin()`, `ReadPin()` -- port 0 as output, port 1 as input, mixed operations. --- ### 11. Multi-Pin API Tests #### `test_write_pins_multi()` **Tests**: `WritePins()` -- writing multiple pins at once via initializer list. #### `test_read_pins_multi()` **Tests**: `ReadPins()` -- reading multiple pins at once, verifying result vector. #### `test_set_directions_multi()` **Tests**: `SetDirections()` -- mixed input/output per pin via initializer list. #### `test_set_polarities_multi()` **Tests**: `SetPolarities()` -- mixed polarity per pin via initializer list. --- ### 12. Address Management Tests #### `test_address_management()` **Tests**: - `GetAddress()`, `GetAddressBits()` -- reading current address - `ChangeAddress(bool, bool, bool)` -- changing address via pin levels - `ChangeAddress(uint8_t)` -- changing address via direct value - Address-based constructor `PCAL95555(bus, address)` -- creating a temporary driver **Note**: Address change to a non-existent device handles NACK gracefully. Original address is always restored. --- ### 13. Configuration Tests #### `test_config_and_init()` **Tests**: - `SetRetries()` -- setting 0, 3, and restoring to 1 - `EnsureInitialized()` -- on already-initialized and fresh driver instances --- ### 14. Multi-Pin PCAL9555A API Tests (PCAL9555A only) #### `test_multi_pin_pcal_apis()` **Tests**: - `SetPullEnables()` -- multi-pin pull enable via initializer list - `SetPullDirections()` -- multi-pin pull direction via initializer list - `SetDriveStrengths()` -- multi-pin drive strength via initializer list - `ConfigureInterrupt()` -- single-pin interrupt enable/disable - `ConfigureInterrupts()` -- multi-pin interrupt config via initializer list - `EnableInputLatches()` -- multi-pin input latch via initializer list **Auto-skip**: Returns `true` with skip message on PCA9555. --- ### 15. Interactive Input Tests (disabled by default) #### `test_interactive_input()` **Requires**: Momentary push-button between PCA9555 pin 0 and GND. **Tests**: - `ReadPin()` -- detecting physical button press - Pull-up configuration (internal on PCAL9555A, external on PCA9555) - `HandleInterrupt()` -- explicit manual call **Behavior**: 1. Displays a banner explaining hardware requirements 2. Configures pin 0 as input with pull-up 3. Waits 10 seconds for button press with countdown 4. If button detected: verifies press and release 5. If no button: logs warning and continues (does not fail) 6. Calls `HandleInterrupt()` explicitly to verify no crash **To enable**: Set `ENABLE_INTERACTIVE_INPUT_TESTS = true` in the test file. --- ### 16. Error Handling Tests #### `test_error_handling()` **Tests**: - Invalid pin (16, 17, 18) for `SetPinDirection()`, `ReadPin()`, `WritePin()`, `TogglePin()` - `GetErrorFlags()` -- verifying error flags are set - `ClearErrorFlags(mask)` -- selective flag clearing (specific mask vs all) - `Error::UnsupportedFeature` -- calling `SetDriveStrength()` on PCA9555 - `HandleInterrupt()` -- explicit call on clean state (no crash) --- ### 17. Stress Tests #### `test_rapid_operations()` **Tests**: Rapid `WritePin()` toggle (100 cycles at 1ms intervals) to verify I2C stability under load. --- ## Test Execution Flow 1. **Initialization Phase**: I2C bus setup, driver creation, chip variant detection 2. **Core GPIO Tests**: Direction, read/write, toggle 3. **PCAL9555A Feature Tests**: Pull resistors, drive strength, output mode, input latch, interrupts (auto-skip on PCA9555) 4. **Advanced API Tests**: Multi-pin operations, address management, configuration 5. **Robustness Tests**: Error handling, stress testing 6. **Cleanup Phase**: Resource cleanup, test summary reporting --- ## Enabling/Disabling Test Sections ```cpp static constexpr bool ENABLE_INITIALIZATION_TESTS = true; static constexpr bool ENABLE_GPIO_DIRECTION_TESTS = true; static constexpr bool ENABLE_GPIO_READ_WRITE_TESTS = true; static constexpr bool ENABLE_PULL_RESISTOR_TESTS = true; static constexpr bool ENABLE_DRIVE_STRENGTH_TESTS = true; static constexpr bool ENABLE_OUTPUT_MODE_TESTS = true; static constexpr bool ENABLE_POLARITY_TESTS = true; static constexpr bool ENABLE_INPUT_LATCH_TESTS = true; static constexpr bool ENABLE_INTERRUPT_TESTS = true; static constexpr bool ENABLE_PORT_OPERATION_TESTS = true; static constexpr bool ENABLE_MULTI_PIN_TESTS = true; static constexpr bool ENABLE_MULTI_PIN_API_TESTS = true; static constexpr bool ENABLE_ADDRESS_TESTS = true; static constexpr bool ENABLE_CONFIG_TESTS = true; static constexpr bool ENABLE_MULTI_PIN_PCAL_TESTS = true; static constexpr bool ENABLE_INTERACTIVE_INPUT_TESTS = false; // Requires button on pin 0 static constexpr bool ENABLE_ERROR_HANDLING_TESTS = true; static constexpr bool ENABLE_STRESS_TESTS = true; ``` --- ## Test Results Interpretation ### Success Indicators - `[SUCCESS] PASSED` -- test passed - `Skipping: ... requires PCAL9555A (detected PCA9555)` -- expected skip, counts as pass ### Warning Indicators - `Driver has error flags: 0xNNNN` -- I2C errors during init (may be expected on PCA9555) - `No button press detected within 10 seconds` -- interactive test timeout (OK) ### Failure Indicators - `[FAILED] FAILED` -- test failed, check error messages above it - `Error flags: 0xNNNN` -- see Error Flags table below ### Error Flags Reference | Flag | Value | Meaning |------|-------|---------| `InvalidPin` | 0x0001 | Pin index >= 16 | `InvalidMask` | 0x0002 | Mask bits outside valid range | `I2CReadFail` | 0x0004 | I2C read transaction failed | `I2CWriteFail` | 0x0008 | I2C write transaction failed | `UnsupportedFeature` | 0x0010 | PCAL9555A feature called on PCA9555 | --- ## Hardware Requirements ### Minimum - PCA9555 or PCAL9555A I/O expander - ESP32-S3 development board - I2C connections (SDA, SCL) with 4.7k pull-ups - Power connections (3.3V, GND) ### For Full Test Coverage - Address pins connected to GPIOs (A0=GPIO45, A1=GPIO48, A2=GPIO47) - INT pin connected to GPIO7 (for interrupt handler test) - LED on GPIO14 (test progress indicator) ### For Interactive Input Test - Momentary push-button between pin 0 and GND - 10k pull-up to VDD (PCA9555) or use internal pull-up (PCAL9555A) --- ## Expected Test Count | Chip Variant | Enabled Sections | Expected Tests | Expected Pass |-------------|-----------------|----------------|---------------| PCA9555 | All (default) | ~31 | 31 (PCAL tests skip as pass) | PCAL9555A | All (default) | ~31 | 31 | Either + Interactive | All + Interactive | ~32 | 32 | --- **Navigation** [Back to Examples README](/hf-pcal95555-driver/development/examples/esp32/) | [Main README](/hf-pcal95555-driver/development/) ",
     "url": "/hf-pcal95555-driver/development/examples/esp32/docs/comprehensive_test.html",
     
     "relUrl": "/examples/esp32/docs/comprehensive_test.html"
-  },"208": {
+  },"221": {
     "doc": "PCA9555 / PCAL9555A ESP32-S3 Examples",
     "title": "PCA9555 / PCAL9555A ESP32-S3 Examples",
     "content": "# PCA9555 / PCAL9555A ESP32-S3 Examples This directory contains example applications for the HF-PCAL95555 driver on ESP32-S3, covering both the standard **PCA9555** and extended **PCAL9555A** 16-bit I/O expanders. --- ## Table of Contents - [Hardware Overview](#hardware-overview) - [Pin Connections](#pin-connections) - [Available Applications](#available-applications) - [Building](#building) - [Flashing and Monitoring](#flashing-and-monitoring) - [Comprehensive Test Suite](#comprehensive-test-suite) - [LED Animation Demo](#led-animation-demo) - [Configuration](#configuration) - [Troubleshooting](#troubleshooting) --- ## Hardware Overview ### ESP32-S3 The ESP32-S3 serves as the host controller for communicating with the PCA9555 / PCAL9555A GPIO expander via I2C. ``` ESP32-S3 Development Board ├── I2C: SDA (GPIO4), SCL (GPIO5) ├── INT: GPIO7 (open-drain, needs pull-up) ├── Address: A0 (GPIO45), A1 (GPIO48), A2 (GPIO47) └── Indicator: GPIO14 (test progress LED) ``` ### PCA9555 / PCAL9555A Both chips provide 16 GPIO pins in two 8-bit ports over I2C. The driver auto-detects which variant is connected and enables features accordingly: | Feature | PCA9555 | PCAL9555A |---------|---------|-----------| 16 GPIO, I2C, polarity inversion | Yes | Yes | Pull-up / pull-down resistors | -- | Yes | Drive strength, input latch | -- | Yes | Interrupt mask / status | -- | Yes | Output mode (push-pull / OD) | -- | Yes | --- ## Pin Connections ### I2C Bus | Chip Pin | ESP32-S3 GPIO | Notes |----------|---------------|-------| SDA | GPIO4 | 4.7k pull-up to 3.3V | SCL | GPIO5 | 4.7k pull-up to 3.3V | VDD | 3.3V | | GND | GND | | INT | GPIO7 | Open-drain, 4.7k pull-up (optional) | ### Address Pins (GPIO-controlled) | Chip Pin | ESP32-S3 GPIO | Default |----------|---------------|---------| A0 | GPIO45 | LOW | A1 | GPIO48 | LOW | A2 | GPIO47 | LOW | Default address: **0x20** (all LOW) ### I2C Address Table | A2 | A1 | A0 | Address |----|----|----|---------| L | L | L | 0x20 | L | L | H | 0x21 | L | H | L | 0x22 | L | H | H | 0x23 | H | L | L | 0x24 | H | L | H | 0x25 | H | H | L | 0x26 | H | H | H | 0x27 | --- ## Available Applications | Application | Description |-------------|-------------| `pcal95555_comprehensive_test` | Full API test suite (17 sections, 43 methods) | `pcal95555_led_animation` | 16-LED animation demo (10 patterns) | ```bash # List all available apps ./scripts/build_app.sh list ``` --- ## Building ### Prerequisites - [ESP-IDF v5.5+](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/) - ESP32-S3 devkit - PCA9555 or PCAL9555A board connected via I2C ### Build Commands ```bash cd examples/esp32 # Build comprehensive test suite ./scripts/build_app.sh pcal95555_comprehensive_test Debug # Build LED animation demo ./scripts/build_app.sh pcal95555_led_animation Debug ``` --- ## Flashing and Monitoring ```bash # Flash and open serial monitor ./scripts/flash_app.sh flash_monitor pcal95555_comprehensive_test Debug # Flash only ./scripts/flash_app.sh flash pcal95555_comprehensive_test Debug # Monitor only (if already flashed) ./scripts/flash_app.sh monitor ``` > **ESP32-S3 native USB note:** If flashing fails on `/dev/ttyACM0`, manually enter > download mode: Hold **BOOT** -> Press **RESET** -> Release **BOOT** -> Run flash. --- ## Comprehensive Test Suite **File:** `main/pcal95555_comprehensive_test.cpp` Tests every public API method of the PCAL95555 driver class across 17 sections. PCAL9555A-specific tests are **automatically skipped** (not failed) on a standard PCA9555. ### Test Sections | # | Section | Methods Tested | PCAL9555A? |---|---------|----------------|------------| 1 | Initialization | Constructor, ResetToDefault, auto-detection | No | 2 | GPIO Direction (single) | SetPinDirection | No | 3 | GPIO Direction (multi) | SetMultipleDirections | No | 4 | Pin Write | WritePin | No | 5 | Pin Read | ReadPin | No | 6 | Pin Toggle | TogglePin | No | 7 | Pull Resistor | SetPullEnable, SetPullDirection | Yes | 8 | Drive Strength | SetDriveStrength | Yes | 9 | Output Mode | SetOutputMode | Yes | 10 | Polarity | SetPinPolarity, SetMultiplePolarities | No | 11 | Input Latch | EnableInputLatch, EnableMultipleInputLatches | Yes | 12 | Interrupt Config | ConfigureInterruptMask, GetInterruptStatus, callbacks | Yes | 13 | Port Operations | Mixed port direction + read/write | No | 14 | Multi-Pin APIs | WritePins, ReadPins, SetDirections, SetPolarities | No | 15 | Address Management | ChangeAddress, address-based constructor | No | 16 | Configuration | SetRetries, EnsureInitialized | No | 17 | Multi-Pin PCAL | SetPullEnables, SetDriveStrengths, ConfigureInterrupt/s, EnableInputLatches | Yes | 18 | Interactive Input | Button press, HandleInterrupt (disabled by default) | No | 19 | Error Handling | Invalid pins, UnsupportedFeature, flag clearing | No | 20 | Stress Tests | Rapid pin toggling | No | ### Enable/Disable Sections ```cpp // At top of pcal95555_comprehensive_test.cpp static constexpr bool ENABLE_INITIALIZATION_TESTS = true; static constexpr bool ENABLE_GPIO_DIRECTION_TESTS = true; static constexpr bool ENABLE_INTERACTIVE_INPUT_TESTS = false; // Requires button on pin 0 // ... etc ``` ### Interactive Input Test Disabled by default. Requires a momentary push-button between PCA9555 pin 0 and GND: - **PCAL9555A:** Internal pull-up is enabled automatically - **PCA9555:** Add an external 10k pull-up resistor to VDD The test waits 10 seconds for a button press, logging a countdown. If no button is connected, it times out gracefully without failing. ### Expected Output (PCA9555) ``` Detected chip variant: PCA9555 (standard) Agile I/O support: NO ... Skipping: Pull resistor config requires PCAL9555A (detected PCA9555) ... Total: 31, Passed: 31, Failed: 0, Success: 100.00% ``` --- ## LED Animation Demo **File:** `main/pcal95555_led_animation.cpp` Drives 16 LEDs through 10 animation patterns to visually test the driver's output capabilities and I2C throughput. Uses only PCA9555-compatible registers, so it works with both chip variants. ### Animation Patterns 1. **Sequential Chase** -- single LED scans left to right and back 2. **Bounce** -- LED bounces between endpoints with acceleration 3. **Binary Counter** -- counts 0-65535 showing binary on 16 LEDs 4. **Breathing (PWM)** -- software PWM fade-in/fade-out of all LEDs 5. **Wave / Comet Tail** -- 4-LED comet sweeps back and forth 6. **Random Sparkle** -- random LED patterns at fast rate 7. **Build-up / Teardown** -- LEDs light sequentially then extinguish 8. **Accelerating Scan** -- speed ramps from 120ms down to 1ms and back 9. **Center Expand** -- symmetric outward/inward animation from center 10. **Alternating Flash** -- port-vs-port and even-vs-odd flashing ### LED Wiring Connect LEDs with 220-1k current-limiting resistors to each I/O pin. - **Active-HIGH (default):** LED anode to IO pin, cathode to GND - **Active-LOW:** Set `LEDS_ACTIVE_LOW = true` in the source, LED cathode to IO pin, anode to VDD ### Configuration Edit at top of `pcal95555_led_animation.cpp`: ```cpp static constexpr uint16_t NUM_PINS = 16; static constexpr bool LEDS_ACTIVE_LOW = false; static constexpr int NUM_CYCLES = 0; // 0 = infinite ``` --- ## Configuration ### I2C Bus Default configuration in the bus header (`esp32_pcal95555_bus.hpp`): | Parameter | Default | Notes |-----------|---------|-------| I2C Port | I2C_NUM_0 | | SDA | GPIO4 | | SCL | GPIO5 | | Frequency | 400 kHz | Reduce to 100k for long wires | Internal Pull-ups | Enabled | External 4.7k recommended | ### Stack Size The test suite requires a larger-than-default main task stack due to extensive logging. Set in `sdkconfig`: ``` CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384 ``` --- ## Troubleshooting ### I2C NACK Errors | Symptom | Likely Cause | Fix |---------|-------------|-----| NACK on all registers | Wrong address / no power | Check wiring, verify address | NACK on 0x40-0x4F only | PCA9555 (not PCAL9555A) | Expected -- driver auto-detects | Intermittent NACKs | Bus noise, missing pull-ups | Add 4.7k pull-ups | ### Stack Overflow / Assert ``` assert failed: xTaskRemoveFromEventList tasks.c ``` Increase stack size: `CONFIG_ESP_MAIN_TASK_STACK_SIZE=16384` in sdkconfig. ### ESP32-S3 Flash Failure ``` Failed to connect to ESP32-S3: Invalid head of packet (0x1B) ``` Manually enter download mode (BOOT + RESET) before flashing. ### ChipVariant \"Unknown\" The 3-step detection could not confirm chip type. Check: - I2C pull-ups present - Chip powered and wired correctly - No other I2C master on bus --- ## Additional Resources - [Main README](/hf-pcal95555-driver/development/) -- Full project documentation - [PCAL9555A Datasheet](/hf-pcal95555-driver/development/datasheet/PCAL9555A.pdf) - [Driver API Reference](/hf-pcal95555-driver/development/docs/api_reference/) - [Platform Integration Guide](/hf-pcal95555-driver/development/docs/platform_integration/) - [Build Scripts README](scripts/README.md) ",

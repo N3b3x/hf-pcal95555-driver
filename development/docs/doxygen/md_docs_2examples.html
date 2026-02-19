@@ -76,8 +76,8 @@ $(function() {
   <div class="headertitle"><div class="title">Examples</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md62"></a> This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md63"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md69"></a> This guide provides complete, working examples demonstrating various use cases for the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md70"></a>
 Example 1: Basic GPIO Control</h1>
 <p>This example shows basic input/output operations.</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -111,14 +111,14 @@ Example 1: Basic GPIO Control</h1>
 <div class="line">    gpio.SetPinDirection(1, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Input);</div>
 <div class="line">    <span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md64"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md71"></a>
 Explanation</h2>
 <ol type="1">
 <li><b>Reset</b>: Put device in known state</li>
 <li><b>Configure</b>: Set pin directions</li>
 <li><b>Use</b>: Read and write pin states</li>
 </ol>
-<h1><a class="anchor" id="autotoc_md65"></a>
+<h1><a class="anchor" id="autotoc_md72"></a>
 Example 3: Interrupt Handling</h1>
 <p>This example shows how to use interrupts with per-pin callbacks.</p>
 <div class="fragment"><div class="line"><span class="comment">// Configure pin 8 as input with interrupt</span></div>
@@ -138,7 +138,7 @@ Example 3: Interrupt Handling</h1>
 <div class="line"> </div>
 <div class="line"><span class="comment">// In your main loop or ISR (if using polling)</span></div>
 <div class="line">gpio.HandleInterrupt();</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md66"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md73"></a>
 Configure Multiple Interrupts</h2>
 <div class="fragment"><div class="line"><span class="comment">// Configure interrupts for multiple pins at once</span></div>
 <div class="line">gpio.ConfigureInterrupts({</div>
@@ -147,14 +147,14 @@ Configure Multiple Interrupts</h2>
 <div class="line">    {10, InterruptState::Enabled},  <span class="comment">// Enable on pin 10</span></div>
 <div class="line">    {3, InterruptState::Disabled}   <span class="comment">// Disable on pin 3</span></div>
 <div class="line">});</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md67"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md74"></a>
 Global Interrupt Callback</h2>
 <div class="fragment"><div class="line"><span class="comment">// Set global callback for all interrupts</span></div>
 <div class="line">gpio.SetInterruptCallback([](uint16_t status) {</div>
 <div class="line">    printf(<span class="stringliteral">&quot;Interrupt on pins: 0x%04X\n&quot;</span>, status);</div>
 <div class="line">    <span class="comment">// Handle interrupt</span></div>
 <div class="line">});</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md68"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md75"></a>
 Example 5: Drive Strength (PCAL9555A only)</h1>
 <p>This example shows drive strength configuration. Requires PCAL9555A.</p>
 <div class="fragment"><div class="line"><span class="keywordflow">if</span> (gpio.HasAgileIO()) {</div>
@@ -162,7 +162,7 @@ Example 5: Drive Strength (PCAL9555A only)</h1>
 <div class="line">    gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
 <div class="line">    gpio.SetDriveStrength(0, pcal95555::PCAL95555&lt;MyI2c&gt;::DriveStrength::Level1); <span class="comment">// 50% strength</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md69"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md76"></a>
 Example 8: Chip Variant Detection</h1>
 <p>This example shows how to check which chip is connected and conditionally use features.</p>
 <div class="fragment"><div class="line"><span class="comment">// After initialization (auto or explicit)</span></div>
@@ -191,9 +191,9 @@ Example 8: Chip Variant Detection</h1>
 <div class="line">        printf(<span class="stringliteral">&quot;Unknown variant (detection may have failed)\n&quot;</span>);</div>
 <div class="line">        <span class="keywordflow">break</span>;</div>
 <div class="line">}</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md70"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md77"></a>
 Running the Examples</h1>
-<h2><a class="anchor" id="autotoc_md71"></a>
+<h2><a class="anchor" id="autotoc_md78"></a>
 ESP32</h2>
 <p>Two example applications are available in <a href="../examples/esp32/"><code>examples/esp32</code></a>:</p>
 <div class="fragment"><div class="line">cd examples/esp32</div>
@@ -205,10 +205,10 @@ ESP32</h2>
 <div class="line"># LED animation demo (16-LED patterns)</div>
 <div class="line">./scripts/build_app.sh pcal95555_led_animation Debug</div>
 <div class="line">./scripts/flash_app.sh flash_monitor pcal95555_led_animation Debug</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md72"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md79"></a>
 Other Platforms</h2>
 <p>Adapt the I2C interface implementation for your platform (see <a class="el" href="md_docs_2platform__integration.html">Platform Integration</a>) and compile with your platform's toolchain.</p>
-<h1><a class="anchor" id="autotoc_md73"></a>
+<h1><a class="anchor" id="autotoc_md80"></a>
 Next Steps</h1>
 <ul>
 <li>Review the <a class="el" href="md_docs_2api__reference.html">API Reference</a> for method details</li>

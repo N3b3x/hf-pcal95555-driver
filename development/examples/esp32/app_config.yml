@@ -98,6 +98,10 @@ apps:
 build_config:
   # Standard ESP-IDF/CMake build types
   # These match CMAKE_BUILD_TYPE values in ESP-IDF
+  #
+  # NOTE: The flags below are REFERENCE / DOCUMENTATION ONLY.
+  # The authoritative compiler flags are set in main/CMakeLists.txt.
+  # If you change flags here, update main/CMakeLists.txt to match.
   build_types:
     Debug:
       description: "Debug build with symbols, verbose logging, assertions"

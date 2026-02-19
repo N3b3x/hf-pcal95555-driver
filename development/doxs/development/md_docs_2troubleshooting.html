@@ -76,10 +76,10 @@ $(function() {
   <div class="headertitle"><div class="title">Troubleshooting</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md139"></a> This guide helps you diagnose and resolve common issues when using the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md140"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md146"></a> This guide helps you diagnose and resolve common issues when using the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md147"></a>
 Common Error Messages</h1>
-<h2><a class="anchor" id="autotoc_md141"></a>
+<h2><a class="anchor" id="autotoc_md148"></a>
 Error: Device Not Detected</h2>
 <p><b>Symptoms:</b></p><ul>
 <li><code>ResetToDefault()</code> or other operations fail</li>
@@ -114,7 +114,7 @@ Error: Device Not Detected</h2>
 </ul>
 </li>
 </ol>
-<h2><a class="anchor" id="autotoc_md142"></a>
+<h2><a class="anchor" id="autotoc_md149"></a>
 Error: I2C Communication Failures</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Operations fail intermittently</li>
@@ -126,7 +126,7 @@ Error: I2C Communication Failures</h2>
 <li><b>Check bus speed</b>: Reduce I2C speed if using long wires</li>
 <li><b>Verify signal integrity</b>: Check for noise on I2C lines</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md143"></a>
+<h2><a class="anchor" id="autotoc_md150"></a>
 Incorrect Pin States</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Pins don't respond to writes</li>
@@ -138,7 +138,7 @@ Incorrect Pin States</h2>
 <li>[ ] Verify pull resistors are configured if needed</li>
 <li>[ ] Check for external loads affecting pin state</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md144"></a>
+<h2><a class="anchor" id="autotoc_md151"></a>
 Runtime Errors</h2>
 <p><b>Initialization Fails</b></p>
 <p><b>Checklist:</b></p><ul>
@@ -154,7 +154,7 @@ Runtime Errors</h2>
 <li>[ ] I2C communication is working</li>
 <li>[ ] Error flags are checked</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md145"></a>
+<h2><a class="anchor" id="autotoc_md152"></a>
 Error: Invalid Address (InvalidAddress)</h2>
 <p><b>Symptoms:</b></p><ul>
 <li>Constructor or <code>ChangeAddress()</code> sets <code>Error::InvalidAddress</code> (flag <code>0x0020</code>)</li>
@@ -175,7 +175,7 @@ Error: Invalid Address (InvalidAddress)</h2>
 <div class="line">}</div>
 </div><!-- fragment --></li>
 </ol>
-<h2><a class="anchor" id="autotoc_md146"></a>
+<h2><a class="anchor" id="autotoc_md153"></a>
 Error: ChipVariant Shows "Unknown"</h2>
 <p><b>Symptoms:</b></p><ul>
 <li><code>GetChipVariant()</code> returns <code>ChipVariant::Unknown</code></li>
@@ -189,16 +189,16 @@ Error: ChipVariant Shows "Unknown"</h2>
 <li>Force the variant in the constructor to skip detection: <div class="fragment"><div class="line">PCAL95555 driver(bus, 0x20, pcal95555::ChipVariant::PCA9555);</div>
 </div><!-- fragment --></li>
 </ol>
-<h1><a class="anchor" id="autotoc_md147"></a>
+<h1><a class="anchor" id="autotoc_md154"></a>
 FAQ</h1>
-<h2><a class="anchor" id="autotoc_md148"></a>
+<h2><a class="anchor" id="autotoc_md155"></a>
 Q: Why do my pin writes not work?</h2>
 <p><b>A:</b> Common causes:</p><ol type="1">
 <li>Pin not configured as output: Call <code>SetPinDirection(pin, GPIODir::Output)</code> first</li>
 <li>Wrong pin number: Valid pins are 0-15</li>
 <li>I2C communication failure: Check I2C bus and connections</li>
 </ol>
-<h2><a class="anchor" id="autotoc_md149"></a>
+<h2><a class="anchor" id="autotoc_md156"></a>
 Q: How do I use interrupts?</h2>
 <p><b>A:</b> There are two ways to handle interrupts:</p>
 <p><b>Method 1: Per-pin callbacks (recommended)</b> </p><div class="fragment"><div class="line"><span class="comment">// Configure pin as input</span></div>
@@ -222,7 +222,7 @@ Q: How do I use interrupts?</h2>
 </div><!-- fragment --><p><b>Method 2: Global callback</b> </p><div class="fragment"><div class="line">gpio.SetInterruptCallback([](uint16_t status) {</div>
 <div class="line">    printf(<span class="stringliteral">&quot;Interrupt on pins: 0x%04X\n&quot;</span>, status);</div>
 <div class="line">});</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md150"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md157"></a>
 Q: Can I use multiple devices?</h2>
 <p><b>A:</b> Yes! Configure different I2C addresses via A0-A2 pins, then create separate driver instances. You can even mix PCA9555 and PCAL9555A on the same bus: </p><div class="fragment"><div class="line"><span class="comment">// First device: PCA9555 at 0x20</span></div>
 <div class="line">pcal95555::PCAL95555&lt;MyI2c&gt; gpio1(&amp;i2c, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
@@ -234,7 +234,7 @@ Q: Can I use multiple devices?</h2>
 </div><!-- fragment --><p>You can also change the address dynamically if your I2C interface supports GPIO control: </p><div class="fragment"><div class="line"><span class="keywordflow">if</span> (gpio1.ChangeAddress(<span class="keyword">true</span>, <span class="keyword">false</span>, <span class="keyword">false</span>)) {</div>
 <div class="line">    printf(<span class="stringliteral">&quot;Address changed to 0x%02X\n&quot;</span>, gpio1.GetAddress()); <span class="comment">// Now 0x21</span></div>
 <div class="line">}</div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md151"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md158"></a>
 Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?</h2>
 <p><b>A:</b> The driver auto-detects during initialization: </p><div class="fragment"><div class="line">gpio.EnsureInitialized();</div>
 <div class="line"><span class="keywordflow">if</span> (gpio.HasAgileIO()) {</div>
@@ -243,14 +243,14 @@ Q: How do I know which chip I have (PCA9555 vs PCAL9555A)?</h2>
 <div class="line">    printf(<span class="stringliteral">&quot;PCA9555 (standard GPIO only)\n&quot;</span>);</div>
 <div class="line">}</div>
 </div><!-- fragment --><p> You can also check the chip marking. PCA9555 has part number "PCA9555"; PCAL9555A has "PCAL9555A".</p>
-<h2><a class="anchor" id="autotoc_md152"></a>
+<h2><a class="anchor" id="autotoc_md159"></a>
 Q: What's the difference between pull-up and pull-down?</h2>
 <p><b>A:</b></p><ul>
 <li><b>Pull-up</b>: Resistor connects pin to VDD (default high when floating)</li>
 <li><b>Pull-down</b>: Resistor connects pin to GND (default low when floating)</li>
 </ul>
 <p>Choose based on your circuit requirements.</p>
-<h2><a class="anchor" id="autotoc_md153"></a>
+<h2><a class="anchor" id="autotoc_md160"></a>
 Q: What drive strength levels are available?</h2>
 <p><b>A:</b> The driver supports four drive strength levels:</p><ul>
 <li><code>Level0</code>: 25% drive strength (¼)</li>
@@ -259,7 +259,7 @@ Q: What drive strength levels are available?</h2>
 <li><code>Level3</code>: 100% drive strength (full)</li>
 </ul>
 <p>Example: </p><div class="fragment"><div class="line">gpio.SetDriveStrength(pin, DriveStrength::Level1); <span class="comment">// 50% strength</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md154"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md161"></a>
 Q: How do I check for errors?</h2>
 <p><b>A:</b> Use error flags to check for errors: </p><div class="fragment"><div class="line">uint16_t errors = gpio.GetErrorFlags();</div>
 <div class="line"><span class="keywordflow">if</span> (errors &amp; <span class="keyword">static_cast&lt;</span>uint16_t<span class="keyword">&gt;</span>(Error::I2CReadFail)) {</div>

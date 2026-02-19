@@ -54,13 +54,8 @@ message(STATUS "Using source file: ${APP_SOURCE_FILE}")
 # =============================================================================
 # Include Directories Configuration
 # =============================================================================
-# Set include paths relative to current repository structure
-set(INC_BASE_PATH "../../../inc")
-
-# Define include directories for the main component
 set(MAIN_INCLUDE_DIRS
-    "."                                    # Current directory (main/)
-    "${INC_BASE_PATH}"                     # Main driver headers
+    "."
 )
 
 # =============================================================================
@@ -94,6 +89,8 @@ target_compile_features(${COMPONENT_LIB} PRIVATE cxx_std_20)
 # Build Type Specific Compiler Flags
 # =============================================================================
 # Set compiler flags based on build type (Debug vs Release)
+# NOTE: These are the AUTHORITATIVE compiler flags for the examples build.
+# app_config.yml also documents these flags for reference — keep them in sync.
 if(BUILD_TYPE STREQUAL "Debug")
     target_compile_options(${COMPONENT_LIB} PRIVATE
         -Wall

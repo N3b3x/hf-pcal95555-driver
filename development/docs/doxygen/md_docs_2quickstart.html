@@ -76,15 +76,15 @@ $(function() {
   <div class="headertitle"><div class="title">Quick Start</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md127"></a> This guide will get you up and running with the PCAL95555 driver in just a few steps.</p>
-<h1><a class="anchor" id="autotoc_md128"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md134"></a> This guide will get you up and running with the PCAL95555 driver in just a few steps.</p>
+<h1><a class="anchor" id="autotoc_md135"></a>
 Prerequisites</h1>
 <ul>
 <li><a class="el" href="md_docs_2installation.html">Driver installed</a></li>
 <li><a class="el" href="md_docs_2hardware__setup.html">Hardware wired</a></li>
 <li><a class="el" href="md_docs_2platform__integration.html">I2C interface implemented</a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md129"></a>
+<h1><a class="anchor" id="autotoc_md136"></a>
 Minimal Example</h1>
 <p>Here's a complete working example:</p>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -135,19 +135,19 @@ Minimal Example</h1>
 <div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
 <div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
 <div class="line"><span class="keywordtype">bool</span> input = gpio.ReadPin(1);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md130"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md137"></a>
 Step-by-Step Explanation</h1>
-<h2><a class="anchor" id="autotoc_md131"></a>
+<h2><a class="anchor" id="autotoc_md138"></a>
 Step 1: Include the Header</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
-</div><!-- fragment --><h2><a class="anchor" id="autotoc_md132"></a>
+</div><!-- fragment --><h2><a class="anchor" id="autotoc_md139"></a>
 Step 2: Implement the I2C Interface</h2>
 <p>You need to implement the <code>I2cInterface</code> for your platform. See <a class="el" href="md_docs_2platform__integration.html">Platform Integration</a> for detailed examples for ESP32, STM32, and Arduino.</p>
 <p>The interface requires two methods:</p><ul>
 <li><code>Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len)</code> - Write data to a register</li>
 <li><code>Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len)</code> - Read data from a register</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md133"></a>
+<h2><a class="anchor" id="autotoc_md140"></a>
 Step 3: Create Driver Instance</h2>
 <p>You can create the driver instance in two ways:</p>
 <p><b>Option 1: Using I2C address directly (recommended)</b> </p><div class="fragment"><div class="line">MyI2c i2c;</div>
@@ -170,7 +170,7 @@ Step 3: Create Driver Instance</h2>
 <li>Address 0x20 → A0=LOW, A1=LOW, A2=LOW (default)</li>
 <li>Address 0x21 → A0=HIGH, A1=LOW, A2=LOW</li>
 </ul>
-<h2><a class="anchor" id="autotoc_md134"></a>
+<h2><a class="anchor" id="autotoc_md141"></a>
 Step 4: Initialize</h2>
 <p>The driver uses **lazy initialization** - it initializes automatically on first use. However, you can explicitly initialize:</p>
 <div class="fragment"><div class="line"><span class="comment">// Explicit initialization (optional)</span></div>
@@ -194,7 +194,7 @@ Step 4: Initialize</h2>
 <li>PCAL9555A-only methods return `false` and set `Error::UnsupportedFeature` on a PCA9555</li>
 </ul>
 <p>`ResetToDefault()` puts the device in a known state (all pins as inputs with pull-ups enabled on PCAL9555A).</p>
-<h2><a class="anchor" id="autotoc_md135"></a>
+<h2><a class="anchor" id="autotoc_md142"></a>
 Step 5: Configure and Use Pins</h2>
 <div class="fragment"><div class="line"><span class="comment">// Set pin 0 as output</span></div>
 <div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyI2c&gt;::GPIODir::Output);</div>
@@ -204,14 +204,14 @@ Step 5: Configure and Use Pins</h2>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Read from pin 1 (input)</span></div>
 <div class="line"><span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md136"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md143"></a>
 Expected Output</h1>
 <p>When running this example:</p><ul>
 <li>Pin 0 should be set high (if connected to an LED, it should light up)</li>
 <li>Pin 1 value should be read correctly</li>
 <li>No error messages should appear</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md137"></a>
+<h1><a class="anchor" id="autotoc_md144"></a>
 Troubleshooting</h1>
 <p>If you encounter issues:</p>
 <ul>
@@ -220,7 +220,7 @@ Troubleshooting</h1>
 <li><b>No response</b>: Check I2C bus and pull-up resistors</li>
 <li><b>See</b>: <a class="el" href="md_docs_2troubleshooting.html">Troubleshooting</a> for common issues</li>
 </ul>
-<h1><a class="anchor" id="autotoc_md138"></a>
+<h1><a class="anchor" id="autotoc_md145"></a>
 Next Steps</h1>
 <ul>
 <li>Explore <a class="el" href="md_docs_2examples.html">Examples</a> for more advanced usage</li>
