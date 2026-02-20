@@ -131,7 +131,7 @@ hf-pcal95555-driver/
 │       │   └── config_loader.sh       # Build config parser
 │       ├── app_config.yml             # App definitions for build system
 │       └── sdkconfig                  # ESP-IDF configuration
-├── datasheet/
+├── docs/datasheet/
 │   └── PCAL9555A.pdf              # NXP datasheet
 ├── _config/                       # Doxygen configuration
 ├── docs/                          # Additional documentation

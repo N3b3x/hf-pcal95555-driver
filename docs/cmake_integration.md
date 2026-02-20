@@ -11,10 +11,6 @@ permalink: /docs/cmake_integration/
 
 How to consume the PCAL95555 driver in your CMake or ESP-IDF project.
 
-> **Build contract architecture, variable naming conventions, porting guide,
-> and templates for new drivers** are documented at the HAL level:
-> [CMake Build Contract](../../../../../docs/development/CMAKE_BUILD_CONTRACT.md).
-> This page covers only the PCAL95555-specific integration steps.
 
 ---
 
@@ -147,9 +143,6 @@ These variables are defined in `cmake/hf_pcal95555_build_settings.cmake`:
 | `HF_PCAL95555_SOURCE_FILES` | `""` (header-only) |
 | `HF_PCAL95555_IDF_REQUIRES` | `driver` |
 
-For the full variable naming convention and how the 3-layer CMake contract
-works, see the
-[CMake Build Contract](../../../../../docs/development/CMAKE_BUILD_CONTRACT.md).
 
 ---
 
@@ -175,4 +168,4 @@ printf("PCAL95555 driver v%s\n", HF_PCAL95555_VERSION_STRING);
 ---
 
 **Navigation**
-⬅️ [Back to Documentation Index](../../DOCUMENTATION_INDEX.md) | [CMake Build Contract ↗](../../../../../docs/development/CMAKE_BUILD_CONTRACT.md)
+⬅️ [Back to Documentation Index](index.md)
