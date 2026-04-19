@@ -76,17 +76,17 @@ $(function() {
   <div class="headertitle"><div class="title">API Reference</div></div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><p><a class="anchor" id="autotoc_md18"></a> Complete reference documentation for all public methods and types in the PCAL95555 driver.</p>
-<h1><a class="anchor" id="autotoc_md19"></a>
+<div class="textblock"><p><a class="anchor" id="autotoc_md19"></a> Complete reference documentation for all public methods and types in the PCAL95555 driver.</p>
+<h1><a class="anchor" id="autotoc_md20"></a>
 Source Code</h1>
 <ul>
 <li><b>Main Header</b>: <a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a></li>
 <li><b>Kconfig Macros</b>: <a href="../inc/pcal95555_kconfig.hpp"><code>inc/pcal95555_kconfig.hpp</code></a> (compile-time configuration, included by main header)</li>
 <li><b>Implementation</b>: <a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a></li>
 </ul>
-<h1><a class="anchor" id="autotoc_md20"></a>
+<h1><a class="anchor" id="autotoc_md21"></a>
 Core Class</h1>
-<h2><a class="anchor" id="autotoc_md21"></a>
+<h2><a class="anchor" id="autotoc_md22"></a>
 <code>PCAL95555&lt;I2cType&gt;</code></h2>
 <p>Main driver class for interfacing with the <b>PCA9555</b> and <b>PCAL9555A</b> I/O expanders. The chip variant is auto-detected during initialization. PCAL9555A-specific features (pull resistors, drive strength, input latch, interrupt mask/status, output mode) return <code>false</code> and set <code>Error::UnsupportedFeature</code> when a standard PCA9555 is detected.</p>
 <p><b>Template Parameter</b>: <code>I2cType</code> - Your I2C interface implementation (must inherit from <code>pcal95555::I2cInterface&lt;I2cType&gt;</code>)</p>
@@ -121,9 +121,9 @@ Core Class</h1>
 <div class="line"><span class="comment">// Force PCAL9555A mode</span></div>
 <div class="line">PCAL95555 driver4(bus, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>, ChipVariant::PCAL9555A);</div>
 </div><!-- fragment --><p><b>Location</b>: <a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a></p>
-<h1><a class="anchor" id="autotoc_md22"></a>
+<h1><a class="anchor" id="autotoc_md23"></a>
 Methods</h1>
-<h2><a class="anchor" id="autotoc_md23"></a>
+<h2><a class="anchor" id="autotoc_md24"></a>
 Initialization</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -135,7 +135,7 @@ Initialization</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>InitFromConfig()</code>   </td><td class="markdownTableBodyNone"><code>void InitFromConfig()</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md24"></a>
+<h2><a class="anchor" id="autotoc_md25"></a>
 Pin Direction</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -147,7 +147,7 @@ Pin Direction</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>SetMultipleDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetMultipleDirections(uint16_t mask, GPIODir dir)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md25"></a>
+<h2><a class="anchor" id="autotoc_md26"></a>
 Pin I/O</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -163,7 +163,7 @@ Pin I/O</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>TogglePin()</code>   </td><td class="markdownTableBodyNone"><code>bool TogglePin(uint16_t pin)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md26"></a>
+<h2><a class="anchor" id="autotoc_md27"></a>
 Pull-up/Pull-down (PCAL9555A only)</h2>
 <blockquote class="doxtable">
 <p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code>Error::UnsupportedFeature</code> on PCA9555. </p>
@@ -180,7 +180,7 @@ Pull-up/Pull-down (PCAL9555A only)</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>SetPullDirections()</code>   </td><td class="markdownTableBodyNone"><code>bool SetPullDirections(std::initializer_list&lt;std::pair&lt;uint16_t, bool&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md27"></a>
+<h2><a class="anchor" id="autotoc_md28"></a>
 Drive Strength (PCAL9555A only)</h2>
 <blockquote class="doxtable">
 <p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code>Error::UnsupportedFeature</code> on PCA9555. </p>
@@ -193,7 +193,7 @@ Drive Strength (PCAL9555A only)</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>SetDriveStrengths()</code>   </td><td class="markdownTableBodyNone"><code>bool SetDriveStrengths(std::initializer_list&lt;std::pair&lt;uint16_t, DriveStrength&gt;&gt; configs)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md28"></a>
+<h2><a class="anchor" id="autotoc_md29"></a>
 Interrupts</h2>
 <blockquote class="doxtable">
 <p>&zwj;<b>Note</b>: <code>ConfigureInterrupt</code>, <code>ConfigureInterrupts</code>, <code>ConfigureInterruptMask</code>, and <code>GetInterruptStatus</code> require PCAL9555A and return <code>false</code>/<code>0</code> with <code>Error::UnsupportedFeature</code> on PCA9555. The remaining interrupt methods (callbacks, handler) work on both variants &ndash; on PCA9555, <code>HandleInterrupt()</code> uses change-detection (comparing current vs. previous pin states) instead of the hardware interrupt status register. </p>
@@ -220,7 +220,7 @@ Interrupts</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>HandleInterrupt()</code>   </td><td class="markdownTableBodyNone"><code>void HandleInterrupt()</code>   </td><td class="markdownTableBodyNone">No   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md29"></a>
+<h2><a class="anchor" id="autotoc_md30"></a>
 Output Mode (PCAL9555A only)</h2>
 <blockquote class="doxtable">
 <p>&zwj;<b>Note</b>: Returns <code>false</code> and sets <code>Error::UnsupportedFeature</code> on PCA9555. </p>
@@ -231,7 +231,7 @@ Output Mode (PCAL9555A only)</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>SetOutputMode()</code>   </td><td class="markdownTableBodyNone"><code>bool SetOutputMode(bool port_0_open_drain, bool port_1_open_drain)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md30"></a>
+<h2><a class="anchor" id="autotoc_md31"></a>
 Polarity</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -243,7 +243,7 @@ Polarity</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>SetMultiplePolarities()</code>   </td><td class="markdownTableBodyNone"><code>bool SetMultiplePolarities(uint16_t mask, Polarity polarity)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md31"></a>
+<h2><a class="anchor" id="autotoc_md32"></a>
 Input Latch (PCAL9555A only)</h2>
 <blockquote class="doxtable">
 <p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code>Error::UnsupportedFeature</code> on PCA9555. </p>
@@ -258,7 +258,7 @@ Input Latch (PCAL9555A only)</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>EnableMultipleInputLatches()</code>   </td><td class="markdownTableBodyNone"><code>bool EnableMultipleInputLatches(uint16_t mask, bool enable)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md32"></a>
+<h2><a class="anchor" id="autotoc_md33"></a>
 Address Management</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -272,7 +272,7 @@ Address Management</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone"><code>ChangeAddress()</code>   </td><td class="markdownTableBodyNone"><code>bool ChangeAddress(uint8_t address)</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md33"></a>
+<h2><a class="anchor" id="autotoc_md34"></a>
 Error Handling</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -284,7 +284,7 @@ Error Handling</h2>
 <tr class="markdownTableRowOdd">
 <td class="markdownTableBodyNone"><code>ClearErrorFlags()</code>   </td><td class="markdownTableBodyNone"><code>void ClearErrorFlags(uint16_t mask = 0xFFFF) noexcept</code>   </td><td class="markdownTableBodyNone"><a href="../src/pcal95555.ipp"><code>src/pcal95555.ipp</code></a>   </td></tr>
 </table>
-<h2><a class="anchor" id="autotoc_md34"></a>
+<h2><a class="anchor" id="autotoc_md35"></a>
 Chip Variant Detection</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -303,9 +303,9 @@ Chip Variant Detection</h2>
 <div class="line"> </div>
 <div class="line"><span class="keyword">auto</span> variant = driver.GetChipVariant();</div>
 <div class="line"><span class="comment">// ChipVariant::Unknown, ChipVariant::PCA9555, or ChipVariant::PCAL9555A</span></div>
-</div><!-- fragment --><h1><a class="anchor" id="autotoc_md35"></a>
+</div><!-- fragment --><h1><a class="anchor" id="autotoc_md36"></a>
 Types</h1>
-<h2><a class="anchor" id="autotoc_md36"></a>
+<h2><a class="anchor" id="autotoc_md37"></a>
 Enumerations</h2>
 <table class="markdownTable">
 <tr class="markdownTableHead">

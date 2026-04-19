@@ -79,15 +79,15 @@ $(function() {
 <div class="textblock"><p><a class="anchor" id="md_README"></a><b>Hardware-agnostic C++ driver for the NXP PCA9555 and PCAL9555A 16-bit I/O expanders</b></p>
 <p><a href="https://en.cppreference.com/w/cpp/17"><img src="https://img.shields.io/badge/C%2B%2B-17-blue.svg" alt="C++" style="pointer-events: none;" class="inline"/></a> <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License" style="pointer-events: none;" class="inline"/></a> <a href="https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-examples-build-ci.yml"><img src="https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-examples-build-ci.yml/badge.svg?branch=main" alt="CI" style="pointer-events: none;" class="inline"/></a> <a href="https://n3b3x.github.io/hf-pcal95555-driver/"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="Docs" class="inline"/></a></p>
 <h1><a class="anchor" id="autotoc_md1"></a>
-Overview</h1>
+📦 Overview</h1>
 <blockquote class="doxtable">
-<p>&zwj;<b>📖 <a href="https://n3b3x.github.io/hf-pcal95555-driver/">📚🌐 Live Complete Documentation</a></b> - Interactive guides, examples, and step-by-step tutorials </p>
+<p>&zwj;<b>📖 <a href="https://n3b3x.github.io/hf-pcal95555-driver/">📚🌐 Live Complete Documentation</a></b> — Interactive guides, examples, and step-by-step tutorials </p>
 </blockquote>
 <p>The <b>PCA9555</b> and <b>PCAL9555A</b> are 16-bit I/O expanders from NXP Semiconductors that communicate via I2C. They provide 16 GPIO pins organized into two 8-bit ports (PORT_0: pins 0-7, PORT_1: pins 8-15), expanding your microcontroller's I/O capabilities over a simple two-wire bus.</p>
 <p>This driver provides a <b>single, unified C++ class</b> that supports <b>both</b> chip variants. The chip type is <b>auto-detected</b> during initialization by probing the extended register bank. Features exclusive to the PCAL9555A degrade gracefully when a standard PCA9555 is detected.</p>
 <p>The driver is <b>hardware-agnostic</b> &ndash; it uses the CRTP (Curiously Recurring Template Pattern) for zero-overhead I2C abstraction. You only need to implement a small <code>I2cInterface</code> class for your platform.</p>
 <h1><a class="anchor" id="autotoc_md2"></a>
-Features</h1>
+✨ Features</h1>
 <ul>
 <li><b>Dual-chip support</b>: Auto-detects PCA9555 vs PCAL9555A at runtime</li>
 <li><b>16 GPIO Pins</b>: Two 8-bit ports (PORT_0: pins 0-7, PORT_1: pins 8-15)</li>
@@ -102,7 +102,7 @@ Features</h1>
 <li><b>Graceful degradation</b>: PCAL9555A features fail cleanly on PCA9555</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md3"></a>
-Quick Start</h1>
+🚀 Quick Start</h1>
 <h2><a class="anchor" id="autotoc_md4"></a>
 1. Implement the I2C interface for your platform</h2>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
@@ -149,7 +149,7 @@ Quick Start</h1>
 <div class="line">gpio.SetDirections({{0, GPIODir::Output}, {1, GPIODir::Input}});</div>
 </div><!-- fragment --><p> {% endraw %}</p>
 <h1><a class="anchor" id="autotoc_md6"></a>
-Building and Flashing (ESP32)</h1>
+🔨 Building and Flashing (ESP32)</h1>
 <h2><a class="anchor" id="autotoc_md7"></a>
 Prerequisites</h2>
 <ul>
@@ -182,7 +182,7 @@ Flash and Monitor</h2>
 <p>&zwj;<b>Note (ESP32-S3 native USB):</b> If using the USB-SERIAL-JTAG port (<code>/dev/ttyACM0</code>), you may need to manually enter download mode: Hold <b>BOOT</b>, press <b>RESET</b>, release <b>BOOT</b>, then immediately run the flash command. </p>
 </blockquote>
 <h1><a class="anchor" id="autotoc_md10"></a>
-Examples</h1>
+📊 Examples</h1>
 <h2><a class="anchor" id="autotoc_md11"></a>
 Comprehensive Test Suite (<code>pcal95555_comprehensive_test</code>)</h2>
 <p>A thorough test of every public API method, organized into 17 test sections:</p>
@@ -224,7 +224,7 @@ LED Animation Demo (<code>pcal95555_led_animation</code>)</h2>
 </ol>
 <p>Configure <code>LEDS_ACTIVE_LOW</code> for your wiring (common-anode vs common-cathode).</p>
 <h1><a class="anchor" id="autotoc_md13"></a>
-Hardware Setup</h1>
+🔌 Hardware Setup</h1>
 <h2><a class="anchor" id="autotoc_md14"></a>
 Minimal wiring (ESP32-S3 + PCA9555/PCAL9555A)</h2>
 <div class="fragment"><div class="line">ESP32-S3              PCA9555 / PCAL9555A</div>
@@ -245,7 +245,25 @@ LED animation demo wiring</h2>
 Interactive test wiring</h2>
 <p>Connect a momentary push-button between PCA9555 pin IO0_0 and GND. For PCAL9555A, the internal pull-up is enabled automatically. For PCA9555, add an external 10kΩ pull-up resistor to VDD.</p>
 <h1><a class="anchor" id="autotoc_md17"></a>
-Contributing</h1>
+🔗 References</h1>
+<table class="markdownTable">
+<tr class="markdownTableHead">
+<th class="markdownTableHeadNone">Resource   </th><th class="markdownTableHeadNone">Link    </th></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">NXP PCA9555 product page   </td><td class="markdownTableBodyNone"><a href="https://www.nxp.com/products/PCA9555">https://www.nxp.com/products/PCA9555</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">NXP PCAL9555A product page   </td><td class="markdownTableBodyNone"><a href="https://www.nxp.com/products/PCAL9555A">https://www.nxp.com/products/PCAL9555A</a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">PCA9555 datasheet (NXP)   </td><td class="markdownTableBodyNone"><a href="https://www.nxp.com/docs/en/data-sheet/PCA9555.pdf">https://www.nxp.com/docs/en/data-sheet/PCA9555.pdf</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">PCAL9555A datasheet (NXP)   </td><td class="markdownTableBodyNone"><a href="https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf">https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf</a>    </td></tr>
+<tr class="markdownTableRowOdd">
+<td class="markdownTableBodyNone">ESP-IDF I²C master   </td><td class="markdownTableBodyNone"><a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html">https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html</a>    </td></tr>
+<tr class="markdownTableRowEven">
+<td class="markdownTableBodyNone">C++17 language reference   </td><td class="markdownTableBodyNone"><a href="https://en.cppreference.com/w/cpp/17">https://en.cppreference.com/w/cpp/17</a>   </td></tr>
+</table>
+<h1><a class="anchor" id="autotoc_md18"></a>
+🤝 Contributing</h1>
 <p>Pull requests and suggestions are welcome! Please:</p>
 <ol type="1">
 <li>Follow the existing code style (clang-format, Doxygen comments)</li>
