@@ -263,41 +263,42 @@
 <a href="https://www.gnu.org/licenses/gpl-3.0"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License" /></a>
 <a href="https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-examples-build-ci.yml"><img src="https://github.com/N3b3x/hf-pcal95555-driver/actions/workflows/esp32-examples-build-ci.yml/badge.svg?branch=main" alt="CI" /></a>
 <a href="https://n3b3x.github.io/hf-pcal95555-driver/"><img src="https://img.shields.io/badge/docs-GitHub%20Pages-blue" alt="Docs" /></a></p><hr />
-<h2 id="table-of-contents">
+<h2 id="-table-of-contents">
   
   
-    <a href="#table-of-contents" class="anchor-heading" aria-labelledby="table-of-contents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Table of Contents
+    <a href="#-table-of-contents" class="anchor-heading" aria-labelledby="-table-of-contents"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📚 Table of Contents
   
   
 </h2>
     
 
 <ol>
-  <li><a href="#overview">Overview</a></li>
-  <li><a href="#chip-compatibility">Chip Compatibility</a></li>
-  <li><a href="#features">Features</a></li>
-  <li><a href="#project-structure">Project Structure</a></li>
-  <li><a href="#quick-start">Quick Start</a></li>
-  <li><a href="#installation">Installation</a></li>
-  <li><a href="#building-and-flashing-esp32">Building and Flashing (ESP32)</a></li>
-  <li><a href="#api-reference">API Reference</a></li>
-  <li><a href="#examples">Examples</a></li>
-  <li><a href="#testing">Testing</a></li>
-  <li><a href="#hardware-setup">Hardware Setup</a></li>
-  <li><a href="#troubleshooting">Troubleshooting</a></li>
-  <li><a href="#contributing">Contributing</a></li>
-  <li><a href="#license">License</a></li>
+  <li><a href="#-overview">Overview</a></li>
+  <li><a href="#-chip-compatibility">Chip Compatibility</a></li>
+  <li><a href="#-features">Features</a></li>
+  <li><a href="#-project-structure">Project Structure</a></li>
+  <li><a href="#-quick-start">Quick Start</a></li>
+  <li><a href="#-installation">Installation</a></li>
+  <li><a href="#-building-and-flashing-esp32">Building and Flashing (ESP32)</a></li>
+  <li><a href="#-api-reference">API Reference</a></li>
+  <li><a href="#-examples">Examples</a></li>
+  <li><a href="#-testing">Testing</a></li>
+  <li><a href="#-hardware-setup">Hardware Setup</a></li>
+  <li><a href="#-troubleshooting">Troubleshooting</a></li>
+  <li><a href="#-references">References</a></li>
+  <li><a href="#-contributing">Contributing</a></li>
+  <li><a href="#-license">License</a></li>
 </ol><hr />
-<h2 id="overview">
+<h2 id="-overview">
   
   
-    <a href="#overview" class="anchor-heading" aria-labelledby="overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Overview
+    <a href="#-overview" class="anchor-heading" aria-labelledby="-overview"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📦 Overview
   
   
 </h2>
     
 <blockquote>
-  <p><strong>📖 <a href="https://n3b3x.github.io/hf-pcal95555-driver/">📚🌐 Live Complete Documentation</a></strong> - 
+  <p><strong>📖 <a href="https://n3b3x.github.io/hf-pcal95555-driver/">📚🌐 Live Complete Documentation</a></strong> —
 Interactive guides, examples, and step-by-step tutorials</p>
 </blockquote>
 
@@ -314,10 +315,10 @@ when a standard PCA9555 is detected.</p>
 <p>The driver is <strong>hardware-agnostic</strong> – it uses the CRTP (Curiously Recurring Template
 Pattern) for zero-overhead I2C abstraction. You only need to implement a small
 <code class="language-plaintext highlighter-rouge">I2cInterface</code> class for your platform.</p><hr />
-<h2 id="chip-compatibility">
+<h2 id="-chip-compatibility">
   
   
-    <a href="#chip-compatibility" class="anchor-heading" aria-labelledby="chip-compatibility"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Chip Compatibility
+    <a href="#-chip-compatibility" class="anchor-heading" aria-labelledby="-chip-compatibility"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔀 Chip Compatibility
   
   
 </h2>
@@ -406,10 +407,10 @@ when called on a PCA9555. You can check at runtime with:</p>
     <span class="n">driver</span><span class="p">.</span><span class="n">SetDriveStrength</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">DriveStrength</span><span class="o">::</span><span class="n">Level2</span><span class="p">);</span>
 <span class="p">}</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
-<h2 id="features">
+<h2 id="-features">
   
   
-    <a href="#features" class="anchor-heading" aria-labelledby="features"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Features
+    <a href="#-features" class="anchor-heading" aria-labelledby="-features"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> ✨ Features
   
   
 </h2>
@@ -428,10 +429,10 @@ when called on a PCA9555. You can check at runtime with:</p>
   <li><strong>Robust error handling</strong>: Bitmask error flags, configurable I2C retries</li>
   <li><strong>Graceful degradation</strong>: PCAL9555A features fail cleanly on PCA9555</li>
 </ul><hr />
-<h2 id="project-structure">
+<h2 id="️-project-structure">
   
   
-    <a href="#project-structure" class="anchor-heading" aria-labelledby="project-structure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Project Structure
+    <a href="#️-project-structure" class="anchor-heading" aria-labelledby="️-project-structure"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🗂️ Project Structure
   
   
 </h2>
@@ -492,10 +493,10 @@ when called on a PCA9555. You can check at runtime with:</p>
 ├── README.md                      # This file
 └── LICENSE                        # GPLv3
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
-<h2 id="quick-start">
+<h2 id="-quick-start">
   
   
-    <a href="#quick-start" class="anchor-heading" aria-labelledby="quick-start"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Quick Start
+    <a href="#-quick-start" class="anchor-heading" aria-labelledby="-quick-start"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🚀 Quick Start
   
   
 </h2>
@@ -600,10 +601,10 @@ when called on a PCA9555. You can check at runtime with:</p>
 <span class="n">gpio</span><span class="p">.</span><span class="n">WritePins</span><span class="p">({{</span><span class="mi">0</span><span class="p">,</span> <span class="nb">true</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="nb">false</span><span class="p">},</span> <span class="p">{</span><span class="mi">2</span><span class="p">,</span> <span class="nb">true</span><span class="p">}});</span>
 <span class="n">gpio</span><span class="p">.</span><span class="n">SetDirections</span><span class="p">({{</span><span class="mi">0</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Output</span><span class="p">},</span> <span class="p">{</span><span class="mi">1</span><span class="p">,</span> <span class="n">GPIODir</span><span class="o">::</span><span class="n">Input</span><span class="p">}});</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
-<h2 id="installation">
+<h2 id="-installation">
   
   
-    <a href="#installation" class="anchor-heading" aria-labelledby="installation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Installation
+    <a href="#-installation" class="anchor-heading" aria-labelledby="-installation"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔧 Installation
   
   
 </h2>
@@ -655,10 +656,10 @@ when called on a PCA9555. You can check at runtime with:</p>
   <li><strong>C++17</strong> or newer compiler</li>
   <li>An I2C peripheral driver for your platform</li>
 </ul><hr />
-<h2 id="building-and-flashing-esp32">
+<h2 id="-building-and-flashing-esp32">
   
   
-    <a href="#building-and-flashing-esp32" class="anchor-heading" aria-labelledby="building-and-flashing-esp32"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Building and Flashing (ESP32)
+    <a href="#-building-and-flashing-esp32" class="anchor-heading" aria-labelledby="-building-and-flashing-esp32"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔨 Building and Flashing (ESP32)
   
   
 </h2>
@@ -737,10 +738,10 @@ when called on a PCA9555. You can check at runtime with:</p>
 you may need to manually enter download mode: Hold <strong>BOOT</strong>, press <strong>RESET</strong>,
 release <strong>BOOT</strong>, then immediately run the flash command.</p>
 </blockquote><hr />
-<h2 id="api-reference">
+<h2 id="-api-reference">
   
   
-    <a href="#api-reference" class="anchor-heading" aria-labelledby="api-reference"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> API Reference
+    <a href="#-api-reference" class="anchor-heading" aria-labelledby="-api-reference"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📖 API Reference
   
   
 </h2>
@@ -1190,10 +1191,10 @@ release <strong>BOOT</strong>, then immediately run the flash command.</p>
     </tr>
   </tbody>
 </table></div><hr />
-<h2 id="examples">
+<h2 id="-examples">
   
   
-    <a href="#examples" class="anchor-heading" aria-labelledby="examples"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Examples
+    <a href="#-examples" class="anchor-heading" aria-labelledby="-examples"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📊 Examples
   
   
 </h2>
@@ -1260,10 +1261,10 @@ release <strong>BOOT</strong>, then immediately run the flash command.</p>
 </ol>
 
 <p>Configure <code class="language-plaintext highlighter-rouge">LEDS_ACTIVE_LOW</code> for your wiring (common-anode vs common-cathode).</p><hr />
-<h2 id="testing">
+<h2 id="-testing">
   
   
-    <a href="#testing" class="anchor-heading" aria-labelledby="testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Testing
+    <a href="#-testing" class="anchor-heading" aria-labelledby="-testing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🧪 Testing
   
   
 </h2>
@@ -1351,10 +1352,10 @@ ALL PCAL9555 TESTS PASSED!
 <span class="c1">// ... etc</span>
 <span class="k">static</span> <span class="k">constexpr</span> <span class="kt">bool</span> <span class="n">ENABLE_INTERACTIVE_INPUT_TESTS</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span> <span class="c1">// Requires button</span>
 </pre></td></tr></tbody></table></div></code></pre></div></div><hr />
-<h2 id="hardware-setup">
+<h2 id="-hardware-setup">
   
   
-    <a href="#hardware-setup" class="anchor-heading" aria-labelledby="hardware-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Hardware Setup
+    <a href="#-hardware-setup" class="anchor-heading" aria-labelledby="-hardware-setup"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔌 Hardware Setup
   
   
 </h2>
@@ -1416,10 +1417,10 @@ For active-LOW: LED cathode to IO pin, anode to VDD through resistor.</p>
 <p>Connect a momentary push-button between PCA9555 pin IO0_0 and GND.
 For PCAL9555A, the internal pull-up is enabled automatically.
 For PCA9555, add an external 10kΩ pull-up resistor to VDD.</p><hr />
-<h2 id="troubleshooting">
+<h2 id="️-troubleshooting">
   
   
-    <a href="#troubleshooting" class="anchor-heading" aria-labelledby="troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Troubleshooting
+    <a href="#️-troubleshooting" class="anchor-heading" aria-labelledby="️-troubleshooting"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🛠️ Troubleshooting
   
   
 </h2>
@@ -1496,10 +1497,53 @@ Run flash command immediately.</p>
 
 <p>This means the 3-step detection could not confirm the chip type (bus error during
 probe). Check wiring, pull-ups, and power supply.</p><hr />
-<h2 id="contributing">
+<h2 id="-references">
   
   
-    <a href="#contributing" class="anchor-heading" aria-labelledby="contributing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Contributing
+    <a href="#-references" class="anchor-heading" aria-labelledby="-references"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🔗 References
+  
+  
+</h2>
+    
+
+<div class="table-wrapper"><table>
+  <thead>
+    <tr>
+      <th>Resource</th>
+      <th>Link</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>NXP PCA9555 product page</td>
+      <td><a href="https://www.nxp.com/products/PCA9555">https://www.nxp.com/products/PCA9555</a></td>
+    </tr>
+    <tr>
+      <td>NXP PCAL9555A product page</td>
+      <td><a href="https://www.nxp.com/products/PCAL9555A">https://www.nxp.com/products/PCAL9555A</a></td>
+    </tr>
+    <tr>
+      <td>PCA9555 datasheet (NXP)</td>
+      <td><a href="https://www.nxp.com/docs/en/data-sheet/PCA9555.pdf">https://www.nxp.com/docs/en/data-sheet/PCA9555.pdf</a></td>
+    </tr>
+    <tr>
+      <td>PCAL9555A datasheet (NXP)</td>
+      <td><a href="https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf">https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf</a></td>
+    </tr>
+    <tr>
+      <td>ESP-IDF I²C master</td>
+      <td><a href="https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html">https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html</a></td>
+    </tr>
+    <tr>
+      <td>C++17 language reference</td>
+      <td><a href="https://en.cppreference.com/w/cpp/17">https://en.cppreference.com/w/cpp/17</a></td>
+    </tr>
+  </tbody>
+</table></div>
+<h2 id="-contributing">
+  
+  
+    <a href="#-contributing" class="anchor-heading" aria-labelledby="-contributing"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 🤝 Contributing
   
   
 </h2>
@@ -1513,10 +1557,10 @@ probe). Check wiring, pull-ups, and power supply.</p><hr />
   <li>Update documentation for any API changes</li>
   <li>Ensure the build passes for both <code class="language-plaintext highlighter-rouge">Debug</code> and <code class="language-plaintext highlighter-rouge">Release</code> configurations</li>
 </ol><hr />
-<h2 id="license">
+<h2 id="-license">
   
   
-    <a href="#license" class="anchor-heading" aria-labelledby="license"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> License
+    <a href="#-license" class="anchor-heading" aria-labelledby="-license"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> 📄 License
   
   
 </h2>
