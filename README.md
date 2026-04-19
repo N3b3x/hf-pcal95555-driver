@@ -54,6 +54,8 @@ The driver is **hardware-agnostic** -- it uses the CRTP (Curiously Recurring Tem
 Pattern) for zero-overhead I2C abstraction. You only need to implement a small
 `I2cInterface` class for your platform.
 
+![PCA9555 / PCAL9555A 16-bit I2C GPIO expander topology](docs/assets/pcal95555-topology.svg)
+
 ---
 
 ## 🔀 Chip Compatibility

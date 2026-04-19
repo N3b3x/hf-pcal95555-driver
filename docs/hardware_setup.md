@@ -9,6 +9,8 @@ permalink: /docs/hardware_setup/
 
 # Hardware Setup
 
+![PCA9555 / PCAL9555A 16-bit I2C GPIO expander topology](assets/pcal95555-topology.svg)
+
 This guide covers the physical connections and hardware requirements for the **PCA9555** and **PCAL9555A** chips. Both are pin-compatible -- the same wiring works for either variant. The driver auto-detects which chip is connected.
 
 ## Pin Connections
