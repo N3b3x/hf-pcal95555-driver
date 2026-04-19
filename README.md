@@ -16,27 +16,28 @@ permalink: /
 
 ---
 
-## Table of Contents
+## 📚 Table of Contents
 
-1. [Overview](#overview)
-2. [Chip Compatibility](#chip-compatibility)
-3. [Features](#features)
-4. [Project Structure](#project-structure)
-5. [Quick Start](#quick-start)
-6. [Installation](#installation)
-7. [Building and Flashing (ESP32)](#building-and-flashing-esp32)
-8. [API Reference](#api-reference)
-9. [Examples](#examples)
-10. [Testing](#testing)
-11. [Hardware Setup](#hardware-setup)
-12. [Troubleshooting](#troubleshooting)
-13. [Contributing](#contributing)
-14. [License](#license)
+1. [Overview](#-overview)
+2. [Chip Compatibility](#-chip-compatibility)
+3. [Features](#-features)
+4. [Project Structure](#-project-structure)
+5. [Quick Start](#-quick-start)
+6. [Installation](#-installation)
+7. [Building and Flashing (ESP32)](#-building-and-flashing-esp32)
+8. [API Reference](#-api-reference)
+9. [Examples](#-examples)
+10. [Testing](#-testing)
+11. [Hardware Setup](#-hardware-setup)
+12. [Troubleshooting](#-troubleshooting)
+13. [References](#-references)
+14. [Contributing](#-contributing)
+15. [License](#-license)
 
 ---
 
-## Overview
-> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** - 
+## 📦 Overview
+> **📖 [📚🌐 Live Complete Documentation](https://n3b3x.github.io/hf-pcal95555-driver/)** —
 > Interactive guides, examples, and step-by-step tutorials
 
 The **PCA9555** and **PCAL9555A** are 16-bit I/O expanders from NXP Semiconductors
@@ -55,7 +56,7 @@ Pattern) for zero-overhead I2C abstraction. You only need to implement a small
 
 ---
 
-## Chip Compatibility
+## 🔀 Chip Compatibility
 
 The PCAL9555A is a pin-compatible superset of the PCA9555. The driver handles both
 transparently:
@@ -91,7 +92,7 @@ if (driver.HasAgileIO()) {
 
 ---
 
-## Features
+## ✨ Features
 
 - **Dual-chip support**: Auto-detects PCA9555 vs PCAL9555A at runtime
 - **16 GPIO Pins**: Two 8-bit ports (PORT_0: pins 0-7, PORT_1: pins 8-15)
@@ -107,7 +108,7 @@ if (driver.HasAgileIO()) {
 
 ---
 
-## Project Structure
+## 🗂️ Project Structure
 
 ```
 hf-pcal95555-driver/
@@ -141,7 +142,7 @@ hf-pcal95555-driver/
 
 ---
 
-## Quick Start
+## 🚀 Quick Start
 
 ### 1. Implement the I2C interface for your platform
 
@@ -197,7 +198,7 @@ gpio.SetDirections({{0, GPIODir::Output}, {1, GPIODir::Input}});
 
 ---
 
-## Installation
+## 🔧 Installation
 
 This is a **header-only template library** with implementation included via `#include`.
 
@@ -221,7 +222,7 @@ Add as a managed component or place in your project's `components/` directory.
 
 ---
 
-## Building and Flashing (ESP32)
+## 🔨 Building and Flashing (ESP32)
 
 ### Prerequisites
 - [ESP-IDF v5.5+](https://docs.espressif.com/projects/esp-idf/en/latest/esp32/get-started/)
@@ -261,7 +262,7 @@ cd examples/esp32
 
 ---
 
-## API Reference
+## 📖 API Reference
 
 ### Initialization
 
@@ -375,7 +376,7 @@ cd examples/esp32
 
 ---
 
-## Examples
+## 📊 Examples
 
 ### Comprehensive Test Suite (`pcal95555_comprehensive_test`)
 
@@ -425,7 +426,7 @@ Configure `LEDS_ACTIVE_LOW` for your wiring (common-anode vs common-cathode).
 
 ---
 
-## Testing
+## 🧪 Testing
 
 ### Running on hardware
 
@@ -474,7 +475,7 @@ static constexpr bool ENABLE_INTERACTIVE_INPUT_TESTS = false; // Requires button
 
 ---
 
-## Hardware Setup
+## 🔌 Hardware Setup
 
 ### Minimal wiring (ESP32-S3 + PCA9555/PCAL9555A)
 
@@ -509,7 +510,7 @@ For PCA9555, add an external 10kΩ pull-up resistor to VDD.
 
 ---
 
-## Troubleshooting
+## 🛠️ Troubleshooting
 
 ### "I2C transaction unexpected nack detected"
 
@@ -540,7 +541,18 @@ probe). Check wiring, pull-ups, and power supply.
 
 ---
 
-## Contributing
+## 🔗 References
+
+| Resource | Link |
+|----------|------|
+| NXP PCA9555 product page | <https://www.nxp.com/products/PCA9555> |
+| NXP PCAL9555A product page | <https://www.nxp.com/products/PCAL9555A> |
+| PCA9555 datasheet (NXP) | <https://www.nxp.com/docs/en/data-sheet/PCA9555.pdf> |
+| PCAL9555A datasheet (NXP) | <https://www.nxp.com/docs/en/data-sheet/PCAL9555A.pdf> |
+| ESP-IDF I²C master | <https://docs.espressif.com/projects/esp-idf/en/stable/esp32/api-reference/peripherals/i2c.html> |
+| C++17 language reference | <https://en.cppreference.com/w/cpp/17> |
+
+## 🤝 Contributing
 
 Pull requests and suggestions are welcome! Please:
 
@@ -551,7 +563,7 @@ Pull requests and suggestions are welcome! Please:
 
 ---
 
-## License
+## 📄 License
 
 This project is licensed under the **GNU General Public License v3.0**.
 See the [LICENSE](LICENSE) file for details.
