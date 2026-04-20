@@ -42,18 +42,33 @@
   <text class="pinL" x="66" y="188">3.3V</text>
   <text class="pinL" x="66" y="208">GND</text>
 
-  <!-- I2C wires: MCU to chip -->
-  <line class="wire-i2c" x1="170" y1="140" x2="290" y2="140"/>
-  <line class="wire-i2c" x1="170" y1="160" x2="290" y2="160"/>
+  <!-- I2C wires: MCU to pull-up junctions -->
+  <line class="wire-i2c" x1="170" y1="140" x2="216" y2="140"/>
+  <line class="wire-i2c" x1="170" y1="160" x2="260" y2="160"/>
+  <!-- I2C wires: pull-up junctions to chip -->
+  <line class="wire-i2c" x1="216" y1="140" x2="290" y2="140"/>
+  <line class="wire-i2c" x1="260" y1="160" x2="290" y2="160"/>
   <!-- Power / GND wires: MCU to chip -->
   <line class="wire-pwr" x1="170" y1="184" x2="290" y2="184"/>
   <line class="wire-gnd" x1="170" y1="204" x2="290" y2="204"/>
 
   <!-- Wire labels between MCU and chip -->
-  <text class="small" x="230" y="134">SCL</text>
-  <text class="small" x="230" y="156">SDA</text>
+  <text class="small" x="196" y="134">SCL</text>
+  <text class="small" x="196" y="156">SDA</text>
   <text class="small" x="230" y="180">VDD</text>
   <text class="small" x="230" y="200">GND</text>
+
+  <!-- Pull-up resistor for SCL -->
+  <line class="wire-i2c" x1="216" y1="140" x2="216" y2="114"/>
+  <rect class="pullup" x="202" y="92" width="28" height="22" rx="3"/>
+  <text class="small" x="216" y="107">4.7k&#937;</text>
+  <line class="wire-pwr" x1="216" y1="92" x2="216" y2="80"/>
+
+  <!-- Pull-up resistor for SDA -->
+  <line class="wire-i2c" x1="260" y1="160" x2="260" y2="114"/>
+  <rect class="pullup" x="246" y="92" width="28" height="22" rx="3"/>
+  <text class="small" x="260" y="107">4.7k&#937;</text>
+  <line class="wire-pwr" x1="260" y1="92" x2="260" y2="80"/>
 
   <!-- PCA9555 chip body -->
   <rect class="chip" x="290" y="100" width="270" height="130" rx="8"/>
@@ -62,17 +77,6 @@
   <text class="pinL" x="304" y="164">SDA</text>
   <text class="pinL" x="304" y="188">VDD</text>
   <text class="pinL" x="304" y="208">GND</text>
-
-  <!-- Pull-up resistor for SCL -->
-  <rect class="pullup" x="384" y="130" width="72" height="20" rx="4"/>
-  <text class="small" x="420" y="144">4.7 k&#937;</text>
-  <line class="wire-pwr" x1="420" y1="130" x2="420" y2="80"/>
-
-  <!-- Pull-up resistor for SDA -->
-  <rect class="pullup" x="384" y="152" width="72" height="20" rx="4"/>
-  <text class="small" x="420" y="166">4.7 k&#937;</text>
-  <line class="wire-pwr" x1="456" y1="162" x2="480" y2="162"/>
-  <line class="wire-pwr" x1="480" y1="162" x2="480" y2="80"/>
 
   <!-- VDD wire from chip to 3.3V rail -->
   <line class="wire-pwr" x1="530" y1="184" x2="560" y2="184"/>
