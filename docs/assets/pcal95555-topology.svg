@@ -50,7 +50,7 @@
   <text class="small" x="190" y="194">INT</text>
 
   <!-- Chip body -->
-  <rect class="chip" x="220" y="80" width="430" height="320" rx="10"/>
+  <rect class="chip" x="220" y="80" width="430" height="316" rx="10"/>
   <text class="head" x="435" y="104">PCA9555 / PCAL9555A</text>
   <text class="small" x="435" y="122">2x 8-bit I/O ports &#183; I2C up to 400 kHz &#183; per-pin direction / polarity</text>
 
@@ -88,18 +88,26 @@
   <text class="small" x="436" y="374">PCA9555 returns Error::UnsupportedFeature on these calls (degrades gracefully)</text>
 
   <!-- Address selector panel (right) -->
-  <rect class="box" x="680" y="80" width="170" height="220" rx="6"/>
+  <rect class="box" x="680" y="80" width="170" height="316" rx="6"/>
   <text class="title" x="765" y="102">I2C address selector</text>
-  <text class="smallL" x="694" y="122">addr = 0x20</text>
-  <text class="smallL" x="694" y="138">  | (A2 &lt;&lt; 2)</text>
-  <text class="smallL" x="694" y="154">  | (A1 &lt;&lt; 1)</text>
-  <text class="smallL" x="694" y="170">  | A0</text>
-  <text class="smallL" x="694" y="190">=&gt; 8 chips per I2C bus</text>
-  <text class="pinL"   x="694" y="216">A2 A1 A0  -&gt;  addr</text>
-  <text class="pinL"   x="694" y="234">0  0  0   -&gt;  0x20</text>
-  <text class="pinL"   x="694" y="252">0  0  1   -&gt;  0x21</text>
-  <text class="pinL"   x="694" y="268">  ...</text>
-  <text class="pinL"   x="694" y="286">1  1  1   -&gt;  0x27</text>
+  <text class="smallL" x="694" y="122">3 hardware pins (A2, A1, A0)</text>
+  <text class="smallL" x="694" y="138">set to VCC (1) or GND (0)</text>
+  <text class="smallL" x="694" y="158">Base address: 0x20</text>
+  <text class="smallL" x="694" y="174">&#8594; 8 devices per I2C bus</text>
+  <line x1="694" y1="184" x2="840" y2="184" stroke="#1a365d" stroke-width="0.8"/>
+  <text class="pinL"   x="694" y="202">A2 A1 A0   addr</text>
+  <line x1="694" y1="208" x2="840" y2="208" stroke="#1a365d" stroke-width="0.6"/>
+  <text class="pinL"   x="694" y="222"> 0  0  0   0x20</text>
+  <text class="pinL"   x="694" y="238"> 0  0  1   0x21</text>
+  <text class="pinL"   x="694" y="254"> 0  1  0   0x22</text>
+  <text class="pinL"   x="694" y="270"> 0  1  1   0x23</text>
+  <text class="pinL"   x="694" y="286"> 1  0  0   0x24</text>
+  <text class="pinL"   x="694" y="302"> 1  0  1   0x25</text>
+  <text class="pinL"   x="694" y="318"> 1  1  0   0x26</text>
+  <text class="pinL"   x="694" y="334"> 1  1  1   0x27</text>
+  <line x1="694" y1="340" x2="840" y2="340" stroke="#1a365d" stroke-width="0.6"/>
+  <text class="smallL" x="694" y="358">Tie unused to GND</text>
+  <text class="smallL" x="694" y="374">for addr 0x20</text>
 
   <!-- Driver auto-detection panel (below chip, full width) -->
   <rect class="panelL" x="220" y="416" width="630" height="76" rx="6"/>
