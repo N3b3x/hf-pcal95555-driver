@@ -97,6 +97,8 @@ The I/O expander I2C address is determined by pins A0-A2:
 
 ## Example Wiring Diagram
 
+![PCAL95555 wiring](assets/pcal95555-wiring.svg)
+
 ### Single Device
 
 ```
