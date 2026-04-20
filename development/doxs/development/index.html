@@ -86,6 +86,7 @@ $(function() {
 <p>The <b>PCA9555</b> and <b>PCAL9555A</b> are 16-bit I/O expanders from NXP Semiconductors that communicate via I2C. They provide 16 GPIO pins organized into two 8-bit ports (PORT_0: pins 0-7, PORT_1: pins 8-15), expanding your microcontroller's I/O capabilities over a simple two-wire bus.</p>
 <p>This driver provides a <b>single, unified C++ class</b> that supports <b>both</b> chip variants. The chip type is <b>auto-detected</b> during initialization by probing the extended register bank. Features exclusive to the PCAL9555A degrade gracefully when a standard PCA9555 is detected.</p>
 <p>The driver is <b>hardware-agnostic</b> &ndash; it uses the CRTP (Curiously Recurring Template Pattern) for zero-overhead I2C abstraction. You only need to implement a small <code>I2cInterface</code> class for your platform.</p>
+<p><img src="docs/assets/pcal95555-topology.svg" alt="PCA9555 / PCAL9555A 16-bit I2C GPIO expander topology" style="pointer-events: none;" class="inline"/></p>
 <h1><a class="anchor" id="autotoc_md2"></a>
 ✨ Features</h1>
 <ul>

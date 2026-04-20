@@ -897,7 +897,7 @@
   },"128": {
     "doc": "🔌 Hardware Setup",
     "title": "Hardware Setup",
-    "content": "This guide covers the physical connections and hardware requirements for the PCA9555 and PCAL9555A chips. Both are pin-compatible – the same wiring works for either variant. The driver auto-detects which chip is connected. ",
+    "content": ". This guide covers the physical connections and hardware requirements for the PCA9555 and PCAL9555A chips. Both are pin-compatible – the same wiring works for either variant. The driver auto-detects which chip is connected. ",
     "url": "/hf-pcal95555-driver/development/docs/hardware_setup/#hardware-setup",
     
     "relUrl": "/docs/hardware_setup/#hardware-setup"
