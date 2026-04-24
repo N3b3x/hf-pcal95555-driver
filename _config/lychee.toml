@@ -64,4 +64,6 @@ exclude = [
   
   # GitHub Actions badge URLs that may not exist yet
   '^https://github\.com/N3b3x/hf-pcal95555-driver/actions/workflows/.*',
+  # Manufacturer / IC vendor documentation URLs (frequently block automated crawlers)
+  '^https?://(www\\.)?nxp\\.com/',
 ]
