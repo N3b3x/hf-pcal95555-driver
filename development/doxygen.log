@@ -1,5 +1,5 @@
-warning: ignoring unsupported tag 'PAGE_OUTLINE_PANEL' at line 1765, file /tmp/doxyfile.YujTYE
-warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.YujTYE' has become obsolete.
+warning: ignoring unsupported tag 'PAGE_OUTLINE_PANEL' at line 1765, file /tmp/doxyfile.2ZI2gw
+warning: Tag 'DOT_TRANSPARENT' at line 2788 of file '/tmp/doxyfile.2ZI2gw' has become obsolete.
          To avoid this warning please remove this line from your configuration file or upgrade it using "doxygen -u"
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:18: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
 /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src/pcal95555.ipp:38: warning: documented symbol 'pcal95555::PCAL95555::PCAL95555' was not declared or defined.
@@ -74,8 +74,8 @@ Searching for dia files...
 Searching for files to exclude
 Searching INPUT for files to process...
 Searching for files in directory /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs
-Searching for files in directory /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/datasheet
 Searching for files in directory /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/assets
+Searching for files in directory /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/docs/datasheet
 Searching for files in directory /home/runner/work/hf-pcal95555-driver/hf-pcal95555-driver/src
 Reading and parsing tag files
 Parsing files
@@ -194,7 +194,12 @@ finalizing index lists...
 writing tag file...
 Running plantuml with JAVA...
 Running dot...
-Patching output file 1/1
+Generating dot graphs using 5 parallel threads...
+Running dot for graph 1/2
+Running dot for graph 2/2
+Patching output file 1/3
+Patching output file 2/3
+Patching output file 3/3
 type lookup cache used 0/65536 hits=0 misses=0
 symbol lookup cache used 0/65536 hits=0 misses=0
 finished...
