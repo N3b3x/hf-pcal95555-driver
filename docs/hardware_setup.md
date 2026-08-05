@@ -34,9 +34,9 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
 | GND | Ground | Ground reference | Yes |
 | SCL | Clock | I2C clock line | Yes |
 | SDA | Data | I2C data line | Yes |
-| A0-A2 | Address | I2C address selection pins | No (for single device) |
-| INT | Interrupt | Interrupt output (optional) | No |
-| RESET | Reset | Hardware reset (optional) | No |
+| A0-A2 | Address | I2C address selection pins (tie to VDD or GND — do not float) | Yes (strap for address) |
+| INT | Interrupt | Interrupt output (optional, open-drain) | No |
+| — | Reset | **PCAL9555A / PCA9555 have no `/RESET` pin** (power-on reset only). Do not confuse with PCA9539 / PCA9671 on the same OM13489 eval matrix. | N/A |
 
 ### GPIO Pins
 
@@ -137,13 +137,16 @@ The INT pin provides hardware interrupt notification:
 - **Requires**: External pull-up resistor (typically 10kΩ to 3.3V)
 - **Usage**: Connect to a GPIO input on your MCU for interrupt-driven I/O
 
-## Reset Pin (Optional)
+## Reset (not on PCAL9555A)
 
-The RESET pin provides hardware reset:
+**PCA9555 / PCAL9555A do not have a hardware `/RESET` pin.** Registers and the
+I²C state machine come out of reset via **power-on reset** when VDD rises through
+VPOR. To force a full chip reset, power-cycle VDD below VPORF and back up.
 
-- **Type**: Active-low input
-- **Usage**: Connect to MCU GPIO for software reset capability
-- **Default**: Leave floating (internal pull-up enables device)
+If your board silk shows “RESET” (e.g. NXP **OM13489** green GPIO daughter), that
+net is for **other** TSSOP24 parts on the same matrix (PCA9539, PCA9671, …). For
+PCAL9555A, configure the matrix for **INT + A0/A1/A2** (UM10752 §4.3) — do not
+treat a floating board RESET jumper as the cause of I2C NACKs on this SKU.
 
 ## Next Steps
 
