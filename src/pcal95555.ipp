@@ -80,6 +80,19 @@ bool pcal95555::PCAL95555<I2cType>::EnsureInitialized() noexcept {
   return initialize();
 }
 
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::ForceMarkInitialized(ChipVariant variant) noexcept {
+  if (variant == ChipVariant::Unknown) {
+    return false;
+  }
+  user_variant_ = variant;
+  chip_variant_ = variant;
+  previous_pin_states_ = 0;
+  clearError(Error::I2CReadFail);
+  initialized_ = true;
+  return true;
+}
+
 // Perform actual initialization
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::initialize() noexcept {
@@ -134,8 +147,12 @@ void pcal95555::PCAL95555<I2cType>::SetRetries(int retries) noexcept {
 // Low-level write with retries
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::writeRegister(uint8_t reg, uint8_t value) noexcept {
+  /* Payload byte in .bss — &value would point at an SDRAM-stack parameter on
+   * Portenta CM4 and ldrb in the adapter can drop the byte. */
+  static uint8_t s_byte = 0;
+  s_byte = value;
   for (int attempt = 0; attempt <= retries_; ++attempt) {
-    if (i2c_->Write(dev_addr_, reg, &value, 1)) {
+    if (i2c_->Write(dev_addr_, reg, &s_byte, 1)) {
       clearError(Error::I2CWriteFail);
       return true;
     }
@@ -146,9 +163,11 @@ bool pcal95555::PCAL95555<I2cType>::writeRegister(uint8_t reg, uint8_t value) no
 // Low-level read with retries
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::readRegister(uint8_t reg, uint8_t& value) noexcept {
+  static uint8_t s_byte = 0;
   for (int attempt = 0; attempt <= retries_; ++attempt) {
-    if (i2c_->Read(dev_addr_, reg, &value, 1)) {
+    if (i2c_->Read(dev_addr_, reg, &s_byte, 1)) {
       clearError(Error::I2CReadFail);
+      value = s_byte;
       return true;
     }
   }
@@ -236,15 +255,27 @@ static uint8_t updateBit(uint8_t regVal, uint8_t bit, bool set) noexcept {
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::readDualPort(uint8_t reg0, uint8_t reg1,
                                                   uint8_t& val0, uint8_t& val1) noexcept {
-  if (!readRegister(reg0, val0)) {
+  /* Assemble in TU .bss — not the caller’s stack. On Portenta CM4, FreeRTOS
+   * stacks live in FMC SDRAM where ldrb of stack bytes is unreliable; Port0
+   * looked correct while Port1 stuck at a stale high byte (often 0x24). */
+  static uint8_t s_ports[2] = {0, 0};
+  if (!readRegister(reg0, s_ports[0])) {
     return false;
   }
-  return readRegister(reg1, val1);
+  if (!readRegister(reg1, s_ports[1])) {
+    return false;
+  }
+  val0 = s_ports[0];
+  val1 = s_ports[1];
+  return true;
 }
 
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::writeDualPort(uint8_t reg0, uint8_t reg1,
                                                    uint8_t val0, uint8_t val1) noexcept {
+  /* Two single-register writes. (A 3-byte sequential [cmd][v0][v1] frame was
+   * observed to leave CONFIG mismatched on Mid I2C0 while reads are fixed via
+   * sequential 2-byte Mem_Read below.) */
   if (!writeRegister(reg0, val0)) {
     return false;
   }
@@ -906,6 +937,33 @@ uint16_t pcal95555::PCAL95555<I2cType>::ReadAllInputs() noexcept {
     return 0;
   }
   return readPinStates();
+}
+
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::ReadDualPortRegister(uint8_t reg0, uint8_t reg1,
+                                                         uint16_t& value) noexcept {
+  value = 0;
+  if (!EnsureInitialized()) {
+    return false;
+  }
+  /* Keep port bytes in .bss while assembling — avoid SDRAM-stack ldrb. */
+  static uint8_t s_ports[2] = {0, 0};
+  if (!readDualPort(reg0, reg1, s_ports[0], s_ports[1])) {
+    return false;
+  }
+  value = static_cast<uint16_t>(s_ports[0]) |
+          static_cast<uint16_t>(static_cast<uint16_t>(s_ports[1]) << 8);
+  return true;
+}
+
+template <typename I2cType>
+bool pcal95555::PCAL95555<I2cType>::WriteDualPortRegister(uint8_t reg0, uint8_t reg1,
+                                                          uint16_t value) noexcept {
+  if (!EnsureInitialized()) {
+    return false;
+  }
+  return writeDualPort(reg0, reg1, static_cast<uint8_t>(value & 0xFFU),
+                       static_cast<uint8_t>((value >> 8) & 0xFFU));
 }
 
 // Handle interrupt - read status, check conditions, call callbacks

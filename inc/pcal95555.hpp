@@ -552,6 +552,30 @@ public:
   uint16_t ReadAllInputs() noexcept;
 
   /**
+   * @brief Read a dual-port register pair into a 16-bit pin mask.
+   *
+   * @param reg0 Port-0 register (bits 0..7).
+   * @param reg1 Port-1 register (bits 8..15).
+   * @param[out] value Bit N corresponds to pin N.
+   * @return true on success; false on I2C failure.
+   */
+  bool ReadDualPortRegister(uint8_t reg0, uint8_t reg1, uint16_t& value) noexcept;
+
+  /**
+   * @brief Write a dual-port register pair from a 16-bit pin mask (no readback).
+   *
+   * Prefer this over read-modify-write when the caller maintains a shadow of
+   * the port (OUTPUT / CONFIG / POLARITY). Absolute writes avoid corrupting
+   * latches if a prior register read returned the wrong bank.
+   *
+   * @param reg0 Port-0 register (bits 0..7).
+   * @param reg1 Port-1 register (bits 8..15).
+   * @param value Bit N corresponds to pin N.
+   * @return true on success; false on I2C failure.
+   */
+  bool WriteDualPortRegister(uint8_t reg0, uint8_t reg1, uint16_t value) noexcept;
+
+  /**
    * @brief Enable or disable the pull-up/pull-down resistor on a pin.
    *
    * @param pin Zero-based pin index (0-15).
@@ -1018,6 +1042,26 @@ public:
    *   // Driver is now ready to use
    */
   bool EnsureInitialized() noexcept;
+
+  /**
+   * @brief Mark the driver initialized without the probe read.
+   *
+   * Use only when the bus/adapter path has already proven INPUT_PORT access
+   * (e.g. bring-up) and @c EnsureInitialized()'s first @c readRegister is known
+   * to misbehave on the target master. Sets @p variant as both user and
+   * detected chip type and seeds previous pin state to 0.
+   *
+   * @note Portenta Mid I2C0 (STM32 I2C3): after the HalI2c adapter proves
+   *       INPUT_PORT, repeating the driver probe (W 0x35) can leave the
+   *       master sticky and block CONFIG/OUTPUT programming. Flying-wire
+   *       @c Pcal95555Handler uses this path, then programs ports via
+   *       absolute writes + shadows. Prefer fixing the bus path long-term
+   *       over expanding callers.
+   *
+   * @param variant PCA9555 or PCAL9555A (not Unknown).
+   * @return true if @p variant is usable; false if Unknown.
+   */
+  bool ForceMarkInitialized(ChipVariant variant) noexcept;
 
 protected:
   /**
