@@ -147,8 +147,10 @@ void pcal95555::PCAL95555<I2cType>::SetRetries(int retries) noexcept {
 // Low-level write with retries
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::writeRegister(uint8_t reg, uint8_t value) noexcept {
-  /* Payload byte in .bss — &value would point at an SDRAM-stack parameter on
-   * Portenta CM4 and ldrb in the adapter can drop the byte. */
+  /* Stage the payload in TU static storage before the I2C write.
+   * Callers may pass a stack/external-RAM byte; some MCU memory maps do not
+   * reliably support single-byte loads from those regions into the bus DMA
+   * path, so the adapter always reads from internal SRAM/.bss. */
   static uint8_t s_byte = 0;
   s_byte = value;
   for (int attempt = 0; attempt <= retries_; ++attempt) {
@@ -255,9 +257,9 @@ static uint8_t updateBit(uint8_t regVal, uint8_t bit, bool set) noexcept {
 template <typename I2cType>
 bool pcal95555::PCAL95555<I2cType>::readDualPort(uint8_t reg0, uint8_t reg1,
                                                   uint8_t& val0, uint8_t& val1) noexcept {
-  /* Assemble in TU .bss — not the caller’s stack. On Portenta CM4, FreeRTOS
-   * stacks live in FMC SDRAM where ldrb of stack bytes is unreliable; Port0
-   * looked correct while Port1 stuck at a stale high byte (often 0x24). */
+  /* Dual-port assemble in TU static storage (not caller stack / external RAM).
+   * Keeps both port bytes coherent for R-M-W and avoids single-byte load
+   * hazards on MCU maps where task stacks sit outside tightly-coupled SRAM. */
   static uint8_t s_ports[2] = {0, 0};
   if (!readRegister(reg0, s_ports[0])) {
     return false;
@@ -384,8 +386,8 @@ bool pcal95555::PCAL95555<I2cType>::ReadPin(uint8_t pin) noexcept {
   clearError(Error::InvalidPin);
   uint8_t reg = (pin < 8) ? static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_0) : static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_1);
   uint8_t bit = pin % 8;
-  /* .bss — not FreeRTOS SDRAM stack. Portenta CM4 ldrb of stack bytes after
-   * I2C RX leaves Port1 (MAX nFLT / TLE nFLT) stuck LOW and false-faults. */
+  /* Read into TU static storage, then mask. Avoids relying on a stack-local
+   * receive byte when the I2C adapter may only safely touch internal SRAM. */
   static uint8_t s_val = 0;
   if (!readRegister(reg, s_val)) {
     return false;
@@ -925,7 +927,7 @@ bool pcal95555::PCAL95555<I2cType>::RegisterInterruptHandler() noexcept {
 // Read current pin states (private helper)
 template <typename I2cType>
 uint16_t pcal95555::PCAL95555<I2cType>::readPinStates() noexcept {
-  /* Same SDRAM-stack hazard as ReadPin — assemble in TU .bss. */
+  /* Assemble both INPUT ports in TU static storage (see readDualPort). */
   static uint8_t s_ports[2] = {0, 0};
   readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_0), s_ports[0]);
   readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_1), s_ports[1]);
@@ -948,7 +950,7 @@ bool pcal95555::PCAL95555<I2cType>::ReadDualPortRegister(uint8_t reg0, uint8_t r
   if (!EnsureInitialized()) {
     return false;
   }
-  /* Keep port bytes in .bss while assembling — avoid SDRAM-stack ldrb. */
+  /* Assemble through readDualPort’s static staging buffers. */
   static uint8_t s_ports[2] = {0, 0};
   if (!readDualPort(reg0, reg1, s_ports[0], s_ports[1])) {
     return false;
