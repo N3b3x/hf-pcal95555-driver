@@ -384,11 +384,13 @@ bool pcal95555::PCAL95555<I2cType>::ReadPin(uint8_t pin) noexcept {
   clearError(Error::InvalidPin);
   uint8_t reg = (pin < 8) ? static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_0) : static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_1);
   uint8_t bit = pin % 8;
-  uint8_t val = 0;
-  if (!readRegister(reg, val)) {
+  /* .bss — not FreeRTOS SDRAM stack. Portenta CM4 ldrb of stack bytes after
+   * I2C RX leaves Port1 (MAX nFLT / TLE nFLT) stuck LOW and false-faults. */
+  static uint8_t s_val = 0;
+  if (!readRegister(reg, s_val)) {
     return false;
   }
-  return (val & (1 << bit)) != 0;
+  return (s_val & (1 << bit)) != 0;
 }
 
 // Write output port registers
@@ -923,11 +925,11 @@ bool pcal95555::PCAL95555<I2cType>::RegisterInterruptHandler() noexcept {
 // Read current pin states (private helper)
 template <typename I2cType>
 uint16_t pcal95555::PCAL95555<I2cType>::readPinStates() noexcept {
-  uint8_t port0 = 0;
-  uint8_t port1 = 0;
-  readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_0), port0);
-  readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_1), port1);
-  return (uint16_t(port1) << 8) | port0;
+  /* Same SDRAM-stack hazard as ReadPin — assemble in TU .bss. */
+  static uint8_t s_ports[2] = {0, 0};
+  readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_0), s_ports[0]);
+  readRegister(static_cast<uint8_t>(Pcal95555Reg::INPUT_PORT_1), s_ports[1]);
+  return (uint16_t(s_ports[1]) << 8) | s_ports[0];
 }
 
 // Read all 16 pin input states (public API)
