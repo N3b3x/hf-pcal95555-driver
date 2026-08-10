@@ -1051,12 +1051,11 @@ public:
    * to misbehave on the target master. Sets @p variant as both user and
    * detected chip type and seeds previous pin state to 0.
    *
-   * @note Portenta Mid I2C0 (STM32 I2C3): after the HalI2c adapter proves
-   *       INPUT_PORT, repeating the driver probe (W 0x35) can leave the
-   *       master sticky and block CONFIG/OUTPUT programming. Flying-wire
-   *       @c Pcal95555Handler uses this path, then programs ports via
-   *       absolute writes + shadows. Prefer fixing the bus path long-term
-   *       over expanding callers.
+   * @note On some STM32H7 masters, repeating the driver probe (W 0x35) after
+   *       INPUT_PORT has already succeeded can leave the controller sticky and
+   *       block CONFIG/OUTPUT programming. Callers that already proved the bus
+   *       may use this path, then program ports via absolute writes + shadows.
+   *       Prefer fixing the bus path long-term over expanding callers.
    *
    * @param variant PCA9555 or PCAL9555A (not Unknown).
    * @return true if @p variant is usable; false if Unknown.
