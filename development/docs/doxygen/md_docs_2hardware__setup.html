@@ -102,11 +102,11 @@ Pin Descriptions</h2>
 <tr class="markdownTableRowEven">
 <td class="markdownTableBodyNone">SDA   </td><td class="markdownTableBodyNone">Data   </td><td class="markdownTableBodyNone">I2C data line   </td><td class="markdownTableBodyNone">Yes    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">A0-A2   </td><td class="markdownTableBodyNone">Address   </td><td class="markdownTableBodyNone">I2C address selection pins   </td><td class="markdownTableBodyNone">No (for single device)    </td></tr>
+<td class="markdownTableBodyNone">A0-A2   </td><td class="markdownTableBodyNone">Address   </td><td class="markdownTableBodyNone">I2C address selection pins (tie to VDD or GND — do not float)   </td><td class="markdownTableBodyNone">Yes (strap for address)    </td></tr>
 <tr class="markdownTableRowEven">
-<td class="markdownTableBodyNone">INT   </td><td class="markdownTableBodyNone">Interrupt   </td><td class="markdownTableBodyNone">Interrupt output (optional)   </td><td class="markdownTableBodyNone">No    </td></tr>
+<td class="markdownTableBodyNone">INT   </td><td class="markdownTableBodyNone">Interrupt   </td><td class="markdownTableBodyNone">Interrupt output (optional, open-drain)   </td><td class="markdownTableBodyNone">No    </td></tr>
 <tr class="markdownTableRowOdd">
-<td class="markdownTableBodyNone">RESET   </td><td class="markdownTableBodyNone">Reset   </td><td class="markdownTableBodyNone">Hardware reset (optional)   </td><td class="markdownTableBodyNone">No   </td></tr>
+<td class="markdownTableBodyNone">—   </td><td class="markdownTableBodyNone">Reset   </td><td class="markdownTableBodyNone"><b>PCAL9555A / PCA9555 have no <code>/RESET</code> pin</b> (power-on reset only). Do not confuse with PCA9539 / PCA9671 on the same OM13489 eval matrix.   </td><td class="markdownTableBodyNone">N/A   </td></tr>
 </table>
 <h2><a class="anchor" id="autotoc_md86"></a>
 GPIO Pins</h2>
@@ -215,13 +215,9 @@ Interrupt Pin (Optional)</h1>
 <li><b>Usage</b>: Connect to a GPIO input on your MCU for interrupt-driven I/O</li>
 </ul>
 <h1><a class="anchor" id="autotoc_md96"></a>
-Reset Pin (Optional)</h1>
-<p>The RESET pin provides hardware reset:</p>
-<ul>
-<li><b>Type</b>: Active-low input</li>
-<li><b>Usage</b>: Connect to MCU GPIO for software reset capability</li>
-<li><b>Default</b>: Leave floating (internal pull-up enables device)</li>
-</ul>
+Reset (not on PCAL9555A)</h1>
+<p><b>PCA9555 / PCAL9555A do not have a hardware <code>/RESET</code> pin.</b> Registers and the I²C state machine come out of reset via <b>power-on reset</b> when VDD rises through VPOR. To force a full chip reset, power-cycle VDD below VPORF and back up.</p>
+<p>If your board silk shows “RESET” (e.g. NXP <b>OM13489</b> green GPIO daughter), that net is for <b>other</b> TSSOP24 parts on the same matrix (PCA9539, PCA9671, …). For PCAL9555A, configure the matrix for <b>INT + A0/A1/A2</b> (UM10752 §4.3) — do not treat a floating board RESET jumper as the cause of I2C NACKs on this SKU.</p>
 <h1><a class="anchor" id="autotoc_md97"></a>
 Next Steps</h1>
 <ul>

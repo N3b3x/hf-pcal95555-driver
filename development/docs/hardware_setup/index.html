@@ -351,20 +351,20 @@ SDA       ────── SDA (with 4.7kΩ pull-up to 3.3V)
     <tr>
       <td>A0-A2</td>
       <td>Address</td>
-      <td>I2C address selection pins</td>
-      <td>No (for single device)</td>
+      <td>I2C address selection pins (tie to VDD or GND — do not float)</td>
+      <td>Yes (strap for address)</td>
     </tr>
     <tr>
       <td>INT</td>
       <td>Interrupt</td>
-      <td>Interrupt output (optional)</td>
+      <td>Interrupt output (optional, open-drain)</td>
       <td>No</td>
     </tr>
     <tr>
-      <td>RESET</td>
+      <td>—</td>
       <td>Reset</td>
-      <td>Hardware reset (optional)</td>
-      <td>No</td>
+      <td><strong>PCAL9555A / PCA9555 have no <code class="language-plaintext highlighter-rouge">/RESET</code> pin</strong> (power-on reset only). Do not confuse with PCA9539 / PCA9671 on the same OM13489 eval matrix.</td>
+      <td>N/A</td>
     </tr>
   </tbody>
 </table></div>
@@ -612,22 +612,23 @@ instance auto-detects its chip variant independently.</p>
   <li><strong>Requires</strong>: External pull-up resistor (typically 10kΩ to 3.3V)</li>
   <li><strong>Usage</strong>: Connect to a GPIO input on your MCU for interrupt-driven I/O</li>
 </ul>
-<h2 id="reset-pin-optional">
+<h2 id="reset-not-on-pcal9555a">
   
   
-    <a href="#reset-pin-optional" class="anchor-heading" aria-labelledby="reset-pin-optional"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reset Pin (Optional)
+    <a href="#reset-not-on-pcal9555a" class="anchor-heading" aria-labelledby="reset-not-on-pcal9555a"><svg viewBox="0 0 16 16" aria-hidden="true"><use xlink:href="#svg-link"></use></svg></a> Reset (not on PCAL9555A)
   
   
 </h2>
     
 
-<p>The RESET pin provides hardware reset:</p>
+<p><strong>PCA9555 / PCAL9555A do not have a hardware <code class="language-plaintext highlighter-rouge">/RESET</code> pin.</strong> Registers and the
+I²C state machine come out of reset via <strong>power-on reset</strong> when VDD rises through
+VPOR. To force a full chip reset, power-cycle VDD below VPORF and back up.</p>
 
-<ul>
-  <li><strong>Type</strong>: Active-low input</li>
-  <li><strong>Usage</strong>: Connect to MCU GPIO for software reset capability</li>
-  <li><strong>Default</strong>: Leave floating (internal pull-up enables device)</li>
-</ul>
+<p>If your board silk shows “RESET” (e.g. NXP <strong>OM13489</strong> green GPIO daughter), that
+net is for <strong>other</strong> TSSOP24 parts on the same matrix (PCA9539, PCA9671, …). For
+PCAL9555A, configure the matrix for <strong>INT + A0/A1/A2</strong> (UM10752 §4.3) — do not
+treat a floating board RESET jumper as the cause of I2C NACKs on this SKU.</p>
 <h2 id="next-steps">
   
   

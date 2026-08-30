@@ -9,7 +9,7 @@ var searchData=
   ['references_6',['🔗 References',['../index.html#autotoc_md17',1,'']]],
   ['require_20the_20component_7',['3. Require the Component',['../md_docs_2cmake__integration.html#autotoc_md42',1,'']]],
   ['requirements_8',['Power Requirements',['../md_docs_2hardware__setup.html#autotoc_md87',1,'']]],
-  ['reset_20pin_20optional_9',['Reset Pin (Optional)',['../md_docs_2hardware__setup.html#autotoc_md96',1,'']]],
+  ['reset_20not_20on_20pcal9555a_9',['Reset (not on PCAL9555A)',['../md_docs_2hardware__setup.html#autotoc_md96',1,'']]],
   ['resettodefault_10',['ResetToDefault()',['../md_docs_2configuration.html#autotoc_md59',1,'']]],
   ['resistors_20pcal9555a_20only_11',['Pull Resistors (PCAL9555A only)',['../md_docs_2configuration.html#autotoc_md54',1,'']]],
   ['root_20if_20needed_12',['2. Override the Driver Root (if needed)',['../md_docs_2cmake__integration.html#autotoc_md41',1,'']]],
