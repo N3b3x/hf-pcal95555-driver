@@ -127,17 +127,20 @@ How CRTP Works</h2>
 <div class="line">};</div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Your implementation</span></div>
-<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {</div>
+<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;MyI2c&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
 <div class="line">    <span class="comment">// This method is called directly (no virtual overhead)</span></div>
-<div class="line">    <span class="keywordtype">bool</span> Write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        <span class="comment">// Your platform-specific I2C code</span></div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordtype">bool</span> Read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#ac0c398b631ee55dd8766aa96ad38377e">Read</a>(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        <span class="comment">// Your platform-specific I2C code</span></div>
 <div class="line">    }</div>
 <div class="line">};</div>
+<div class="ttc" id="aclasspcal95555_1_1I2cInterface_html"><div class="ttname"><a href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a></div><div class="ttdoc">CRTP-based template interface for I2C bus operations.</div><div class="ttdef"><b>Definition</b> pcal95555_i2c_interface.hpp:67</div></div>
+<div class="ttc" id="aclasspcal95555_1_1I2cInterface_html_ac0c398b631ee55dd8766aa96ad38377e"><div class="ttname"><a href="classpcal95555_1_1I2cInterface.html#ac0c398b631ee55dd8766aa96ad38377e">pcal95555::I2cInterface::Read</a></div><div class="ttdeci">bool Read(uint8_t addr, uint8_t reg, uint8_t *data, size_t len) noexcept</div><div class="ttdoc">Read bytes from a device register.</div><div class="ttdef"><b>Definition</b> pcal95555_i2c_interface.hpp:92</div></div>
+<div class="ttc" id="aclasspcal95555_1_1I2cInterface_html_aee6f33d90b03dccfffac72288771d51b"><div class="ttname"><a href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">pcal95555::I2cInterface::Write</a></div><div class="ttdeci">bool Write(uint8_t addr, uint8_t reg, const uint8_t *data, size_t len) noexcept</div><div class="ttdoc">Write bytes to a device register.</div><div class="ttdef"><b>Definition</b> pcal95555_i2c_interface.hpp:79</div></div>
 </div><!-- fragment --><p>The key insight: <code>static_cast&lt;Derived*&gt;(this)</code> allows the base class to call methods on the derived class <b>at compile time</b>, not runtime.</p>
 <h2><a class="anchor" id="autotoc_md120"></a>
 Performance Comparison</h2>
@@ -180,9 +183,9 @@ Interface Definition</h1>
 Implementation Steps</h1>
 <h2><a class="anchor" id="autotoc_md123"></a>
 Step 1: Create Your Implementation Class</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="pcal95555_8hpp.html">pcal95555.hpp</a>&quot;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">class </span>MyPlatformI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyPlatformI2c&gt; {</div>
+<div class="line"><span class="keyword">class </span>MyPlatformI2c : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;MyPlatformI2c&gt; {</div>
 <div class="line"><span class="keyword">private</span>:</div>
 <div class="line">    <span class="comment">// Your platform-specific members</span></div>
 <div class="line">    i2c_handle_t i2c_handle_;</div>
@@ -192,12 +195,12 @@ Step 1: Create Your Implementation Class</h2>
 <div class="line">    MyPlatformI2c(i2c_handle_t handle) : i2c_handle_(handle) {}</div>
 <div class="line">    </div>
 <div class="line">    <span class="comment">// Implement required methods (NO virtual keyword!)</span></div>
-<div class="line">    <span class="keywordtype">bool</span> Write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        <span class="comment">// Your I2C write implementation</span></div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordtype">bool</span> Read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#ac0c398b631ee55dd8766aa96ad38377e">Read</a>(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        <span class="comment">// Your I2C read implementation</span></div>
 <div class="line">        <span class="keywordflow">return</span> <span class="keyword">true</span>;</div>
 <div class="line">    }</div>
@@ -231,16 +234,17 @@ Step 1: Create Your Implementation Class</h2>
 <div class="line"><span class="keyword">private</span>:</div>
 <div class="line">    <span class="keywordtype">bool</span> initialized_ = <span class="keyword">false</span>;  <span class="comment">// Track initialization state</span></div>
 <div class="line">};</div>
+<div class="ttc" id="apcal95555_8hpp_html"><div class="ttname"><a href="pcal95555_8hpp.html">pcal95555.hpp</a></div><div class="ttdoc">Driver for the PCA9555 and PCAL9555A 16-bit I/O expanders with I²C interface.</div></div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md124"></a>
 Step 2: Platform-Specific Examples</h2>
 <h3><a class="anchor" id="autotoc_md125"></a>
 ESP32 (ESP-IDF)</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;driver/i2c.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="pcal95555_8hpp.html">pcal95555.hpp</a>&quot;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">class </span>Esp32I2cBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;Esp32I2cBus&gt; {</div>
+<div class="line"><span class="keyword">class </span>Esp32I2cBus : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;Esp32I2cBus&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keywordtype">bool</span> Write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t* data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t* data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        i2c_cmd_handle_t cmd = i2c_cmd_link_create();</div>
 <div class="line">        i2c_master_start(cmd);</div>
 <div class="line">        i2c_master_write_byte(cmd, (addr &lt;&lt; 1) | I2C_MASTER_WRITE, <span class="keyword">true</span>);</div>
@@ -252,7 +256,7 @@ ESP32 (ESP-IDF)</h3>
 <div class="line">        <span class="keywordflow">return</span> ret == ESP_OK;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordtype">bool</span> Read(uint8_t addr, uint8_t reg, uint8_t* data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#ac0c398b631ee55dd8766aa96ad38377e">Read</a>(uint8_t addr, uint8_t reg, uint8_t* data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        i2c_cmd_handle_t cmd = i2c_cmd_link_create();</div>
 <div class="line">        i2c_master_start(cmd);</div>
 <div class="line">        i2c_master_write_byte(cmd, (addr &lt;&lt; 1) | I2C_MASTER_WRITE, <span class="keyword">true</span>);</div>
@@ -269,13 +273,13 @@ ESP32 (ESP-IDF)</h3>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md126"></a>
 STM32 (HAL)</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &quot;stm32f4xx_hal.h&quot;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="pcal95555_8hpp.html">pcal95555.hpp</a>&quot;</span></div>
 <div class="line"> </div>
 <div class="line"><span class="keyword">extern</span> I2C_HandleTypeDef hi2c1;</div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">class </span>STM32I2cBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;STM32I2cBus&gt; {</div>
+<div class="line"><span class="keyword">class </span>STM32I2cBus : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;STM32I2cBus&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keywordtype">bool</span> Write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        <span class="comment">// STM32 HAL uses 8-bit address (7-bit &lt;&lt; 1)</span></div>
 <div class="line">        <span class="keywordflow">return</span> HAL_I2C_Mem_Write(&amp;hi2c1, addr &lt;&lt; 1, reg, </div>
 <div class="line">                                 I2C_MEMADD_SIZE_8BIT, </div>
@@ -283,7 +287,7 @@ STM32 (HAL)</h3>
 <div class="line">                                 HAL_MAX_DELAY) == HAL_OK;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordtype">bool</span> Read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#ac0c398b631ee55dd8766aa96ad38377e">Read</a>(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        <span class="keywordflow">return</span> HAL_I2C_Mem_Read(&amp;hi2c1, addr &lt;&lt; 1, reg,</div>
 <div class="line">                                I2C_MEMADD_SIZE_8BIT,</div>
 <div class="line">                                data, len,</div>
@@ -293,18 +297,18 @@ STM32 (HAL)</h3>
 </div><!-- fragment --><h3><a class="anchor" id="autotoc_md127"></a>
 Arduino</h3>
 <div class="fragment"><div class="line"><span class="preprocessor">#include &lt;Wire.h&gt;</span></div>
-<div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
+<div class="line"><span class="preprocessor">#include &quot;<a class="code" href="pcal95555_8hpp.html">pcal95555.hpp</a>&quot;</span></div>
 <div class="line"> </div>
-<div class="line"><span class="keyword">class </span>ArduinoI2cBus : <span class="keyword">public</span> pcal95555::I2cInterface&lt;ArduinoI2cBus&gt; {</div>
+<div class="line"><span class="keyword">class </span>ArduinoI2cBus : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;ArduinoI2cBus&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keywordtype">bool</span> Write(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(uint8_t addr, uint8_t reg, <span class="keyword">const</span> uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        Wire.beginTransmission(addr);</div>
 <div class="line">        Wire.write(reg);</div>
 <div class="line">        Wire.write(data, len);</div>
 <div class="line">        <span class="keywordflow">return</span> Wire.endTransmission() == 0;</div>
 <div class="line">    }</div>
 <div class="line">    </div>
-<div class="line">    <span class="keywordtype">bool</span> Read(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#ac0c398b631ee55dd8766aa96ad38377e">Read</a>(uint8_t addr, uint8_t reg, uint8_t *data, <span class="keywordtype">size_t</span> len) {</div>
 <div class="line">        Wire.beginTransmission(addr);</div>
 <div class="line">        Wire.write(reg);</div>
 <div class="line">        <span class="keywordflow">if</span> (Wire.endTransmission(<span class="keyword">false</span>) != 0) <span class="keywordflow">return</span> <span class="keyword">false</span>;</div>
@@ -321,31 +325,31 @@ Common Pitfalls</h1>
 <h2><a class="anchor" id="autotoc_md129"></a>
 ❌ Don't Use Virtual Functions</h2>
 <div class="fragment"><div class="line"><span class="comment">// WRONG - defeats the purpose of CRTP</span></div>
-<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {</div>
+<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;MyI2c&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> Write(...)<span class="keyword"> override </span>{  <span class="comment">// ❌ Virtual keyword not needed</span></div>
+<div class="line">    <span class="keyword">virtual</span> <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(...)<span class="keyword"> override </span>{  <span class="comment">// ❌ Virtual keyword not needed</span></div>
 <div class="line">        <span class="comment">// ...</span></div>
 <div class="line">    }</div>
 <div class="line">};</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md130"></a>
 ✅ Correct CRTP Implementation</h2>
 <div class="fragment"><div class="line"><span class="comment">// CORRECT - no virtual keyword</span></div>
-<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {</div>
+<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;MyI2c&gt; {</div>
 <div class="line"><span class="keyword">public</span>:</div>
-<div class="line">    <span class="keywordtype">bool</span> Write(...) {  <span class="comment">// ✅ Direct implementation</span></div>
+<div class="line">    <span class="keywordtype">bool</span> <a class="code hl_function" href="classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b">Write</a>(...) {  <span class="comment">// ✅ Direct implementation</span></div>
 <div class="line">        <span class="comment">// ...</span></div>
 <div class="line">    }</div>
 <div class="line">};</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md131"></a>
 ❌ Don't Forget the Template Parameter</h2>
 <div class="fragment"><div class="line"><span class="comment">// WRONG - missing template parameter</span></div>
-<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface {  <span class="comment">// ❌ Compiler error</span></div>
+<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a> {  <span class="comment">// ❌ Compiler error</span></div>
 <div class="line">    <span class="comment">// ...</span></div>
 <div class="line">};</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md132"></a>
 ✅ Correct Template Parameter</h2>
 <div class="fragment"><div class="line"><span class="comment">// CORRECT - pass your class as template parameter</span></div>
-<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> pcal95555::I2cInterface&lt;MyI2c&gt; {  <span class="comment">// ✅</span></div>
+<div class="line"><span class="keyword">class </span>MyI2c : <span class="keyword">public</span> <a class="code hl_class" href="classpcal95555_1_1I2cInterface.html">pcal95555::I2cInterface</a>&lt;MyI2c&gt; {  <span class="comment">// ✅</span></div>
 <div class="line">    <span class="comment">// ...</span></div>
 <div class="line">};</div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md133"></a>
@@ -354,7 +358,7 @@ Testing Your Implementation</h1>
 <div class="fragment"><div class="line">MyPlatformI2c i2c;</div>
 <div class="line"><span class="comment">// Constructor takes A0, A1, A2 pin levels (all LOW = address 0x20, default)</span></div>
 <div class="line"><span class="comment">// Optional: pass ChipVariant to skip auto-detection</span></div>
-<div class="line">pcal95555::PCAL95555&lt;MyPlatformI2c&gt; gpio(&amp;i2c, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
+<div class="line"><a class="code hl_class" href="classpcal95555_1_1PCAL95555.html">pcal95555::PCAL95555&lt;MyPlatformI2c&gt;</a> gpio(&amp;i2c, <span class="keyword">false</span>, <span class="keyword">false</span>, <span class="keyword">false</span>);</div>
 <div class="line"> </div>
 <div class="line">gpio.ResetToDefault();</div>
 <div class="line"> </div>
@@ -365,10 +369,11 @@ Testing Your Implementation</h1>
 <div class="line">    printf(<span class="stringliteral">&quot;PCA9555 detected - standard GPIO only\n&quot;</span>);</div>
 <div class="line">}</div>
 <div class="line"> </div>
-<div class="line">gpio.SetPinDirection(0, pcal95555::PCAL95555&lt;MyPlatformI2c&gt;::GPIODir::Output);</div>
+<div class="line">gpio.SetPinDirection(0, <a class="code hl_class" href="classpcal95555_1_1PCAL95555.html">pcal95555::PCAL95555&lt;MyPlatformI2c&gt;::GPIODir::Output</a>);</div>
 <div class="line">gpio.WritePin(0, <span class="keyword">true</span>);</div>
 <div class="line"><span class="keywordtype">bool</span> value = gpio.ReadPin(1);</div>
 <div class="line"><span class="comment">// Interface works!</span></div>
+<div class="ttc" id="aclasspcal95555_1_1PCAL95555_html"><div class="ttname"><a href="classpcal95555_1_1PCAL95555.html">pcal95555::PCAL95555</a></div><div class="ttdoc">Driver for the PCA9555 / PCAL9555A / PCAL95555AHF I²C GPIO expander.</div><div class="ttdef"><b>Definition</b> pcal95555.hpp:242</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md134"></a>
 Next Steps</h1>
 <ul>

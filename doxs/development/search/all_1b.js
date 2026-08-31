@@ -10,5 +10,9 @@ var searchData=
   ['wiring_20esp32_20s3_20pca9555_20pcal9555a_7',['Minimal wiring (ESP32-S3 + PCA9555/PCAL9555A)',['../index.html#autotoc_md14',1,'']]],
   ['work_8',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md156',1,'']]],
   ['works_9',['How CRTP Works',['../md_docs_2platform__integration.html#autotoc_md119',1,'']]],
-  ['writes_20not_20work_10',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md156',1,'']]]
+  ['write_10',['Write',['../classpcal95555_1_1I2cInterface.html#aee6f33d90b03dccfffac72288771d51b',1,'pcal95555::I2cInterface']]],
+  ['writedualportregister_11',['WriteDualPortRegister',['../classpcal95555_1_1PCAL95555.html#a722bf29c55659693d921a8cdff2b222b',1,'pcal95555::PCAL95555']]],
+  ['writepin_12',['WritePin',['../classpcal95555_1_1PCAL95555.html#a974e8b8940c10f9f3ac8313433a8c991',1,'pcal95555::PCAL95555']]],
+  ['writeregister_13',['writeRegister',['../classpcal95555_1_1PCAL95555.html#a065fe0b0d9644d37dfe43e7e68d9d564',1,'pcal95555::PCAL95555']]],
+  ['writes_20not_20work_14',['Q: Why do my pin writes not work?',['../md_docs_2troubleshooting.html#autotoc_md156',1,'']]]
 ];
