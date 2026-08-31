@@ -109,12 +109,14 @@ ESP-IDF Integration</h1>
 <div class="line">target_compile_features(${COMPONENT_LIB} PRIVATE cxx_std_20)</div>
 </div><!-- fragment --><h2><a class="anchor" id="autotoc_md43"></a>
 4. Include and Use</h2>
-<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;pcal95555.hpp&quot;</span></div>
+<div class="fragment"><div class="line"><span class="preprocessor">#include &quot;<a class="code" href="pcal95555_8hpp.html">pcal95555.hpp</a>&quot;</span></div>
 <div class="line"><span class="preprocessor">#include &quot;pcal95555_version.h&quot;</span>  <span class="comment">// optional — version macros</span></div>
 <div class="line"> </div>
 <div class="line"><span class="comment">// Create your platform I2C implementation, then:</span></div>
-<div class="line">pcal95555::PCAL95555&lt;MyI2cBus&gt; driver(&amp;bus, <span class="comment">/*a0=*/</span><span class="keyword">false</span>, <span class="comment">/*a1=*/</span><span class="keyword">false</span>, <span class="comment">/*a2=*/</span><span class="keyword">false</span>);</div>
+<div class="line"><a class="code hl_class" href="classpcal95555_1_1PCAL95555.html">pcal95555::PCAL95555&lt;MyI2cBus&gt;</a> driver(&amp;bus, <span class="comment">/*a0=*/</span><span class="keyword">false</span>, <span class="comment">/*a1=*/</span><span class="keyword">false</span>, <span class="comment">/*a2=*/</span><span class="keyword">false</span>);</div>
 <div class="line">driver.EnsureInitialized();</div>
+<div class="ttc" id="aclasspcal95555_1_1PCAL95555_html"><div class="ttname"><a href="classpcal95555_1_1PCAL95555.html">pcal95555::PCAL95555</a></div><div class="ttdoc">Driver for the PCA9555 / PCAL9555A / PCAL95555AHF I²C GPIO expander.</div><div class="ttdef"><b>Definition</b> pcal95555.hpp:242</div></div>
+<div class="ttc" id="apcal95555_8hpp_html"><div class="ttname"><a href="pcal95555_8hpp.html">pcal95555.hpp</a></div><div class="ttdoc">Driver for the PCA9555 and PCAL9555A 16-bit I/O expanders with I²C interface.</div></div>
 </div><!-- fragment --><h1><a class="anchor" id="autotoc_md44"></a>
 Version Header</h1>
 <p>The build system generates <code>pcal95555_version.h</code> from <code>inc/pcal95555_version.h.in</code> at configure time. It provides:</p>

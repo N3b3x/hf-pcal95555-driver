@@ -88,8 +88,8 @@ Source Code</h1>
 Core Class</h1>
 <h2><a class="anchor" id="autotoc_md22"></a>
 <code>PCAL95555&lt;I2cType&gt;</code></h2>
-<p>Main driver class for interfacing with the <b>PCA9555</b> and <b>PCAL9555A</b> I/O expanders. The chip variant is auto-detected during initialization. PCAL9555A-specific features (pull resistors, drive strength, input latch, interrupt mask/status, output mode) return <code>false</code> and set <code>Error::UnsupportedFeature</code> when a standard PCA9555 is detected.</p>
-<p><b>Template Parameter</b>: <code>I2cType</code> - Your I2C interface implementation (must inherit from <code>pcal95555::I2cInterface&lt;I2cType&gt;</code>)</p>
+<p>Main driver class for interfacing with the <b>PCA9555</b> and <b>PCAL9555A</b> I/O expanders. The chip variant is auto-detected during initialization. PCAL9555A-specific features (pull resistors, drive strength, input latch, interrupt mask/status, output mode) return <code>false</code> and set <code><a class="el" href="pcal95555_8hpp.html#a871e01ae1a2804f48c5630e50793d565a6dcca67f0df2a0038edf5a82b1399527" title="Feature requires PCAL9555A but chip is PCA9555.">Error::UnsupportedFeature</a></code> when a standard PCA9555 is detected.</p>
+<p><b>Template Parameter</b>: <code>I2cType</code> - Your I2C interface implementation (must inherit from <code><a class="el" href="classpcal95555_1_1I2cInterface.html" title="CRTP-based template interface for I2C bus operations.">pcal95555::I2cInterface</a>&lt;I2cType&gt;</code>)</p>
 <p><b>Location</b>: <a href="../inc/pcal95555.hpp"><code>inc/pcal95555.hpp</code></a></p>
 <p><b>Constructors:</b></p>
 <p><b>Constructor 1: Using address pin levels</b> </p><div class="fragment"><div class="line">PCAL95555(I2cType* bus, <span class="keywordtype">bool</span> a0_level, <span class="keywordtype">bool</span> a1_level, <span class="keywordtype">bool</span> a2_level,</div>
@@ -166,7 +166,7 @@ Pin I/O</h2>
 <h2><a class="anchor" id="autotoc_md27"></a>
 Pull-up/Pull-down (PCAL9555A only)</h2>
 <blockquote class="doxtable">
-<p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code>Error::UnsupportedFeature</code> on PCA9555. </p>
+<p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code><a class="el" href="pcal95555_8hpp.html#a871e01ae1a2804f48c5630e50793d565a6dcca67f0df2a0038edf5a82b1399527" title="Feature requires PCAL9555A but chip is PCA9555.">Error::UnsupportedFeature</a></code> on PCA9555. </p>
 </blockquote>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -183,7 +183,7 @@ Pull-up/Pull-down (PCAL9555A only)</h2>
 <h2><a class="anchor" id="autotoc_md28"></a>
 Drive Strength (PCAL9555A only)</h2>
 <blockquote class="doxtable">
-<p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code>Error::UnsupportedFeature</code> on PCA9555. </p>
+<p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code><a class="el" href="pcal95555_8hpp.html#a871e01ae1a2804f48c5630e50793d565a6dcca67f0df2a0038edf5a82b1399527" title="Feature requires PCAL9555A but chip is PCA9555.">Error::UnsupportedFeature</a></code> on PCA9555. </p>
 </blockquote>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -196,7 +196,7 @@ Drive Strength (PCAL9555A only)</h2>
 <h2><a class="anchor" id="autotoc_md29"></a>
 Interrupts</h2>
 <blockquote class="doxtable">
-<p>&zwj;<b>Note</b>: <code>ConfigureInterrupt</code>, <code>ConfigureInterrupts</code>, <code>ConfigureInterruptMask</code>, and <code>GetInterruptStatus</code> require PCAL9555A and return <code>false</code>/<code>0</code> with <code>Error::UnsupportedFeature</code> on PCA9555. The remaining interrupt methods (callbacks, handler) work on both variants &ndash; on PCA9555, <code>HandleInterrupt()</code> uses change-detection (comparing current vs. previous pin states) instead of the hardware interrupt status register. </p>
+<p>&zwj;<b>Note</b>: <code>ConfigureInterrupt</code>, <code>ConfigureInterrupts</code>, <code>ConfigureInterruptMask</code>, and <code>GetInterruptStatus</code> require PCAL9555A and return <code>false</code>/<code>0</code> with <code><a class="el" href="pcal95555_8hpp.html#a871e01ae1a2804f48c5630e50793d565a6dcca67f0df2a0038edf5a82b1399527" title="Feature requires PCAL9555A but chip is PCA9555.">Error::UnsupportedFeature</a></code> on PCA9555. The remaining interrupt methods (callbacks, handler) work on both variants &ndash; on PCA9555, <code>HandleInterrupt()</code> uses change-detection (comparing current vs. previous pin states) instead of the hardware interrupt status register. </p>
 </blockquote>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -223,7 +223,7 @@ Interrupts</h2>
 <h2><a class="anchor" id="autotoc_md30"></a>
 Output Mode (PCAL9555A only)</h2>
 <blockquote class="doxtable">
-<p>&zwj;<b>Note</b>: Returns <code>false</code> and sets <code>Error::UnsupportedFeature</code> on PCA9555. </p>
+<p>&zwj;<b>Note</b>: Returns <code>false</code> and sets <code><a class="el" href="pcal95555_8hpp.html#a871e01ae1a2804f48c5630e50793d565a6dcca67f0df2a0038edf5a82b1399527" title="Feature requires PCAL9555A but chip is PCA9555.">Error::UnsupportedFeature</a></code> on PCA9555. </p>
 </blockquote>
 <table class="markdownTable">
 <tr class="markdownTableHead">
@@ -246,7 +246,7 @@ Polarity</h2>
 <h2><a class="anchor" id="autotoc_md32"></a>
 Input Latch (PCAL9555A only)</h2>
 <blockquote class="doxtable">
-<p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code>Error::UnsupportedFeature</code> on PCA9555. </p>
+<p>&zwj;<b>Note</b>: These methods return <code>false</code> and set <code><a class="el" href="pcal95555_8hpp.html#a871e01ae1a2804f48c5630e50793d565a6dcca67f0df2a0038edf5a82b1399527" title="Feature requires PCAL9555A but chip is PCA9555.">Error::UnsupportedFeature</a></code> on PCA9555. </p>
 </blockquote>
 <table class="markdownTable">
 <tr class="markdownTableHead">

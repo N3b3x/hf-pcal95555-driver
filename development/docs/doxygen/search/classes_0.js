@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['mocki2c_0',['MockI2C',['../classMockI2C.html',1,'']]]
+  ['i2cinterface_0',['I2cInterface',['../classpcal95555_1_1I2cInterface.html',1,'pcal95555']]]
 ];

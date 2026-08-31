@@ -18,11 +18,12 @@ var searchData=
   ['the_20i2c_20interface_20for_20your_20platform_15',['1. Implement the I2C interface for your platform',['../index.html#autotoc_md4',1,'']]],
   ['the_20template_20parameter_16',['❌ Don&apos;t Forget the Template Parameter',['../md_docs_2platform__integration.html#autotoc_md131',1,'']]],
   ['time_20polymorphism_20strong_17',['2. &lt;strong&gt;Compile-Time Polymorphism&lt;/strong&gt;',['../md_docs_2platform__integration.html#autotoc_md116',1,'']]],
-  ['troubleshooting_18',['Troubleshooting',['../md_docs_2troubleshooting.html',1,'Troubleshooting'],['../md_docs_2quickstart.html#autotoc_md145',1,'Troubleshooting']]],
-  ['troubleshooting_20strong_19',['&lt;strong&gt;Troubleshooting&lt;/strong&gt;',['../md_docs_2index.html#autotoc_md103',1,'']]],
-  ['tt_20pcal95555_20i2ctype_20tt_20',['&lt;tt&gt;PCAL95555\&lt;I2cType\&gt;&lt;/tt&gt;',['../md_docs_2api__reference.html#autotoc_md22',1,'']]],
-  ['tt_20pcal95555_5fcomprehensive_5ftest_20tt_21',['Comprehensive Test Suite (&lt;tt&gt;pcal95555_comprehensive_test&lt;/tt&gt;)',['../index.html#autotoc_md11',1,'']]],
-  ['tt_20pcal95555_5fled_5fanimation_20tt_22',['LED Animation Demo (&lt;tt&gt;pcal95555_led_animation&lt;/tt&gt;)',['../index.html#autotoc_md12',1,'']]],
-  ['type_20safety_23',['4. **Type Safety**',['../md_docs_2platform__integration.html#autotoc_md118',1,'']]],
-  ['types_24',['Types',['../md_docs_2api__reference.html#autotoc_md36',1,'']]]
+  ['togglepin_18',['TogglePin',['../classpcal95555_1_1PCAL95555.html#ae7ca7a29f0ccb94f4eeed62ad88210f5',1,'pcal95555::PCAL95555']]],
+  ['troubleshooting_19',['Troubleshooting',['../md_docs_2troubleshooting.html',1,'Troubleshooting'],['../md_docs_2quickstart.html#autotoc_md145',1,'Troubleshooting']]],
+  ['troubleshooting_20strong_20',['&lt;strong&gt;Troubleshooting&lt;/strong&gt;',['../md_docs_2index.html#autotoc_md103',1,'']]],
+  ['tt_20pcal95555_20i2ctype_20tt_21',['&lt;tt&gt;PCAL95555\&lt;I2cType\&gt;&lt;/tt&gt;',['../md_docs_2api__reference.html#autotoc_md22',1,'']]],
+  ['tt_20pcal95555_5fcomprehensive_5ftest_20tt_22',['Comprehensive Test Suite (&lt;tt&gt;pcal95555_comprehensive_test&lt;/tt&gt;)',['../index.html#autotoc_md11',1,'']]],
+  ['tt_20pcal95555_5fled_5fanimation_20tt_23',['LED Animation Demo (&lt;tt&gt;pcal95555_led_animation&lt;/tt&gt;)',['../index.html#autotoc_md12',1,'']]],
+  ['type_20safety_24',['4. **Type Safety**',['../md_docs_2platform__integration.html#autotoc_md118',1,'']]],
+  ['types_25',['Types',['../md_docs_2api__reference.html#autotoc_md36',1,'']]]
 ];
